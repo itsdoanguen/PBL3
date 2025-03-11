@@ -1,8 +1,19 @@
+using Microsoft.EntityFrameworkCore;
+using DotNetEnv;
+using PBL3.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+//Get environment variables from .env file
+Env.Load();
+builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(dbConnectionString));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
