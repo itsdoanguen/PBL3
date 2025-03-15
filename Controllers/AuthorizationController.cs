@@ -19,6 +19,9 @@ namespace PBL3.Controllers
         }
         //GET: Authorization/Index
         public IActionResult Index() => View();
+        //GET: Authorization/AccessDenied
+        public IActionResult AccessDenied() => View();
+
         //GET: Authorization/Register
         public IActionResult Register() => View();
         //POST: Authorization/Register

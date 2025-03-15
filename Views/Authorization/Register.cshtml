@@ -1,0 +1,49 @@
+﻿@model PBL3.ViewModels.RegisterViewModel
+
+@{
+    Layout = "~/Views/Shared/_AuthorizationLayout.cshtml";
+    ViewData["Title"] = "Register";
+}
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4" style="width: 400px;">
+        <h2 class="text-center mb-4">Register</h2>
+
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div class="alert alert-danger">@ViewBag.Message</div>
+        }
+
+        <form asp-controller="Authorization" asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" required />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Password</label>
+                <input asp-for="Password" type="password" class="form-control" required />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" required />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Register</button>
+        </form>
+
+        <div class="text-center mt-3">
+            <small>Already have an account? <a asp-controller="Authorization" asp-action="Login">Login here</a></small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
