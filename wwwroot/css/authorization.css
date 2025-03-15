@@ -1,0 +1,74 @@
+﻿/* Hero Section */
+.hero-section {
+    height: 100vh;
+    background: url('/images/wattpad-like-bg.jpg') no-repeat center center;
+    background-size: cover;
+    position: relative;
+}
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    .hero-section > div {
+        position: relative;
+        z-index: 2;
+    }
+
+/* Card hover */
+.card:hover {
+    transform: translateY(-5px);
+    transition: transform 0.2s ease;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Navbar styling */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section p {
+        font-size: 1rem;
+    }
+
+    .card {
+        margin-bottom: 20px;
+    }
+}
+main {
+    margin: 0;
+    padding: 0;
+    min-height: calc(100vh - 120px); /* Adjust height minus navbar & footer */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+footer {
+    margin: 0;
+    padding: 10px 0;
+}
