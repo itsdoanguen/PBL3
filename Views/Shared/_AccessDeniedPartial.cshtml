@@ -1,0 +1,25 @@
+﻿@* Views/Shared/_AccessDeniedPartial.cshtml *@
+@{
+    var userRole = Context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+}
+<div id="accessDeniedMessage" style="display:none;">
+	<h1>You do not have permission to enter this page</h1>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		fetch('/Authentication/AccessDenied')
+			.then(response => response.text())
+			.then(html => {
+				const div = document.createElement('div');
+				div.innerHTML = html;
+				document.body.appendChild(div);
+
+				const message = document.getElementById('accessDeniedMessage');
+				if (message) {
+					alert(message.innerText);
+					window.location.href = '/@userRole/Index';
+				}
+			});
+	});
+</script>

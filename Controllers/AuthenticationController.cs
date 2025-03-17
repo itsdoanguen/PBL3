@@ -7,6 +7,8 @@ using PBL3.Models;
 using PBL3.ViewModels;
 using PBL3.Data;
 using BCrypt.Net;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace PBL3.Controllers
 {
@@ -18,12 +20,42 @@ namespace PBL3.Controllers
             _context = context;
         }
         //GET: Authentication/Index
-        public IActionResult Index() => View();
+        public IActionResult Index()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                else if (User.IsInRole("Moderator"))
+                    return RedirectToAction("Index", "Moderator");
+                else if (User.IsInRole("User"))
+                    return RedirectToAction("Index", "User");
+            }
+
+            return View();
+        }
         //GET: Authentication/AccessDenied
-        public IActionResult AccessDenied() => View();
+        public IActionResult AccessDenied()
+        {
+            return PartialView("_AccessDeniedPartial");
+
+        }
 
         //GET: Authentication/Register
-        public IActionResult Register() => View();
+        public IActionResult Register()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                else if (User.IsInRole("Moderator"))
+                    return RedirectToAction("Index", "Moderator");
+                else if (User.IsInRole("User"))
+                    return RedirectToAction("Index", "User");
+            }
+
+            return View();
+        }
         //POST: Authentication/Register
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -51,7 +83,20 @@ namespace PBL3.Controllers
             return View(model);
         }
         //GET: Authentication/Login
-        public IActionResult Login() => View();
+        public IActionResult Login()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                else if (User.IsInRole("Moderator"))
+                    return RedirectToAction("Index", "Moderator");
+                else if (User.IsInRole("User"))
+                    return RedirectToAction("Index", "User");
+            }
+
+            return View();
+        }
         //POST: Authentication/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -86,7 +131,7 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Authentication");
         }
 
         public async Task SignIn(UserModel user)
@@ -104,6 +149,19 @@ namespace PBL3.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMonths(1)
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+        }
+        public IActionResult IsLoggedIn()
+        {
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+                else if (User.IsInRole("Moderator"))
+                    return RedirectToAction("Index", "Moderator");
+                else if (User.IsInRole("User"))
+                    return RedirectToAction("Index", "User");
+            }
+            return RedirectToAction("Index", "Authentication");
         }
     }
 }
