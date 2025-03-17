@@ -14,7 +14,7 @@
             <div class="alert alert-danger">@ViewBag.Message</div>
         }
 
-        <form asp-controller="Authorization" asp-action="Register" method="post">
+        <form asp-controller="Authentication" asp-action="Register" method="post">
             @Html.AntiForgeryToken()
 
             <div class="mb-3">

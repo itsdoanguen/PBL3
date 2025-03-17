@@ -86,7 +86,7 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Authentication");
         }
 
         public async Task SignIn(UserModel user)
