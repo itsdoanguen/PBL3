@@ -1,7 +1,7 @@
 ﻿@model PBL3.ViewModels.RegisterViewModel
 
 @{
-    Layout = "~/Views/Shared/_AuthorizationLayout.cshtml";
+    Layout = "~/Views/Shared/_AuthenticationLayout.cshtml";
     ViewData["Title"] = "Register";
 }
 
@@ -39,7 +39,7 @@
         </form>
 
         <div class="text-center mt-3">
-            <small>Already have an account? <a asp-controller="Authorization" asp-action="Login">Login here</a></small>
+            <small>Already have an account? <a asp-controller="Authentication" asp-action="Login">Login here</a></small>
         </div>
     </div>
 </div>
