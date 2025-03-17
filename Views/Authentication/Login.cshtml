@@ -1,7 +1,7 @@
 ﻿@model PBL3.ViewModels.LoginViewModel
 
 @{
-    Layout = "~/Views/Shared/_AuthorizationLayout.cshtml";
+    Layout = "~/Views/Shared/_AuthenticationLayout.cshtml";
     ViewData["Title"] = "Login";
 }
 
@@ -33,7 +33,7 @@
         </form>
 
         <div class="text-center mt-3">
-            <small>Don't have an account? <a asp-controller="Authorization" asp-action="Register">Sign up here</a></small>
+            <small>Don't have an account? <a asp-controller="Authentication" asp-action="Register">Sign up here</a></small>
         </div>
     </div>
 </div>

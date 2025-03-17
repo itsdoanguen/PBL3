@@ -10,21 +10,21 @@ using BCrypt.Net;
 
 namespace PBL3.Controllers
 {
-    public class AuthorizationController : Controller
+    public class AuthenticationController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public AuthorizationController(ApplicationDbContext context)
+        public AuthenticationController(ApplicationDbContext context)
         {
             _context = context;
         }
-        //GET: Authorization/Index
+        //GET: Authentication/Index
         public IActionResult Index() => View();
-        //GET: Authorization/AccessDenied
+        //GET: Authentication/AccessDenied
         public IActionResult AccessDenied() => View();
 
-        //GET: Authorization/Register
+        //GET: Authentication/Register
         public IActionResult Register() => View();
-        //POST: Authorization/Register
+        //POST: Authentication/Register
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -50,9 +50,9 @@ namespace PBL3.Controllers
             }
             return View(model);
         }
-        //GET: Authorization/Login
+        //GET: Authentication/Login
         public IActionResult Login() => View();
-        //POST: Authorization/Login
+        //POST: Authentication/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
