@@ -13,6 +13,7 @@ namespace PBL3.Models
         [Required,StringLength(500)]
         public string Description { get; set; }
         public string? CoverImage { get; set; }
+        public StoryStatus Status { get; set; } = StoryStatus.Active;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
 
@@ -26,5 +27,11 @@ namespace PBL3.Models
         public ICollection<CommentModel> Comments { get; set; }
         public ICollection<FollowStoryModel> Followers { get; set; }
         public ICollection<StoryGenreModel> Genres { get; set; }
+
+        public enum StoryStatus
+        {
+            Active,
+            Inactive
+        }
     }
 }

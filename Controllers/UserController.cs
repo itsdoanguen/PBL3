@@ -1,14 +1,90 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PBL3.Data;
+using PBL3.ViewModels;
 
 namespace PBL3.Controllers
 {
-    [Authorize(Roles ="User")]
+    [Authorize(Roles = "User")]
     public class UserController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public UserController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+        //GET: User/Index
         public IActionResult Index()
         {
-           return View();
+            return View();
+        }
+
+        //GET: User/Profile
+        public IActionResult ViewProfile(int? id)
+        {
+            UserProfileViewModel profile = new UserProfileViewModel();
+            if (id == null)
+            {
+                //Xem thong tin cua chinh minh
+                var currentUserID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                System.Console.WriteLine(currentUserID);
+                profile = GetUserProfile(currentUserID);
+
+            }
+            else
+            {
+                //Xem thong tin cua nguoi khac
+                profile = GetUserProfile(id.Value);
+            }
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+            return View(profile);
+        }
+
+        private UserProfileViewModel GetUserProfile(int id)
+        {
+            var userInfo = _context.Users.Find(id);
+            if (userInfo == null)
+            {
+                return null; 
+            }
+
+            var stories = _context.Stories
+                .Where(s => s.AuthorID == id)
+                .Select(s => new UserStoryCardViewModel
+                {
+                    StoryID = s.StoryID,
+                    Title = s.Title,
+                    Cover = s.CoverImage,
+                    LastUpdated = s.UpdatedAt,
+                    Status = s.Status,
+                    TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
+                })
+                .ToList();
+
+            var profile = new UserProfileViewModel
+            {
+                DisplayName = userInfo.DisplayName,
+                Email = userInfo.Email,
+                Avatar = userInfo.Avatar,
+                Banner = userInfo.Banner,
+                Bio = userInfo.Bio,
+                CreatedAt = userInfo.CreatedAt,
+                DateOfBirth = userInfo.DateOfBirth,
+                Role = userInfo.Role,
+                Status = userInfo.Status,
+                TotalUploadedStories = stories.Count,
+                Stories = stories,
+                TotalFollowers = _context.FollowUsers.Count(f => f.FollowingID == id),
+                TotalFollowings = _context.FollowUsers.Count(f => f.FollowerID == id),
+                TotalComments = _context.Comments.Count(c => c.UserID == id)
+            };
+
+            return profile;
         }
     }
 }

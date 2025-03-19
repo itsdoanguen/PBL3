@@ -15,6 +15,8 @@ namespace PBL3.Models
         public string? DisplayName { get; set; }
         [StringLength(255)]
         public string? Avatar { get; set; }
+        [StringLength(255)]
+        public string? Banner { get; set; }
         [StringLength(1000)]
         public string? Bio { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
