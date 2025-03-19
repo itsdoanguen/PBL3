@@ -19,24 +19,27 @@ namespace PBL3.Controllers
         {
             return View();
         }
+        //GET: User/MyProfile
+        public IActionResult MyProfile()
+        {
+            int id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            
+            UserProfileViewModel profile = GetUserProfile(id);
+         
+            if (profile == null)
+            {
+                return NotFound();
+            }
+            return View(profile);
+        }
 
-        //GET: User/Profile
-        public IActionResult ViewProfile(int? id)
+
+        //GET: User/ViewProfile
+        public IActionResult ViewProfile(int id)
         {
             UserProfileViewModel profile = new UserProfileViewModel();
-            if (id == null)
-            {
-                //Xem thong tin cua chinh minh
-                var currentUserID = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                System.Console.WriteLine(currentUserID);
-                profile = GetUserProfile(currentUserID);
-
-            }
-            else
-            {
-                //Xem thong tin cua nguoi khac
-                profile = GetUserProfile(id.Value);
-            }
+            
+            profile = GetUserProfile(id);
 
             if (profile == null)
             {
