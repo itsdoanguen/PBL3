@@ -5,7 +5,7 @@ namespace PBL3.ViewModels
     public class UserProfileViewModel
     {
         public string? DisplayName { get; set; }
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public string? Avatar { get; set; }
         public string? Banner { get; set; }
         public string? Bio { get; set; }

@@ -33,6 +33,11 @@
         flex: 1;
     }
 
+.disabled-content {
+    opacity: 0.5;
+    pointer-events: none; 
+}
+
 .story-card {
     display: flex;
     background: white;
@@ -57,4 +62,27 @@
     border-bottom: 2px solid black;
     padding-bottom: 5px;
     margin-bottom: 10px;
+}
+
+.avatar-upload-label {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.avatar-upload-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px;
+    border-radius: 66%;
+    font-size: 20px;
+}
+
+.profile-avatar {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
 }

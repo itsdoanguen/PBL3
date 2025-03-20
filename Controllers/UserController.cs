@@ -23,10 +23,22 @@ namespace PBL3.Controllers
         //GET: User/MyProfile
         public IActionResult MyProfile()
         {
-            int id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            
-            UserProfileViewModel profile = GetUserProfile(id);
-         
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            UserProfileViewModel profile = GetUserProfile(currentUserID);
+
+            if (profile == null)
+            {
+                return NotFound();
+            }
+            return View(profile);
+        }
+
+        //GET: User/EditProfile
+        public IActionResult EditProfile()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            UserProfileViewModel profile = GetUserProfile(currentUserID);
             if (profile == null)
             {
                 return NotFound();
@@ -34,7 +46,36 @@ namespace PBL3.Controllers
             return View(profile);
         }
         //POST: User/EditProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(profile);
+            }
 
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userInfo = _context.Users.Find(currentUserID);
+            if (userInfo == null)
+            {
+                return NotFound();
+            }
+
+            userInfo.DisplayName = profile.DisplayName;
+            userInfo.Bio = profile.Bio;
+            userInfo.DateOfBirth = profile.DateOfBirth;
+            userInfo.Gender = profile.Gender;
+
+            userInfo.Avatar = profile.Avatar;
+            userInfo.Banner = profile.Banner;
+
+            _context.Users.Update(userInfo);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("MyProfile", "User");
+        }
+        
 
 
         //GET: User/ViewProfile
@@ -56,7 +97,7 @@ namespace PBL3.Controllers
             var userInfo = _context.Users.Find(id);
             if (userInfo == null)
             {
-                return null; 
+                return null;
             }
 
             var stories = _context.Stories
@@ -82,6 +123,7 @@ namespace PBL3.Controllers
                 CreatedAt = userInfo.CreatedAt,
                 DateOfBirth = userInfo.DateOfBirth,
                 Role = userInfo.Role,
+                Gender = userInfo.Gender,
                 Status = userInfo.Status,
                 TotalUploadedStories = stories.Count,
                 Stories = stories,
