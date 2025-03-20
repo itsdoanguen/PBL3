@@ -1,0 +1,93 @@
+﻿@model PBL3.ViewModels.UserProfileViewModel
+
+@{
+	ViewData["Title"] = Model.DisplayName;
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<!-- Link to external CSS file -->
+<link rel="stylesheet" href="~/css/user-profile.css" asp-append-version="true" />
+
+<!-- Banner -->
+<div class="profile-banner" style="background-image: url('@(Model.Banner ?? "/image/default-banner.jpg")');">
+</div>
+
+<div class="container mt-4">
+	<div class="row">
+		<!-- Left Panel (Avatar & Info) -->
+		<div class="col-md-4">
+			<div class="profile-card text-center">
+				<img src="@(Model.Avatar != null ? Model.Avatar : Url.Content("~/image/default-avatar.png"))"
+					 class="profile-avatar rounded-circle" alt="Avatar">
+
+				<h3 class="mt-2">@Model.DisplayName</h3>
+				<p class="text-muted">@Model.Bio</p>
+
+				<ul class="list-group">
+					<li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
+					<li class="list-group-item"><strong>Ngày tham gia:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
+					<li class="list-group-item"><strong>Ngày sinh:</strong> @(Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</li>
+					<li class="list-group-item"><strong>Giới tính:</strong> @(Model.Gender?.ToString() ?? "Không xác định")</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- Right Panel (Statistics & Stories) -->
+		<div class="col-md-8">
+			<div class="profile-stats">
+				<div class="d-flex justify-content-between">
+					<div class="stat-box">
+						<h4>@Model.TotalUploadedStories</h4>
+						<p>Truyện đã đăng</p>
+					</div>
+					<div class="stat-box">
+						<h4>@Model.TotalFollowers</h4>
+						<p>Người theo dõi</p>
+					</div>
+					<div class="stat-box">
+						<h4>@Model.TotalFollowings</h4>
+						<p>Đang theo dõi</p>
+					</div>
+					<div class="stat-box">
+						<h4>@Model.TotalComments</h4>
+						<p>Bình luận</p>
+					</div>
+				</div>
+				<div class="d-flex justify-content-end">
+					<div>
+						<a asp-controller="User" asp-action="EditProfile" class="btn btn-primary">
+							<i class="bi bi-pencil-square"></i>Edit
+						</a>
+					</div>
+				</div>
+			</div>
+
+			<!-- Stories Section -->
+			<div class="mt-4">
+				<h5 class="section-title">Truyện đã đăng</h5>
+				@if (Model.Stories.Any())
+				{
+					<div class="row">
+						@foreach (var story in Model.Stories)
+						{
+							<div class="col-md-6">
+								<div class="story-card">
+									<img src="@story.Cover" class="story-cover" alt="@story.Title">
+									<div class="story-info">
+										<h6>@story.Title</h6>
+										<p><strong>Chương:</strong> @story.TotalChapters</p>
+										<p><strong>Trạng thái:</strong> @story.Status</p>
+									</div>
+								</div>
+							</div>
+						}
+					</div>
+				}
+				else
+				{
+					<p class="text-muted">Không có truyện nào</p>
+				}
+			</div>
+		</div>
+	</div>
+</div>

@@ -58,6 +58,7 @@ namespace PBL3.Controllers
         }
         //POST: Authentication/Register
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -149,19 +150,6 @@ namespace PBL3.Controllers
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMonths(1)
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
-        }
-        public IActionResult IsLoggedIn()
-        {
-            if (User.Identity != null && User.Identity.IsAuthenticated)
-            {
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index", "Admin");
-                else if (User.IsInRole("Moderator"))
-                    return RedirectToAction("Index", "Moderator");
-                else if (User.IsInRole("User"))
-                    return RedirectToAction("Index", "User");
-            }
-            return RedirectToAction("Index", "Authentication");
         }
     }
 }
