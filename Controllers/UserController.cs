@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
@@ -32,13 +33,15 @@ namespace PBL3.Controllers
             }
             return View(profile);
         }
+        //POST: User/EditProfile
+
 
 
         //GET: User/ViewProfile
         public IActionResult ViewProfile(int id)
         {
             UserProfileViewModel profile = new UserProfileViewModel();
-            
+
             profile = GetUserProfile(id);
 
             if (profile == null)
