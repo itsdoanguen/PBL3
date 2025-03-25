@@ -161,8 +161,11 @@ namespace PBL3.Controllers
                 })
                 .ToList();
 
-            var avatarUrl = string.IsNullOrEmpty(userInfo.Avatar) ? null : await _blobService.GetBlobSasUrlAsync(userInfo.Avatar);
-            var bannerUrl = string.IsNullOrEmpty(userInfo.Banner) ? null : await _blobService.GetBlobSasUrlAsync(userInfo.Banner);
+            string avatarBlobName = ExtractBlobName(userInfo.Avatar);
+            string bannerBlobName = ExtractBlobName(userInfo.Banner);
+
+            var avatarUrl = string.IsNullOrEmpty(avatarBlobName) ? null : await _blobService.GetBlobSasUrlAsync(avatarBlobName);
+            var bannerUrl = string.IsNullOrEmpty(bannerBlobName) ? null : await _blobService.GetBlobSasUrlAsync(bannerBlobName);
 
             var profile = new UserProfileViewModel
             {
@@ -184,6 +187,20 @@ namespace PBL3.Controllers
             };
 
             return profile;
+        }
+        private string ExtractBlobName(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            string containerName = "pbl3container/";
+            int index = url.IndexOf(containerName);
+
+            if (index != -1)
+            {
+                return url.Substring(index + containerName.Length);
+            }
+
+            return url;
         }
     }
 }
