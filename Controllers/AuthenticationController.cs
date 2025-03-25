@@ -73,7 +73,7 @@ namespace PBL3.Controllers
                 {
                     Email = model.Email,
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.Password),
-                    Role = UserModel.UserRole.User,
+                    Role = UserModel.UserRole.User
                 };
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();

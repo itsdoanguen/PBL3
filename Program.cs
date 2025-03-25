@@ -16,6 +16,7 @@ var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(dbConnectionString));
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<BlobService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
