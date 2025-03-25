@@ -15,14 +15,17 @@ builder.Services.AddControllersWithViews();
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(dbConnectionString));
+//Them Authorization va Authentication vao builder
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<BlobService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
+        //Setup duong dan cho login va access denied
         options.LoginPath = "/Authentication/Login";
         options.AccessDeniedPath = "/Authentication/AccessDenied";
     });
+//Them BlobService vao builder
+builder.Services.AddScoped<BlobService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
