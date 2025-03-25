@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +24,11 @@ namespace PBL3.Controllers
             return View();
         }
         //GET: User/MyProfile
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            UserProfileViewModel profile = GetUserProfile(currentUserID);
+            UserProfileViewModel profile = await GetUserProfile(currentUserID);
 
             if (profile == null)
             {
@@ -37,10 +38,10 @@ namespace PBL3.Controllers
         }
 
         //GET: User/EditProfile
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            UserProfileViewModel profile = GetUserProfile(currentUserID);
+            UserProfileViewModel profile = await GetUserProfile(currentUserID);
             if (profile == null)
             {
                 return NotFound();
@@ -126,11 +127,11 @@ namespace PBL3.Controllers
 
 
         //GET: User/ViewProfile
-        public IActionResult ViewProfile(int id)
+        public async Task<IActionResult> ViewProfile(int id)
         {
             UserProfileViewModel profile = new UserProfileViewModel();
 
-            profile = GetUserProfile(id);
+            profile = await GetUserProfile(id);
 
             if (profile == null)
             {
@@ -139,9 +140,9 @@ namespace PBL3.Controllers
             return View(profile);
         }
 
-        private UserProfileViewModel GetUserProfile(int id)
+        private async Task<UserProfileViewModel> GetUserProfile(int id)
         {
-            var userInfo = _context.Users.Find(id);
+            var userInfo = await _context.Users.FindAsync(id);
             if (userInfo == null)
             {
                 return null;
@@ -160,12 +161,15 @@ namespace PBL3.Controllers
                 })
                 .ToList();
 
+            var avatarUrl = string.IsNullOrEmpty(userInfo.Avatar) ? null : await _blobService.GetBlobSasUrlAsync(userInfo.Avatar);
+            var bannerUrl = string.IsNullOrEmpty(userInfo.Banner) ? null : await _blobService.GetBlobSasUrlAsync(userInfo.Banner);
+
             var profile = new UserProfileViewModel
             {
                 DisplayName = userInfo.DisplayName,
                 Email = userInfo.Email,
-                Avatar = userInfo.Avatar,
-                Banner = userInfo.Banner,
+                Avatar = avatarUrl,
+                Banner = bannerUrl,
                 Bio = userInfo.Bio,
                 CreatedAt = userInfo.CreatedAt,
                 DateOfBirth = userInfo.DateOfBirth,
