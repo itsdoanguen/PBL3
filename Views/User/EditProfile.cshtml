@@ -20,9 +20,7 @@
 				<label for="avatarUpload" class="avatar-upload-label">
 					<img id="avatarPreview" src="@(Model.Avatar ?? "/image/default-avatar.png")"
 						 class="profile-avatar rounded-circle" alt="Avatar">
-					<i class="bi bi-upload avatar-upload-icon"></i>
 				</label>
-				<input type="file" id="avatarUpload" name="Avatar" class="form-control d-none" accept="image/*">
 				<h3 class="mt-2">@Model.DisplayName</h3>
 
 				<ul class="list-group disabled-content">
@@ -36,11 +34,17 @@
 		<!-- Right Panel (Edit Form) -->
 		<div class="col-md-8">
 			<form asp-controller="User" asp-action="EditProfile" method="post" enctype="multipart/form-data">
+				@Html.AntiForgeryToken()
+				<!-- Avatar Upload -->
+				<div class="mb-3">
+					<label for="avatarUpload">Cập nhật Avatar:</label>
+					<input type="file" id="avatarUpload" name="avatarUpload" class="form-control" accept="image/*">
+				</div>
 
 				<!-- Banner Upload -->
 				<div class="mb-3">
 					<label for="bannerUpload">Cập nhật Banner:</label>
-					<input type="file" id="bannerUpload" name="Banner" class="form-control" accept="image/*">
+					<input type="file" id="bannerUpload" name="bannerUpload" class="form-control" accept="image/*">
 				</div>
 				<div class="mb-3">
 					<label for="displayname">Tên người dùng:</label>

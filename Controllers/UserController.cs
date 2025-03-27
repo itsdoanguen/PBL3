@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace PBL3.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
-        public UserController(ApplicationDbContext context)
+        private readonly BlobService _blobService;
+        public UserController(ApplicationDbContext context, BlobService blobService)
         {
             _context = context;
+            _blobService = blobService;
         }
         //GET: User/Index
         public IActionResult Index()
@@ -21,11 +24,11 @@ namespace PBL3.Controllers
             return View();
         }
         //GET: User/MyProfile
-        public IActionResult MyProfile()
+        public async Task<IActionResult> MyProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            UserProfileViewModel profile = GetUserProfile(currentUserID);
+            //Dùng GetUserProfile để lấy thông tin của user hiện tại, tương tự cho các hàm ở dưới
+            UserProfileViewModel profile = await GetUserProfile(currentUserID);
 
             if (profile == null)
             {
@@ -35,10 +38,10 @@ namespace PBL3.Controllers
         }
 
         //GET: User/EditProfile
-        public IActionResult EditProfile()
+        public async Task<IActionResult> EditProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            UserProfileViewModel profile = GetUserProfile(currentUserID);
+            UserProfileViewModel profile = await GetUserProfile(currentUserID);
             if (profile == null)
             {
                 return NotFound();
@@ -48,13 +51,13 @@ namespace PBL3.Controllers
         //POST: User/EditProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(UserProfileViewModel profile)
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) //Tham số IFormFile để lấy file ảnh từ form
         {
             if (!ModelState.IsValid)
             {
                 return View(profile);
             }
-
+                      
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userInfo = _context.Users.Find(currentUserID);
             if (userInfo == null)
@@ -62,13 +65,63 @@ namespace PBL3.Controllers
                 return NotFound();
             }
 
+
+            //Xử lý upload avatar và banner, ở đây giới hạn kích thước file là 1MB và chỉ cho phép file ảnh có đuôi là jpg, jpeg, png
+            if (avatarUpload != null && avatarUpload.Length > 0)
+            {
+                if (avatarUpload.Length > 1024 * 1024)
+                {
+                    ModelState.AddModelError("Avatar", "Avatar must be less than 1MB");
+                    return View(profile);
+                }
+                var fileExtension = Path.GetExtension(avatarUpload.FileName); //Lấy đuôi file
+                if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
+                {
+                    ModelState.AddModelError("Avatar", "Avatar must be in jpg, jpeg or png format");
+                    return View(profile);
+                }
+
+                var fileName = $"avatars/{currentUserID}_avatar{fileExtension}"; //Tạo blob name ở chỗ này
+                using (var stream = avatarUpload.OpenReadStream())
+                {
+                    //Dùng service đã định gnhiax ở BlobService để upload file 
+                    var result = await _blobService.UploadFileAsync(stream,fileName);
+                    userInfo.Avatar = result;
+                }
+            } else
+            {
+                //Nếu không user không upload avatar trong form edit thì lấy avatar cũ
+                userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
+            }
+            //Thằng này tương tự với avatar
+            if (bannerUpload != null && bannerUpload.Length > 0)
+            {
+                if (bannerUpload.Length > 1024 * 1024)
+                {
+                    ModelState.AddModelError("Banner", "Banner must be less than 1MB");
+                    return View(profile);
+                }
+                var fileExtension = Path.GetExtension(bannerUpload.FileName);
+                if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
+                {
+                    ModelState.AddModelError("Banner", "Banner must be in jpg, jpeg or png format");
+                    return View(profile);
+                }
+                var fileName = $"banners/{currentUserID}_banner{fileExtension}";
+                using (var stream = bannerUpload.OpenReadStream())
+                {
+                    var result = await _blobService.UploadFileAsync(stream, fileName);
+                    userInfo.Banner = result;
+                }
+            } else
+            {
+                userInfo.Banner = profile.Banner;
+            }
+
             userInfo.DisplayName = profile.DisplayName;
             userInfo.Bio = profile.Bio;
             userInfo.DateOfBirth = profile.DateOfBirth;
             userInfo.Gender = profile.Gender;
-
-            userInfo.Avatar = profile.Avatar;
-            userInfo.Banner = profile.Banner;
 
             _context.Users.Update(userInfo);
             await _context.SaveChangesAsync();
@@ -79,11 +132,11 @@ namespace PBL3.Controllers
 
 
         //GET: User/ViewProfile
-        public IActionResult ViewProfile(int id)
+        public async Task<IActionResult> ViewProfile(int id)
         {
             UserProfileViewModel profile = new UserProfileViewModel();
 
-            profile = GetUserProfile(id);
+            profile = await GetUserProfile(id);
 
             if (profile == null)
             {
@@ -92,9 +145,10 @@ namespace PBL3.Controllers
             return View(profile);
         }
 
-        private UserProfileViewModel GetUserProfile(int id)
+        //Hàm private lấy thông tin của user, trả về kiểu UserProfileViewModel dùng để hiển thị thông tin của user ở một số trang như MyProfile, ViewProfile, EditProfile
+        private async Task<UserProfileViewModel> GetUserProfile(int id)
         {
-            var userInfo = _context.Users.Find(id);
+            var userInfo = await _context.Users.FindAsync(id);
             if (userInfo == null)
             {
                 return null;
@@ -113,12 +167,21 @@ namespace PBL3.Controllers
                 })
                 .ToList();
 
+
+            //Lấy URL của avatar và banner, sau đó tách tên blob
+            string avatarBlobName = ExtractBlobName(userInfo.Avatar);
+            string bannerBlobName = ExtractBlobName(userInfo.Banner);
+
+            //Kiểm tra nếu có avatar hoặc banner thì lấy URL của blob, còn không thì trả về null
+            var avatarUrl = string.IsNullOrEmpty(avatarBlobName) ? null : await _blobService.GetBlobSasUrlAsync(avatarBlobName);
+            var bannerUrl = string.IsNullOrEmpty(bannerBlobName) ? null : await _blobService.GetBlobSasUrlAsync(bannerBlobName);
+
             var profile = new UserProfileViewModel
             {
                 DisplayName = userInfo.DisplayName,
                 Email = userInfo.Email,
-                Avatar = userInfo.Avatar,
-                Banner = userInfo.Banner,
+                Avatar = avatarUrl,
+                Banner = bannerUrl,
                 Bio = userInfo.Bio,
                 CreatedAt = userInfo.CreatedAt,
                 DateOfBirth = userInfo.DateOfBirth,
@@ -133,6 +196,25 @@ namespace PBL3.Controllers
             };
 
             return profile;
+        }
+
+        //Hàm tách tên blob từ URL
+        private string ExtractBlobName(string url)
+        {
+            if (string.IsNullOrEmpty(url)) return null;
+
+            //Vì URL có định dạng là "https://<storageName>.blob.core.windows.net/<containerName>/<blobName>" 
+            //Dùng hàm IndexOf để tìm vị trí của tên container
+            //Sau đó lấy phần còn lại của URL từ vị trí của container đến hết
+            string containerName = "pbl3container/";
+            int index = url.IndexOf(containerName);
+
+            if (index != -1)
+            {
+                return url.Substring(index + containerName.Length);
+            }
+
+            return url;
         }
     }
 }
