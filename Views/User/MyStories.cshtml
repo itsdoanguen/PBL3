@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<PBL3.ViewModels.UserStoryCardViewModel>
 @{
-	Layout = "~/Views/Shared/_UserLayout.cshtml";
-	ViewData["Title"] = "Truyện của tôi";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Truyện của tôi";
 }
 
 <div class="container py-5">
@@ -18,17 +18,27 @@
     }
     else
     {
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <!-- Giảm số lượng card trong mỗi hàng -->
             @foreach (var story in Model)
             {
                 <div class="col">
                     <div class="card shadow-sm h-100 border-0 rounded-3">
-                        <img src="@story.Cover" class="card-img-top rounded-top" alt="@story.Title">
+                        <img src="@story.Cover" class="card-img-top rounded-top" alt="@story.Title" style="object-fit: cover; height: 180px;"> <!-- Giảm kích thước ảnh -->
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">@story.Title</h5>
                             <p class="card-text text-muted">Cập nhật: @(story.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có cập nhật")</p>
-
-                            <p class="card-text">Trạng thái: <strong>@story.Status</strong></p>
+                            <p class="card-text">Trạng thái: 
+                                <strong>
+                                    @if (story.Status == PBL3.Models.StoryModel.StoryStatus.Active)
+                                    {
+                                        @:Đang thực hiện
+                                    } else
+                                    {
+                                        @:Bản thảo
+                                    }
+                                </strong>
+                            </p>
                             <p class="card-text">Chương: @story.TotalChapters</p>
                             <div class="mt-auto">
                                 <a href="/Story/Edit/@story.StoryID" class="btn btn-primary btn-sm">Chỉnh sửa</a>

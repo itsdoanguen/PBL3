@@ -184,7 +184,7 @@ namespace PBL3.Controllers
                 Role = userInfo.Role,
                 Gender = userInfo.Gender,
                 Status = userInfo.Status,
-                TotalUploadedStories = stories.Count,
+                TotalUploadedStories = stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active).Count(),
                 Stories = stories,
                 TotalFollowers = _context.FollowUsers.Count(f => f.FollowingID == id),
                 TotalFollowings = _context.FollowUsers.Count(f => f.FollowerID == id),

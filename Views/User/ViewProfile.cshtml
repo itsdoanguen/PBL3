@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <div class="profile-card text-center">
                 <img src="@(Model.Avatar != null ? Model.Avatar : Url.Content("~/image/default-avatar.png"))"
-                     class="profile-avatar rounded-circle" alt="Avatar">
+                class="profile-avatar rounded-circle" alt="Avatar">
                 <h3 class="mt-2">@Model.DisplayName</h3>
                 <p class="text-muted">@Model.Bio</p>
 
@@ -60,7 +60,7 @@
                 @if (Model.Stories.Any())
                 {
                     <div class="row">
-                        @foreach (var story in Model.Stories)
+                        @foreach (var story in Model.Stories.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active))
                         {
                             <div class="col-md-6">
                                 <div class="story-card">
