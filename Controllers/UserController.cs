@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.ViewModels;
 
@@ -36,7 +37,6 @@ namespace PBL3.Controllers
             }
             return View(profile);
         }
-
         //GET: User/EditProfile
         public async Task<IActionResult> EditProfile()
         {
@@ -128,8 +128,6 @@ namespace PBL3.Controllers
 
             return RedirectToAction("MyProfile", "User");
         }
-        
-
 
         //GET: User/ViewProfile
         public async Task<IActionResult> ViewProfile(int id)
@@ -145,6 +143,15 @@ namespace PBL3.Controllers
             return View(profile);
         }
 
+        //GET: User/MyStories
+        public async Task<IActionResult> MyStories()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var stories = await GetUserStoryCard(currentUserID);
+
+            return View(stories);
+        }
+
         //Hàm private lấy thông tin của user, trả về kiểu UserProfileViewModel dùng để hiển thị thông tin của user ở một số trang như MyProfile, ViewProfile, EditProfile
         private async Task<UserProfileViewModel> GetUserProfile(int id)
         {
@@ -154,18 +161,7 @@ namespace PBL3.Controllers
                 return null;
             }
 
-            var stories = _context.Stories
-                .Where(s => s.AuthorID == id)
-                .Select(s => new UserStoryCardViewModel
-                {
-                    StoryID = s.StoryID,
-                    Title = s.Title,
-                    Cover = s.CoverImage,
-                    LastUpdated = s.UpdatedAt,
-                    Status = s.Status,
-                    TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
-                })
-                .ToList();
+            var stories = await GetUserStoryCard(id);
 
 
             //Lấy URL của avatar và banner, sau đó tách tên blob
@@ -197,6 +193,25 @@ namespace PBL3.Controllers
 
             return profile;
         }
+
+        private async Task<List<UserStoryCardViewModel>> GetUserStoryCard(int id)
+        {
+            var stories = await _context.Stories
+                .Where(s => s.AuthorID == id)
+                .Select(s => new UserStoryCardViewModel
+                {
+                    StoryID = s.StoryID,
+                    Title = s.Title,
+                    Cover = s.CoverImage,
+                    LastUpdated = s.UpdatedAt,
+                    Status = s.Status,
+                    TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
+                })
+                .ToListAsync(); 
+
+            return stories;
+        }
+
 
         //Hàm tách tên blob từ URL
         private string ExtractBlobName(string url)
