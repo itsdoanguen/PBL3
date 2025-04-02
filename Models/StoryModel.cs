@@ -31,7 +31,8 @@ namespace PBL3.Models
         public enum StoryStatus
         {
             Active,
-            Inactive
+            Inactive,
+            Completed
         }
     }
 }

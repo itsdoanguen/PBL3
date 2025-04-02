@@ -15,11 +15,7 @@ namespace PBL3.Controllers
             _context = context;
             _blobService = blobService;
         }
-        //GET: Story/Index
-        public IActionResult Index()
-        {
-            return View();
-        }
+
         // GET: Story/Create
         public IActionResult Create()
         {
