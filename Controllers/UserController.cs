@@ -64,7 +64,7 @@ namespace PBL3.Controllers
             {
                 return NotFound();
             }
-
+            //remove đoạn code check đuôi file, allow all file type
 
             //Xử lý upload avatar và banner, ở đây giới hạn kích thước file là 1MB và chỉ cho phép file ảnh có đuôi là jpg, jpeg, png
             if (avatarUpload != null && avatarUpload.Length > 0)

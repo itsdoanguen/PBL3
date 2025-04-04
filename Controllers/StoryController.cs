@@ -2,8 +2,8 @@
 using PBL3.Models;
 using PBL3.Data;
 using System.Security.Claims;
-using System.Text;
 using PBL3.ViewModels;
+using Microsoft.EntityFrameworkCore;
 namespace PBL3.Controllers
 {
     public class StoryController : Controller
@@ -15,6 +15,10 @@ namespace PBL3.Controllers
             _context = context;
             _blobService = blobService;
         }
+
+        //GET: Story/ViewStory
+        //TODO: Lấy các thông tin của truyện, cũng như hiển thị các comment,....
+
 
         // GET: Story/Create
         public IActionResult Create()
@@ -81,10 +85,27 @@ namespace PBL3.Controllers
         }
 
         //GET: Story/Detail/{id}
-        public IActionResult Detail(int id)
+        //TODO: Hiển thị các thông tin truyện cho tác giả có thể edit
+        public async Task<IActionResult> Detail(int id)
         {
-            return View();
+            int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var stories = await _context.Stories.Where(s => s.AuthorID == currentAuthorID && s.StoryID == id).FirstOrDefaultAsync();
+
+            if (stories == null)
+            {
+                return NotFound();
+            }
+
+            var detail = new StoryEditViewModel
+            {
+                Title = stories.Title,
+                Description = stories.Description,
+                CoverImage = stories.CoverImage,
+                Chapters = await _context.Chapters.Where(s => s.StoryID == id).ToListAsync()
+            };
+            return View(detail);
         }
+        //POST: Story/Detail/{id}
 
     }
 }
