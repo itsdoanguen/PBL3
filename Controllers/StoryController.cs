@@ -105,7 +105,6 @@ namespace PBL3.Controllers
             };
             return View(detail);
         }
-        //POST: Story/Detail/{id}
 
     }
 }

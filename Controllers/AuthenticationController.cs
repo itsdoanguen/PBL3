@@ -147,7 +147,7 @@ namespace PBL3.Controllers
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMonths(1)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14)
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
