@@ -68,7 +68,7 @@
 				@if (Model.Stories.Any())
 				{
 					<div class="row">
-						@foreach (var story in Model.Stories)
+						@foreach (var story in Model.Stories.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active))
 						{
 							<div class="col-md-6">
 								<div class="story-card">

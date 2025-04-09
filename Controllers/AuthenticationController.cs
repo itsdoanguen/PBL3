@@ -2,12 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
 using PBL3.Models;
 using PBL3.ViewModels;
-using PBL3.Data;
-using BCrypt.Net;
-using Microsoft.AspNetCore.Authorization;
 
 
 namespace PBL3.Controllers
@@ -147,7 +144,7 @@ namespace PBL3.Controllers
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMonths(1)
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(14)
             };
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }

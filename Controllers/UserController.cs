@@ -1,8 +1,7 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.ViewModels;
 
@@ -36,7 +35,6 @@ namespace PBL3.Controllers
             }
             return View(profile);
         }
-
         //GET: User/EditProfile
         public async Task<IActionResult> EditProfile()
         {
@@ -57,14 +55,14 @@ namespace PBL3.Controllers
             {
                 return View(profile);
             }
-                      
+
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userInfo = _context.Users.Find(currentUserID);
             if (userInfo == null)
             {
                 return NotFound();
             }
-
+            //TODO: remove đoạn code check đuôi file, allow all file type nhưng vấn đề là nếu ko phải file ảnh thì... nghiên cứu thêm
 
             //Xử lý upload avatar và banner, ở đây giới hạn kích thước file là 1MB và chỉ cho phép file ảnh có đuôi là jpg, jpeg, png
             if (avatarUpload != null && avatarUpload.Length > 0)
@@ -85,10 +83,11 @@ namespace PBL3.Controllers
                 using (var stream = avatarUpload.OpenReadStream())
                 {
                     //Dùng service đã định gnhiax ở BlobService để upload file 
-                    var result = await _blobService.UploadFileAsync(stream,fileName);
+                    var result = await _blobService.UploadFileAsync(stream, fileName);
                     userInfo.Avatar = result;
                 }
-            } else
+            }
+            else
             {
                 //Nếu không user không upload avatar trong form edit thì lấy avatar cũ
                 userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
@@ -113,7 +112,8 @@ namespace PBL3.Controllers
                     var result = await _blobService.UploadFileAsync(stream, fileName);
                     userInfo.Banner = result;
                 }
-            } else
+            }
+            else
             {
                 userInfo.Banner = profile.Banner;
             }
@@ -128,8 +128,6 @@ namespace PBL3.Controllers
 
             return RedirectToAction("MyProfile", "User");
         }
-        
-
 
         //GET: User/ViewProfile
         public async Task<IActionResult> ViewProfile(int id)
@@ -145,6 +143,15 @@ namespace PBL3.Controllers
             return View(profile);
         }
 
+        //GET: User/MyStories
+        public async Task<IActionResult> MyStories()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var stories = await GetUserStoryCard(currentUserID);
+
+            return View(stories);
+        }
+
         //Hàm private lấy thông tin của user, trả về kiểu UserProfileViewModel dùng để hiển thị thông tin của user ở một số trang như MyProfile, ViewProfile, EditProfile
         private async Task<UserProfileViewModel> GetUserProfile(int id)
         {
@@ -154,18 +161,7 @@ namespace PBL3.Controllers
                 return null;
             }
 
-            var stories = _context.Stories
-                .Where(s => s.AuthorID == id)
-                .Select(s => new UserStoryCardViewModel
-                {
-                    StoryID = s.StoryID,
-                    Title = s.Title,
-                    Cover = s.CoverImage,
-                    LastUpdated = s.UpdatedAt,
-                    Status = s.Status,
-                    TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
-                })
-                .ToList();
+            var stories = await GetUserStoryCard(id);
 
 
             //Lấy URL của avatar và banner, sau đó tách tên blob
@@ -188,7 +184,7 @@ namespace PBL3.Controllers
                 Role = userInfo.Role,
                 Gender = userInfo.Gender,
                 Status = userInfo.Status,
-                TotalUploadedStories = stories.Count,
+                TotalUploadedStories = stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active).Count(),
                 Stories = stories,
                 TotalFollowers = _context.FollowUsers.Count(f => f.FollowingID == id),
                 TotalFollowings = _context.FollowUsers.Count(f => f.FollowerID == id),
@@ -197,6 +193,25 @@ namespace PBL3.Controllers
 
             return profile;
         }
+
+        private async Task<List<UserStoryCardViewModel>> GetUserStoryCard(int id)
+        {
+            var stories = await _context.Stories
+                .Where(s => s.AuthorID == id)
+                .Select(s => new UserStoryCardViewModel
+                {
+                    StoryID = s.StoryID,
+                    Title = s.Title,
+                    Cover = s.CoverImage,
+                    LastUpdated = s.UpdatedAt,
+                    Status = s.Status,
+                    TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
+                })
+                .ToListAsync();
+
+            return stories;
+        }
+
 
         //Hàm tách tên blob từ URL
         private string ExtractBlobName(string url)
