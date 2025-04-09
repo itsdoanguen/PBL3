@@ -1,6 +1,4 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Azure.Core.Pipeline;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -57,7 +55,7 @@ namespace PBL3.Controllers
             {
                 return View(profile);
             }
-                      
+
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var userInfo = _context.Users.Find(currentUserID);
             if (userInfo == null)
@@ -85,10 +83,11 @@ namespace PBL3.Controllers
                 using (var stream = avatarUpload.OpenReadStream())
                 {
                     //Dùng service đã định gnhiax ở BlobService để upload file 
-                    var result = await _blobService.UploadFileAsync(stream,fileName);
+                    var result = await _blobService.UploadFileAsync(stream, fileName);
                     userInfo.Avatar = result;
                 }
-            } else
+            }
+            else
             {
                 //Nếu không user không upload avatar trong form edit thì lấy avatar cũ
                 userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
@@ -113,7 +112,8 @@ namespace PBL3.Controllers
                     var result = await _blobService.UploadFileAsync(stream, fileName);
                     userInfo.Banner = result;
                 }
-            } else
+            }
+            else
             {
                 userInfo.Banner = profile.Banner;
             }
@@ -207,7 +207,7 @@ namespace PBL3.Controllers
                     Status = s.Status,
                     TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID),
                 })
-                .ToListAsync(); 
+                .ToListAsync();
 
             return stories;
         }

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using PBL3.Models;
-using PBL3.Data;
-using System.Security.Claims;
-using PBL3.ViewModels;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
+using PBL3.Models;
+using PBL3.ViewModels;
 namespace PBL3.Controllers
 {
     public class StoryController : Controller
@@ -42,7 +42,7 @@ namespace PBL3.Controllers
                 return View(model);
             }
 
-            string coverImagePath = "/image/default-cover.jpg"; 
+            string coverImagePath = "/image/default-cover.jpg";
 
             if (model.UploadCover != null && model.UploadCover.Length > 0)
             {
@@ -83,28 +83,70 @@ namespace PBL3.Controllers
 
             return RedirectToAction("MyStories", "User");
         }
-
-        //GET: Story/Detail/{id}
-        //TODO: Hiển thị các thông tin truyện cho tác giả có thể edit
-        public async Task<IActionResult> Detail(int id)
+        //GET: Story/EditDetail/{id}
+        public async Task<IActionResult> EditDetail(int id)
         {
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var stories = await _context.Stories.Where(s => s.AuthorID == currentAuthorID && s.StoryID == id).FirstOrDefaultAsync();
+            var story = await _context.Stories
+                .Where(s => s.AuthorID == currentAuthorID && s.StoryID == id)
+                .FirstOrDefaultAsync();
 
-            if (stories == null)
+            if (story == null)
             {
                 return NotFound();
             }
 
-            var detail = new StoryEditViewModel
+            var chapterList = await GetChaptersForStoryAsync(id);
+
+            var totalLike = await _context.LikeChapters
+                .Where(l => l.Chapter.StoryID == id)
+                .CountAsync();
+
+            var totalBookmark = await _context.Bookmarks
+                .Where(b => b.Chapter.StoryID == id)
+                .CountAsync();
+
+            var totalComment = await _context.Comments
+                .Where(c => c.Chapter.StoryID == id)
+                .CountAsync();
+
+            var totalView = await _context.Chapters
+                .Where(c => c.StoryID == id)
+                .SumAsync(c => c.ViewCount);
+
+            var viewModel = new StoryEditViewModel
             {
-                Title = stories.Title,
-                Description = stories.Description,
-                CoverImage = stories.CoverImage,
-                Chapters = await _context.Chapters.Where(s => s.StoryID == id).ToListAsync()
+                StoryID = story.StoryID,
+                Title = story.Title,
+                Description = story.Description,
+                CoverImage = story.CoverImage,
+                TotalLike = totalLike,
+                TotalBookmark = totalBookmark,
+                TotalComment = totalComment,
+                TotalChapter = chapterList.Count,
+                TotalView = totalView,
+                Chapters = chapterList
             };
-            return View(detail);
+
+            return View(viewModel);
         }
+        private async Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId)
+        {
+            return await _context.Chapters
+                .Where(c => c.StoryID == storyId)
+                .OrderByDescending(c => c.CreatedAt)
+                .Select(c => new ChapterSummaryViewModel
+                {
+                    ChapterID = c.ChapterID,
+                    Title = c.Title,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt,
+                    ViewCount = c.ViewCount
+                })
+                .ToListAsync();
+        }
+
+
 
     }
 }
