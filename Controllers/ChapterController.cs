@@ -50,40 +50,35 @@ namespace PBL3.Controllers
 
             return View(viewModel);
         }
-        // GET: Chapter/CreateChapterPartial
-        public IActionResult CreateChapterPartial(int storyId)
-        {
-            var model = new ChapterCreateViewModel
-            {
-                StoryID = storyId
-            };
-            return PartialView("_CreateChapterPartial", model);
-        }
 
-        // POST: Chapter/CreateChapter
+        //POST: Chapter/CreateChapter
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateChapter(ChapterCreateViewModel model)
+        public async Task<IActionResult> CreateChapter(ChapterCreateViewModel chapter)
         {
             if (ModelState.IsValid)
             {
-                var chapter = new ChapterModel
+                var newChapter = new ChapterModel
                 {
-                    StoryID = model.StoryID,
-                    Title = model.Title,
-                    Content = model.Content,
+                    Title = chapter.Title,
+                    StoryID = chapter.StoryID,
+                    Content = "",
+                    Status = ChapterStatus.Inactive,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
                     ViewCount = 0
                 };
 
-                _context.Chapters.Add(chapter);
+                await _context.Chapters.AddAsync(newChapter);
                 await _context.SaveChangesAsync();
 
-                return Json(new { success = true });
+                return RedirectToAction("EditDetail", "Story", new {id = chapter.StoryID});
             }
 
-            return PartialView("_CreateChapterPartial", model);
+
+            TempData["Error"] = "Có lỗi xảy ra trong quá trình tạo chương mới. Vui lòng thử lại.";
+            return RedirectToAction("EditDetail", "Story", new { id = chapter.StoryID });
         }
+
     }
 }

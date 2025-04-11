@@ -9,8 +9,6 @@ namespace PBL3.ViewModels.Chapter
 
         [Required, StringLength(255)]
         public string Title { get; set; }
-
-        [Required]
-        public string Content { get; set; }
+   
     }
 }
