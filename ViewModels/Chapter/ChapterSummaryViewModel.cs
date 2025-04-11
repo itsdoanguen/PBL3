@@ -1,4 +1,4 @@
-﻿namespace PBL3.ViewModels
+﻿namespace PBL3.ViewModels.Chapter
 {
     public class ChapterSummaryViewModel
     {

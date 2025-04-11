@@ -1,6 +1,6 @@
 ﻿using PBL3.Models;
 
-namespace PBL3.ViewModels
+namespace PBL3.ViewModels.UserProfile
 {
     public class UserProfileViewModel
     {

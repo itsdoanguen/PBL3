@@ -1,4 +1,5 @@
-﻿@model PBL3.ViewModels.StoryEditViewModel
+﻿@using PBL3.ViewModels.Story
+@model StoryEditViewModel
 
 @{
     ViewData["Title"] = "Edit Story Details";
@@ -33,7 +34,8 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>📚 Chapters</h3>
-        <a href="" class="btn btn-success">➕ Add Chapter</a>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createChapterModal">➕ Add Chapter</button>
+
     </div>
 
     @if (Model.Chapters != null && Model.Chapters.Any())
@@ -73,4 +75,37 @@
     {
         <p class="text-muted">No chapters available yet. Start by adding a new one!</p>
     }
+
+    <div class="modal fade" id="createChapterModal" tabindex="-1" aria-labelledby="createChapterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tạo Chương Mới</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                </div>
+                <div class="modal-body" id="createChapterContent">
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#createChapterModal').on('show.bs.modal', function () {
+                var storyId = @Model.StoryID;
+                $('#createChapterContent').load('Views/Chapter/_CreateChapterPartial?storyId=' + storyId);
+            });
+        });
+
+        function onChapterCreated() {
+            $('#createChapterModal').modal('hide');
+            location.reload(); 
+        }
+
+        function onChapterCreateFailed() {
+            alert("Tạo chương thất bại. Vui lòng kiểm tra lại thông tin.");
+        }
+    </script>
+}

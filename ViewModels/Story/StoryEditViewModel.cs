@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using PBL3.Models;
+using PBL3.ViewModels.Chapter;
 
-namespace PBL3.ViewModels
+namespace PBL3.ViewModels.Story
 {
     public class StoryEditViewModel
     {

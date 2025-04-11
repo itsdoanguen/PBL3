@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace PBL3.ViewModels
+namespace PBL3.ViewModels.Story
 {
     public class StoryCreateViewModel
     {

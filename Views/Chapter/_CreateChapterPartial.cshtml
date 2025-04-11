@@ -1,0 +1,26 @@
+﻿@using PBL3.ViewModels.Chapter
+@model ChapterCreateViewModel
+
+<form asp-action="CreateChapter" asp-controller="Chapter"
+      data-ajax="true"
+      data-ajax-method="POST"
+      data-ajax-success="onChapterCreated"
+      data-ajax-failure="onChapterCreateFailed"
+      data-ajax-update="#createChapterContent">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="StoryID" />
+
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Content" class="form-label"></label>
+        <textarea asp-for="Content" class="form-control" rows="6"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Tạo chương</button>
+</form>
