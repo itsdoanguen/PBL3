@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
-using PBL3.ViewModels;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers
@@ -72,7 +71,23 @@ namespace PBL3.Controllers
                 await _context.Chapters.AddAsync(newChapter);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction("EditDetail", "Story", new {id = chapter.StoryID});
+                if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        chapter = new
+                        {
+                            ChapterID = newChapter.ChapterID,
+                            Title = newChapter.Title,
+                            CreatedAt = newChapter.CreatedAt.ToString("o"), 
+                            UpdatedAt = newChapter.UpdatedAt?.ToString("o"), 
+                            ViewCount = newChapter.ViewCount
+                        }
+                    });
+
+                }
+                return RedirectToAction("EditDetail", "Story", new { id = chapter.StoryID });
             }
 
 
@@ -80,5 +95,38 @@ namespace PBL3.Controllers
             return RedirectToAction("EditDetail", "Story", new { id = chapter.StoryID });
         }
 
+        //POST: Chapter/DeleteChapter
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteChapter(int chapterID, int storyID)
+        {
+            var chapter = await _context.Chapters.FindAsync(chapterID);
+            if (chapter == null)
+            {
+                return NotFound();
+            }
+
+            var relatedComments = _context.Comments.Where(c => c.ChapterID == chapterID);
+            _context.Comments.RemoveRange(relatedComments);
+
+            var relatedLikes = _context.LikeChapters.Where(l => l.ChapterID == chapterID);
+            _context.LikeChapters.RemoveRange(relatedLikes);
+
+            var relatedBookmarks = _context.Bookmarks.Where(b => b.ChapterID == chapterID);
+            _context.Bookmarks.RemoveRange(relatedBookmarks);
+
+            _context.Chapters.Remove(chapter);
+            await _context.SaveChangesAsync();
+
+
+
+            _context.Chapters.Remove(chapter);
+            await _context.SaveChangesAsync();
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return Json(new { success = true });
+            }
+            return RedirectToAction("EditDetail","Story", new {id = storyID});
+        }
     }
 }
