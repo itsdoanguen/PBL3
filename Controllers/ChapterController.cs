@@ -29,6 +29,12 @@ namespace PBL3.Controllers
             {
                 return NotFound();
             }
+            //Không cho xem nếu truyện vẫn đang trạng thái bản thảo
+            if (chapter.Status == ChapterStatus.Inactive)
+            {
+                return NotFound();
+            }
+
 
             //TODO: Chỉnh lại update view count theo cookie để chống spam
             chapter.ViewCount++;
@@ -57,6 +63,11 @@ namespace PBL3.Controllers
         {
             if (ModelState.IsValid)
             {
+                var lastChapterOrder = _context.Chapters.Where(c => c.StoryID == chapter.StoryID)
+                    .OrderByDescending(c => c.ChapterOrder)
+                    .Select(c => c.ChapterOrder)
+                    .FirstOrDefault();
+
                 var newChapter = new ChapterModel
                 {
                     Title = chapter.Title,
@@ -65,7 +76,8 @@ namespace PBL3.Controllers
                     Status = ChapterStatus.Inactive,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    ViewCount = 0
+                    ViewCount = 0,
+                    ChapterOrder = lastChapterOrder + 1
                 };
 
                 await _context.Chapters.AddAsync(newChapter);
@@ -80,8 +92,8 @@ namespace PBL3.Controllers
                         {
                             ChapterID = newChapter.ChapterID,
                             Title = newChapter.Title,
-                            CreatedAt = newChapter.CreatedAt.ToString("o"), 
-                            UpdatedAt = newChapter.UpdatedAt?.ToString("o"), 
+                            CreatedAt = newChapter.CreatedAt.ToString("o"),
+                            UpdatedAt = newChapter.UpdatedAt?.ToString("o"),
                             ViewCount = newChapter.ViewCount
                         }
                     });
@@ -115,6 +127,17 @@ namespace PBL3.Controllers
             var relatedBookmarks = _context.Bookmarks.Where(b => b.ChapterID == chapterID);
             _context.Bookmarks.RemoveRange(relatedBookmarks);
 
+
+            // Cập nhật lại ChapterOrder cho các chương còn lại
+            var chaptersToUpdate = await _context.Chapters
+                .Where(c => c.StoryID == storyID && c.ChapterOrder > chapter.ChapterOrder)
+                .ToListAsync();
+            foreach (var c in chaptersToUpdate)
+            {
+                c.ChapterOrder--;
+                _context.Chapters.Update(c);
+            }
+
             _context.Chapters.Remove(chapter);
             await _context.SaveChangesAsync();
 
@@ -122,7 +145,7 @@ namespace PBL3.Controllers
             {
                 return Json(new { success = true });
             }
-            return RedirectToAction("EditDetail","Story", new {id = storyID});
+            return RedirectToAction("EditDetail", "Story", new { id = storyID });
         }
     }
 }

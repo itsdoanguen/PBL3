@@ -6,26 +6,73 @@
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
 }
 
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <img src="@Model.CoverImage" class="img-fluid rounded shadow" alt="Cover Image">
+<style>
+    .badge-modern {
+        background-color: #1f1f1f;
+        color: white;
+        font-weight: 500;
+        padding: 0.6em 1em;
+        border-radius: 999px;
+    }
+
+    .btn-modern {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+    .chapter-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .chapter-table td, .chapter-table th {
+        vertical-align: middle;
+    }
+
+    .chapter-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    #inlineChapterForm td {
+        background-color: #fcfcfc;
+    }
+
+    h2, h3 {
+        font-weight: 700;
+        color: #111;
+    }
+
+    p {
+        color: #444;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-3 text-center">
+            <img src="@Model.CoverImage" class="img-fluid rounded shadow-sm" alt="Cover Image" style="max-height: 280px;">
         </div>
         <div class="col-md-9">
-            <h2 class="mb-3">@Model.Title</h2>
-            <p class="text-muted">@Model.Description</p>
+            <h2>@Model.Title</h2>
+            <p>@Model.Description</p>
 
-            <div class="d-flex flex-wrap gap-3 mt-3">
-                <span class="badge bg-primary p-2">Likes: @Model.TotalLike</span>
-                <span class="badge bg-success p-2">Bookmarks: @Model.TotalBookmark</span>
-                <span class="badge bg-warning text-dark p-2">Comments: @Model.TotalComment</span>
-                <span class="badge bg-info text-dark p-2">Chapters: @Model.TotalChapter</span>
-                <span class="badge bg-secondary p-2">Views: @Model.TotalView</span>
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <span class="badge-modern">👍 Likes: @Model.TotalLike</span>
+                <span class="badge-modern">🔖 Bookmarks: @Model.TotalBookmark</span>
+                <span class="badge-modern">💬 Comments: @Model.TotalComment</span>
+                <span class="badge-modern">📖 Chapters: @Model.TotalChapter</span>
+                <span class="badge-modern">👁️ Views: @Model.TotalView</span>
             </div>
 
-            <div class="mt-4">
-                <a href="" class="btn btn-outline-primary">✏️ Edit Story</a>
-                <a href="" class="btn btn-outline-danger">🗑️ Delete Story</a>
+            <div class="mt-4 d-flex gap-3">
+                <a href="" class="btn btn-outline-dark btn-modern">✏️ Edit Story</a>
+                <a href="" class="btn btn-outline-danger btn-modern">🗑️ Delete Story</a>
             </div>
         </div>
     </div>
@@ -34,59 +81,64 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>📚 Chapters</h3>
-        <button id="toggleAddChapter" type="button" class="btn btn-success">➕ Add Chapter</button>
+        <button id="toggleAddChapter" type="button" class="btn btn-dark btn-modern">➕ Add Chapter</button>
     </div>
 
     <div class="table-responsive">
-        <table class="table table-bordered table-hover align-middle">
-            <thead class="table-light">
+        <table class="table table-bordered chapter-table">
+            <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Created</th>
-                    <th>Updated</th>
-                    <th>Views</th>
-                    <th style="width: 160px">Actions</th>
+                    <th style="width: 80px;">STT</th>
+                    <th>Tiêu đề chương</th>
+                    <th style="width: 110px">Tạo lúc</th>
+                    <th style ="width: 110px">Cập nhật</th>
+                    <th style="width: 110px">Lượt xem</th>
+                    <th style="width: 110px">Trạng thái</th>
+                    <th style="width: 170px">Actions</th>
                 </tr>
             </thead>
             <tbody id="chapterTableBody">
-                <!-- Inline Add Chapter Row - Always present -->
+                <!-- Inline Add Chapter Row -->
                 <tr id="inlineChapterForm" style="display: none;">
                     <form id="createChapterForm" asp-controller="Chapter" asp-action="CreateChapter" method="post">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
+                    <td>-</td>
                     <td>
                         <input type="text" name="Title" class="form-control" placeholder="Enter chapter title..." required />
                     </td>
                     <td>-</td>
                     <td>-</td>
                     <td>0</td>
+                    <td>-</td>
                     <td>
-                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
-                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-dark btn-modern">Save</button>
+                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Cancel</button>
                     </td>
                     </form>
                 </tr>
 
                 @if (Model.Chapters != null && Model.Chapters.Any())
                 {
-                    @foreach (var chapter in Model.Chapters.OrderByDescending(c => c.CreatedAt))
+                    @foreach (var chapter in Model.Chapters.OrderBy(c => c.ChapterOrder))
                     {
                         var rowClass = chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive
                         ? "table-secondary text-muted"
                         : "";
 
                         <tr class="@rowClass">
+                            <td>@chapter.ChapterOrder</td>
                             <td>@chapter.Title</td>
                             <td>@chapter.CreatedAt.ToString("yyyy-MM-dd")</td>
                             <td>@(chapter.UpdatedAt?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                             <td>@chapter.ViewCount</td>
+                            <td>@(chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive ? "Bản thảo" : "Đã đăng")</td>
                             <td>
-                                <a href="@Url.Action("Edit", "Chapter", new { id = chapter.ChapterID })" class="btn btn-sm btn-outline-secondary">✏️ Edit</a>
+                                <a href="@Url.Action("Edit", "Chapter", new { id = chapter.ChapterID })" class="btn btn-sm btn-outline-dark btn-modern">✏️ Edit</a>
                                 <form asp-action="DeleteChapter" asp-controller="Chapter" method="post" style="display:inline;">
                                     <input type="hidden" name="chapterID" value="@chapter.ChapterID" />
                                     <input type="hidden" name="storyID" value="@Model.StoryID" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this chapter?');">🗑️ Delete</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Are you sure you want to delete this chapter?');">🗑️</button>
                                 </form>
-
                             </td>
                         </tr>
                     }
@@ -94,7 +146,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="5" class="text-center text-muted">No chapters available yet. Start by adding a new one!</td>
+                        <td colspan="6" class="text-center text-muted">No chapters available yet. Start by adding a new one!</td>
                     </tr>
                 }
             </tbody>
