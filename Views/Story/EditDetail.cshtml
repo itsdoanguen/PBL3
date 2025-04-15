@@ -81,7 +81,12 @@
                             <td>@chapter.ViewCount</td>
                             <td>
                                 <a href="@Url.Action("Edit", "Chapter", new { id = chapter.ChapterID })" class="btn btn-sm btn-outline-secondary">✏️ Edit</a>
-                                <a href="@Url.Action("DeleteChapter", "Chapter", new { id = chapter.ChapterID, storyid = Model.StoryID})" class="btn btn-sm btn-outline-danger">🗑️ Delete</a>
+                                <form asp-action="DeleteChapter" asp-controller="Chapter" method="post" style="display:inline;">
+                                    <input type="hidden" name="chapterID" value="@chapter.ChapterID" />
+                                    <input type="hidden" name="storyID" value="@Model.StoryID" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this chapter?');">🗑️ Delete</button>
+                                </form>
+
                             </td>
                         </tr>
                     }

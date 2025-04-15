@@ -118,10 +118,6 @@ namespace PBL3.Controllers
             _context.Chapters.Remove(chapter);
             await _context.SaveChangesAsync();
 
-
-
-            _context.Chapters.Remove(chapter);
-            await _context.SaveChangesAsync();
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return Json(new { success = true });
