@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.ViewModels;
+using PBL3.ViewModels.Chapter;
+using PBL3.ViewModels.Story;
 namespace PBL3.Controllers
 {
     public class StoryController : Controller

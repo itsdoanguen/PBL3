@@ -16,7 +16,7 @@ namespace PBL3.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
-
+        public ChapterStatus Status { get; set; } = ChapterStatus.Inactive;
         public int ViewCount { get; set; } = 0;
 
         // Navigation properties
@@ -25,5 +25,11 @@ namespace PBL3.Models
         public ICollection<LikeChapterModel> Likes { get; set; }
         public ICollection<BookmarkModel> Bookmarks { get; set; }
 
+    }
+
+    public enum ChapterStatus
+    {
+        Active,
+        Inactive
     }
 }

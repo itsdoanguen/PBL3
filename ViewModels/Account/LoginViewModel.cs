@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PBL3.ViewModels
+namespace PBL3.ViewModels.Account
 {
     public class LoginViewModel
     {

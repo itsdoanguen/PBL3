@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Models;
-using PBL3.ViewModels;
+using PBL3.ViewModels.Account;
 
 
 namespace PBL3.Controllers

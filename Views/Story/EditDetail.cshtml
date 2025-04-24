@@ -1,4 +1,5 @@
-﻿@model PBL3.ViewModels.StoryEditViewModel
+﻿@using PBL3.ViewModels.Story
+@model StoryEditViewModel
 
 @{
     ViewData["Title"] = "Edit Story Details";
@@ -19,7 +20,7 @@
                 <span class="badge bg-success p-2">Bookmarks: @Model.TotalBookmark</span>
                 <span class="badge bg-warning text-dark p-2">Comments: @Model.TotalComment</span>
                 <span class="badge bg-info text-dark p-2">Chapters: @Model.TotalChapter</span>
-				<span class="badge bg-secondary p-2">Views: @Model.TotalView</span>
+                <span class="badge bg-secondary p-2">Views: @Model.TotalView</span>
             </div>
 
             <div class="mt-4">
@@ -33,44 +34,115 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>📚 Chapters</h3>
-        <a href="" class="btn btn-success">➕ Add Chapter</a>
+        <button id="toggleAddChapter" type="button" class="btn btn-success">➕ Add Chapter</button>
     </div>
 
-    @if (Model.Chapters != null && Model.Chapters.Any())
-    {
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Created</th>
-                        <th>Updated</th>
-                        <th>Views</th>
-                        <th style="width: 160px">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Title</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th>Views</th>
+                    <th style="width: 160px">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="chapterTableBody">
+                <!-- Inline Add Chapter Row - Always present -->
+                <tr id="inlineChapterForm" style="display: none;">
+                    <form id="createChapterForm" asp-controller="Chapter" asp-action="CreateChapter" method="post">
+                        <input type="hidden" name="StoryID" value="@Model.StoryID" />
+                    <td>
+                        <input type="text" name="Title" class="form-control" placeholder="Enter chapter title..." required />
+                    </td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>0</td>
+                    <td>
+                        <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary">Cancel</button>
+                    </td>
+                    </form>
+                </tr>
+
+                @if (Model.Chapters != null && Model.Chapters.Any())
+                {
                     @foreach (var chapter in Model.Chapters.OrderByDescending(c => c.CreatedAt))
                     {
-                        <tr>
-                            <td>@chapter.ChapterID</td>
+                        var rowClass = chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive
+                        ? "table-secondary text-muted"
+                        : "";
+
+                        <tr class="@rowClass">
                             <td>@chapter.Title</td>
                             <td>@chapter.CreatedAt.ToString("yyyy-MM-dd")</td>
                             <td>@(chapter.UpdatedAt?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                             <td>@chapter.ViewCount</td>
                             <td>
-                                <a href="" class="btn btn-sm btn-outline-secondary">✏️ Edit</a>
-                                <a href="" class="btn btn-sm btn-outline-danger">🗑️ Delete</a>
+                                <a href="@Url.Action("Edit", "Chapter", new { id = chapter.ChapterID })" class="btn btn-sm btn-outline-secondary">✏️ Edit</a>
+                                <a href="@Url.Action("DeleteChapter", "Chapter", new { id = chapter.ChapterID, storyid = Model.StoryID})" class="btn btn-sm btn-outline-danger">🗑️ Delete</a>
                             </td>
                         </tr>
                     }
-                </tbody>
-            </table>
-        </div>
-    }
-    else
-    {
-        <p class="text-muted">No chapters available yet. Start by adding a new one!</p>
-    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No chapters available yet. Start by adding a new one!</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const formContainer = document.getElementById("inlineChapterForm");
+            const form = document.querySelector("#createChapterForm");
+            const toggleButton = document.getElementById("toggleAddChapter");
+            const cancelButton = document.getElementById("cancelAddChapter");
+
+            // Show/hide inline form
+            toggleButton.addEventListener("click", () => {
+                formContainer.style.display = "table-row";
+                toggleButton.style.display = "none";
+            });
+
+            cancelButton.addEventListener("click", () => {
+                formContainer.style.display = "none";
+                toggleButton.style.display = "inline-block";
+                form.reset();
+            });
+
+            // Submit chapter form via AJAX
+            form.addEventListener("submit", async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: "POST",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        // Reload the page after successful creation
+                        window.location.reload();
+                    } else {
+                        alert("Something went wrong while creating the chapter!");
+                    }
+                } catch (error) {
+                    console.error("Fetch error:", error);
+                    alert("An error occurred while creating the chapter!");
+                }
+            });
+        });
+    </script>
+}

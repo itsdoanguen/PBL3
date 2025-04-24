@@ -1,0 +1,30 @@
+﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="chapter-container">
+    <h2>@Model.StoryTitle - Chương: @Model.Title</h2>
+    <p><strong>Ngày đăng:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy") | <strong>Lượt xem:</strong> @Model.ViewCount</p>
+
+    <hr />
+    <div class="chapter-content">
+        @Html.Raw(Model.Content.Replace("\n", "<br/>"))
+    </div>
+
+    <hr />
+    <h4>Bình luận (@Model.Comments.Count)</h4>
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="comment">
+            <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
+            <p>@comment.Content</p>
+        </div>
+    }
+
+    <form asp-action="PostComment" asp-controller="Comment" method="post">
+        <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
+        <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
+        <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+    </form>
+</div>

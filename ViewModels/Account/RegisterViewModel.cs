@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using PBL3.Attributes;
 
-namespace PBL3.ViewModels
+namespace PBL3.ViewModels.Account
 {
     public class RegisterViewModel
     {

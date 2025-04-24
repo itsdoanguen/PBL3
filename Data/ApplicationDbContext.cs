@@ -67,13 +67,18 @@ namespace PBL3.Data
                 .HasOne(fs => fs.User)
                 .WithMany(u => u.FollowStories)
                 .HasForeignKey(fs => fs.UserID)
-                .OnDelete(DeleteBehavior.NoAction); 
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<FollowStoryModel>()
                 .HasOne(fs => fs.Story)
                 .WithMany(s => s.Followers)
                 .HasForeignKey(fs => fs.StoryID)
-                .OnDelete(DeleteBehavior.Cascade); 
+                .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<CommentModel>()
+                .HasOne(c => c.Chapter)
+                .WithMany(ch => ch.Comments)
+                .HasForeignKey(c => c.ChapterID)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<StoryGenreModel>().HasKey(sg => new { sg.StoryID, sg.GenreID });
 
         }
