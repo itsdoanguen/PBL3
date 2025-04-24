@@ -78,7 +78,7 @@ namespace PBL3.Data
                 .HasOne(c => c.Chapter)
                 .WithMany(ch => ch.Comments)
                 .HasForeignKey(c => c.ChapterID)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<StoryGenreModel>().HasKey(sg => new { sg.StoryID, sg.GenreID });
 
         }

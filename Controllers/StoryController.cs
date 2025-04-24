@@ -143,7 +143,8 @@ namespace PBL3.Controllers
                     Title = c.Title,
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt,
-                    ViewCount = c.ViewCount
+                    ViewCount = c.ViewCount,
+                    ChapterOrder = c.ChapterOrder
                 })
                 .ToListAsync();
         }

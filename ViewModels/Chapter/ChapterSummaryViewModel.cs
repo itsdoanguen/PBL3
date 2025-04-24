@@ -8,6 +8,7 @@
         public DateTime? UpdatedAt { get; set; }
         public ChapterStatus Status { get; set; } = ChapterStatus.Inactive;
         public int ViewCount { get; set; }
+        public int ChapterOrder { get; set; }
 
         public enum ChapterStatus
         {

@@ -14,6 +14,7 @@ namespace PBL3.Models
         [Required]
         public string Content { get; set; }
 
+        public int ChapterOrder { get; set; } = 1;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         public ChapterStatus Status { get; set; } = ChapterStatus.Inactive;
