@@ -20,7 +20,7 @@ namespace PBL3.Models
         public UserModel? User { get; set; }
 
 
-    public enum NotificationType
+        public enum NotificationType
         {
             NewComment,
             NewFollower,
