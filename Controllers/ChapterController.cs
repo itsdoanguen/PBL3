@@ -31,11 +31,11 @@ namespace PBL3.Controllers
                 return NotFound();
             }
 
-            ////Không cho xem nếu truyện vẫn đang trạng thái bản thảo
-            //if (chapter.Status == ChapterStatus.Inactive)
-            //{
-            //    return NotFound();
-            //}
+            //Không cho xem nếu truyện vẫn đang trạng thái bản thảo
+            if (chapter.Status == ChapterStatus.Inactive)
+            {
+                return NotFound();
+            }
 
 
             //TODO: Chỉnh lại update view count theo cookie để chống spam
@@ -157,22 +157,22 @@ namespace PBL3.Controllers
             }
 
             var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            if (isAuthor != currentUserId) { 
+            if (isAuthor != currentUserId)
+            {
                 return RedirectToAction("AccessDenied", "Authentication");
             }
+
+            var chapterContext = await _context.Chapters
+                .Where(c => c.ChapterID == chapterId && c.StoryID == storyId)
+                .FirstOrDefaultAsync();
 
             var viewModel = new ChapterEditViewModel
             {
                 ChapterID = chapterId,
                 StoryID = storyId,
-                Title = await _context.Chapters
-                    .Where(c => c.ChapterID == chapterId)
-                    .Select(c => c.Title)
-                    .FirstOrDefaultAsync(),
-                Content = await _context.Chapters
-                    .Where(c => c.ChapterID == chapterId)
-                    .Select(c => c.Content)
-                    .FirstOrDefaultAsync()
+                Title = chapterContext?.Title,
+                Content = chapterContext?.Content,
+                ChapterStatus = chapterContext?.Status ?? ChapterStatus.Inactive
             };
 
 
@@ -204,10 +204,51 @@ namespace PBL3.Controllers
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Cập nhật chương thành công.";
-            return RedirectToAction("EditChapter",new {
+            return RedirectToAction("EditChapter", new
+            {
                 chapterId = model.ChapterID,
                 storyId = model.StoryID
             });
         }
+        // POST: Chapter/UpdateChapterStatus
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateChapterStatus(int chapterId, string newStatus)
+        {
+            var chapter = await _context.Chapters.FindAsync(chapterId);
+            if (chapter == null)
+            {
+                TempData["ErrorMessage"] = "Chương không tồn tại.";
+                return RedirectToAction("EditDetail", "Story", new { id = 0 }); 
+            }
+
+            int currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var isAuthor = await _context.Stories
+                                .Where(s => s.StoryID == chapter.StoryID)
+                                .Select(s => s.AuthorID)
+                                .FirstOrDefaultAsync();
+
+            if (isAuthor != currentUserId)
+            {
+                return RedirectToAction("AccessDenied", "Authentication");
+            }
+
+
+            if (Enum.TryParse<ChapterStatus>(newStatus, out var parsedStatus))
+            {
+                chapter.Status = parsedStatus;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Trạng thái không hợp lệ.";
+                return RedirectToAction("EditChapter", new { chapterId = chapter.ChapterID, storyId = chapter.StoryID });
+            }
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Cập nhật trạng thái chương thành công.";
+            return RedirectToAction("EditChapter", new { chapterId = chapter.ChapterID, storyId = chapter.StoryID });
+        }
+
     }
 }

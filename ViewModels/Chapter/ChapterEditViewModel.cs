@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using PBL3.Models;
 
 namespace PBL3.ViewModels.Chapter
 {
@@ -10,5 +11,7 @@ namespace PBL3.ViewModels.Chapter
         [StringLength(120, ErrorMessage = "Tên chương quá dài")]
         public string? Title { get; set; }
         public string? Content { get; set; }    
+
+        public ChapterStatus ChapterStatus { get; set; } = ChapterStatus.Inactive;
     }
 }

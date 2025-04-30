@@ -26,10 +26,36 @@
 <body>
 	<div class="container-fluid px-5 mt-4">
 		<div class="d-flex justify-content-between mb-3">
-			<a href="@Url.Action("EditDetail", "Story", new { id = ViewBag.StoryID})" class="btn btn-outline-danger btn-cancel">
+
+			<!-- Nút Quay lại -->
+			<a href="@Url.Action("EditDetail", "Story", new { id = ViewBag.StoryID })" class="btn btn-outline-danger btn-cancel">
 				<i class="bi bi-arrow-left"></i> Quay lại
 			</a>
+
+			<!-- Nút Xuất bản / Chuyển về bản thảo -->
+			@if (ViewBag.ChapterStatus == "Inactive") 
+			{
+				<form asp-action="UpdateChapterStatus" asp-controller="Chapter" method="post" onsubmit="return confirm('Bạn có chắc muốn xuất bản chương này không?');">
+					<input type="hidden" name="chapterId" value="@ViewBag.ChapterID" />
+					<input type="hidden" name="newStatus" value="Active" />
+					<button type="submit" class="btn btn-success">
+						<i class="bi bi-upload"></i> Xuất bản
+					</button>
+				</form>
+			}
+			else if (ViewBag.ChapterStatus == "Active") 
+			{
+				<form asp-action="UpdateChapterStatus" asp-controller="Chapter" method="post" onsubmit="return confirm('Bạn có chắc muốn chuyển chương này về bản thảo không?');">
+					<input type="hidden" name="chapterId" value="@ViewBag.ChapterID" />
+					<input type="hidden" name="newStatus" value="Inactive" />
+					<button type="submit" class="btn btn-warning">
+						<i class="bi bi-arrow-counterclockwise"></i> Chuyển về bản thảo
+					</button>
+				</form>
+			}
+
 		</div>
+
 		@RenderBody()
 	</div>
 

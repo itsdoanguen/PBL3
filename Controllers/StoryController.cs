@@ -197,7 +197,8 @@ namespace PBL3.Controllers
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt,
                     ViewCount = c.ViewCount,
-                    ChapterOrder = c.ChapterOrder
+                    ChapterOrder = c.ChapterOrder,
+                    Status = (ChapterSummaryViewModel.ChapterStatus)c.Status
                 })
                 .ToListAsync();
         }

@@ -3,6 +3,8 @@
     ViewData["Title"] = "Edit Chapter";
     Layout = "~/Views/Shared/_ChapterEditorLayout.cshtml";
     ViewBag.StoryID = Model.StoryID;
+	ViewBag.ChapterID = Model.ChapterID;
+	ViewBag.ChapterStatus = Model.ChapterStatus.ToString();
 }
 
 <h2>@ViewData["Title"]</h2>
