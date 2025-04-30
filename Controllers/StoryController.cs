@@ -117,6 +117,23 @@ namespace PBL3.Controllers
             return RedirectToAction("MyStories", "User");
         }
 
+        ////POST: Story/Delete/{id}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Tasl<IActionResult> Delete(int id)
+        //{
+        //    var story = await _context.Stories.Include(s => s.Chapters).Include(s => s.Comments).FirstOrDefaultAsync(s => s.StoryID == id);
+
+        //    if (story == null)
+        //    {
+        //        TempData["ErrorMessage"] = "Không xóa được truyện!";
+        //        return RedirectToAction("MyStories", "User");
+        //    }
+
+        //    var relatedComment = _context.Comments
+        //}
+
+
         //GET: Story/EditDetail/{id}
         public async Task<IActionResult> EditDetail(int id)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
@@ -29,11 +30,12 @@ namespace PBL3.Controllers
             {
                 return NotFound();
             }
-            //Không cho xem nếu truyện vẫn đang trạng thái bản thảo
-            if (chapter.Status == ChapterStatus.Inactive)
-            {
-                return NotFound();
-            }
+
+            ////Không cho xem nếu truyện vẫn đang trạng thái bản thảo
+            //if (chapter.Status == ChapterStatus.Inactive)
+            //{
+            //    return NotFound();
+            //}
 
 
             //TODO: Chỉnh lại update view count theo cookie để chống spam
@@ -121,13 +123,6 @@ namespace PBL3.Controllers
             var relatedComments = _context.Comments.Where(c => c.ChapterID == chapterID);
             _context.Comments.RemoveRange(relatedComments);
 
-            var relatedLikes = _context.LikeChapters.Where(l => l.ChapterID == chapterID);
-            _context.LikeChapters.RemoveRange(relatedLikes);
-
-            var relatedBookmarks = _context.Bookmarks.Where(b => b.ChapterID == chapterID);
-            _context.Bookmarks.RemoveRange(relatedBookmarks);
-
-
             // Cập nhật lại ChapterOrder cho các chương còn lại
             var chaptersToUpdate = await _context.Chapters
                 .Where(c => c.StoryID == storyID && c.ChapterOrder > chapter.ChapterOrder)
@@ -146,6 +141,73 @@ namespace PBL3.Controllers
                 return Json(new { success = true });
             }
             return RedirectToAction("EditDetail", "Story", new { id = storyID });
+        }
+
+        //GET: Chapter/EditChapter/{id}
+        public async Task<IActionResult> EditChapter(int chapterId, int storyId)
+        {
+            var isAuthor = await _context.Stories
+                .Where(s => s.StoryID == storyId)
+                .Select(s => s.AuthorID)
+                .FirstOrDefaultAsync();
+
+            if (isAuthor == null)
+            {
+                return NotFound();
+            }
+
+            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            if (isAuthor != currentUserId) { 
+                return RedirectToAction("AccessDenied", "Authentication");
+            }
+
+            var viewModel = new ChapterEditViewModel
+            {
+                ChapterID = chapterId,
+                StoryID = storyId,
+                Title = await _context.Chapters
+                    .Where(c => c.ChapterID == chapterId)
+                    .Select(c => c.Title)
+                    .FirstOrDefaultAsync(),
+                Content = await _context.Chapters
+                    .Where(c => c.ChapterID == chapterId)
+                    .Select(c => c.Content)
+                    .FirstOrDefaultAsync()
+            };
+
+
+            return View(viewModel);
+        }
+
+        //POST: Chapter/EditChapter
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditChapter(ChapterEditViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình cập nhật chương. Vui lòng thử lại.";
+                return View(model);
+            }
+
+            var chapter = await _context.Chapters.FindAsync(model.ChapterID);
+            if (chapter == null)
+            {
+                TempData["ErrorMessage"] = "Chương không tồn tại.";
+                return View(model);
+            }
+
+            chapter.Title = model.Title;
+            chapter.Content = model.Content;
+            chapter.UpdatedAt = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Cập nhật chương thành công.";
+            return RedirectToAction("EditChapter",new {
+                chapterId = model.ChapterID,
+                storyId = model.StoryID
+            });
         }
     }
 }
