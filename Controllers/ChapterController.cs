@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿    using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
@@ -41,7 +41,7 @@ namespace PBL3.Controllers
             string cookieName = $"viewedchapter{id}";
 
             //Kiểm tra xem người dùng đã đăng nhập chưa
-            if (Request.Cookies.ContainsKey(cookieName))
+            if (!Request.Cookies.ContainsKey(cookieName))
             {
                 //TODO: Chỉnh lại update view count theo cookie để chống spam
                 chapter.ViewCount++;
