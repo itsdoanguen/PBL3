@@ -25,13 +25,17 @@ namespace PBL3.Controllers
                 .Include(c => c.Story)
                 .Include(c => c.Comments)
                 .FirstOrDefaultAsync(c => c.ChapterID == id);
+            var storyStatus = await _context.Stories
+                .Where(s => s.StoryID == chapter.StoryID)
+                .Select(s => s.Status)
+                .FirstOrDefaultAsync();
 
             if (chapter == null)
             {
                 return NotFound();
             }
             //Không cho xem nếu truyện vẫn đang trạng thái bản thảo
-            if (chapter.Status == ChapterStatus.Inactive)
+            if (chapter.Status == ChapterStatus.Inactive /*|| storyStatus == StoryModel.StoryStatus.Inactive*/)
             {
                 return NotFound();
             }
@@ -44,15 +48,15 @@ namespace PBL3.Controllers
             //Kiểm tra xem người dùng đã đăng nhập chưa
             if (!Request.Cookies.ContainsKey(cookieName))
             {
-                //TODO: Chỉnh lại update view count theo cookie để chống spam
                 chapter.ViewCount++;
                 _context.Update(chapter);
                 await _context.SaveChangesAsync();
 
                 CookieOptions options = new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(30), // Thời gian sống của cookie
-                                                                    // Có nghĩa là người sau 30p nữa mới tính là 1 lượt xem
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(10), // Thời gian sống của cookie
+                                                                    
+                    // Có nghĩa là người sau 30p nữa mới tính là 1 lượt xem
                     HttpOnly = true,
                     IsEssential = true
                 };
@@ -69,7 +73,10 @@ namespace PBL3.Controllers
                 ViewCount = chapter.ViewCount,
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
-                Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList()
+                Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
+                NextChapterID = GetNextChapter(chapter.ChapterID, chapter.StoryID),
+                PreviousChapterID = GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
+                ChapterList = GetChapterList(chapter.StoryID)
             };
 
             return View(viewModel);
@@ -267,5 +274,56 @@ namespace PBL3.Controllers
             return RedirectToAction("EditChapter", new { chapterId = chapter.ChapterID, storyId = chapter.StoryID });
         }
 
+        //METHOD 
+        private List<ChapterList> GetChapterList(int storyID)
+        {
+            var chapters = _context.Chapters.Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c => c.ChapterOrder)
+                .Select(c => new ChapterList
+                {
+                    ChapterID = c.ChapterID,
+                    Title = c.Title
+                })
+                .ToList();
+            return chapters;
+        }
+        private int GetNextChapter(int chapterID, int storyID)
+        {
+            var currentChapterOrder = _context.Chapters
+                .Where(c => c.ChapterID == chapterID && c.StoryID == storyID)
+                .Select(c => c.ChapterOrder)
+                .FirstOrDefault();
+            var nextChapter = _context.Chapters
+                .Where(c => c.StoryID == storyID && c.ChapterOrder > currentChapterOrder && c.Status == ChapterStatus.Active)
+                .OrderBy(c => c.ChapterOrder)
+                .FirstOrDefault();
+
+            if (nextChapter != null)
+            {
+                return nextChapter.ChapterID;
+            }
+            else
+            {
+                return -1; 
+            }
+        }
+        private int GetPreviousChapter(int chapterID, int storyID)
+        {
+            var currentChapterOrder = _context.Chapters
+                .Where(c => c.ChapterID == chapterID && c.StoryID == storyID)
+                .Select(c => c.ChapterOrder)
+                .FirstOrDefault();
+            var previousChapter = _context.Chapters
+                .Where(c => c.StoryID == storyID && c.ChapterOrder < currentChapterOrder && c.Status == ChapterStatus.Active)
+                .OrderByDescending(c => c.ChapterOrder)
+                .FirstOrDefault();
+            if (previousChapter != null)
+            {
+                return previousChapter.ChapterID;
+            }
+            else
+            {
+                return -1;
+            }
+        }
     }
 }
