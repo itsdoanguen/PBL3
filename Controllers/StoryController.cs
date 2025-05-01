@@ -6,16 +6,20 @@ using PBL3.Models;
 using PBL3.ViewModels;
 using PBL3.ViewModels.Chapter;
 using PBL3.ViewModels.Story;
+using PBL3.Service;
+
 namespace PBL3.Controllers
 {
     public class StoryController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
-        public StoryController(ApplicationDbContext context, BlobService blobService)
+        private readonly IChapterService _chapterService;
+        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService)
         {
             _context = context;
             _blobService = blobService;
+            _chapterService = chapterService;
         }
 
         //GET: Story/ViewStory
@@ -118,20 +122,38 @@ namespace PBL3.Controllers
         }
 
         ////POST: Story/Delete/{id}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Tasl<IActionResult> Delete(int id)
-        //{
-        //    var story = await _context.Stories.Include(s => s.Chapters).Include(s => s.Comments).FirstOrDefaultAsync(s => s.StoryID == id);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int StoryID)
+        {
+            // Xóa cmt của story
+            var relatedCommentsStory = await _context.Comments
+                .Where(c => c.StoryID == StoryID)
+                .ToListAsync();
+            foreach (var comment in relatedCommentsStory)
+            {
+                _context.Comments.Remove(comment);
+            }
 
-        //    if (story == null)
-        //    {
-        //        TempData["ErrorMessage"] = "Không xóa được truyện!";
-        //        return RedirectToAction("MyStories", "User");
-        //    }
 
-        //    var relatedComment = _context.Comments
-        //}
+            // Xóa chapter từ IChapterSevice
+            var chapters = await _context.Chapters
+                .Where(c => c.StoryID == StoryID)
+                .ToListAsync();
+            foreach (var chapter in chapters)
+            {
+                await _chapterService.DeleteChapterAsync(chapter.ChapterID, StoryID);
+            }
+
+            // Xóa Story
+            var story = await _context.Stories
+                .Where(s => s.StoryID == StoryID)
+                .FirstOrDefaultAsync();
+            _context.Stories.Remove(story);
+
+            return RedirectToAction("MyStories", "User");
+        }
+        
 
 
         //GET: Story/EditDetail/{id}

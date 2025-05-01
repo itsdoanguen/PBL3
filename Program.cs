@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using PBL3.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using PBL3.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+//Add IchapterService vao builder
+builder.Services.AddScoped<IChapterService, ChapterService>();
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
