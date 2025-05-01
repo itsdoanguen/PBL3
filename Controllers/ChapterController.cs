@@ -37,8 +37,9 @@ namespace PBL3.Controllers
             }
 
 
-            // Tên cookie riêng biệt cho chương truyện
-            string cookieName = $"viewedchapter{id}";
+            // Tên cookie riêng biệt cho chương truyện và người dùng
+            string currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            string cookieName = currentUserId != null ? $"viewedchapter{id}_user_{currentUserId}" : $"viewedchapter{id}_guest";
 
             //Kiểm tra xem người dùng đã đăng nhập chưa
             if (!Request.Cookies.ContainsKey(cookieName))
