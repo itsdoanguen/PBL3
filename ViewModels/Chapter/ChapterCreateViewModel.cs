@@ -7,8 +7,7 @@ namespace PBL3.ViewModels.Chapter
         [Required]
         public int StoryID { get; set; }
 
-        [Required, StringLength(255)]
+        [Required, StringLength(120)]
         public string Title { get; set; }
-   
     }
 }

@@ -25,7 +25,11 @@ namespace PBL3.Controllers
         // GET: Story/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new StoryCreateViewModel
+            {
+                availbleGenres = GetAvailbleGenres()
+            };
+            return View(model);
         }
 
         // POST: Story/Create
@@ -35,12 +39,22 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
+                model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
+            if (model.GenreIDs == null || !model.GenreIDs.Any())
+            {
+                ModelState.AddModelError("GenreIDs", "Thể loại là bắt buộc, hãy chọn ít nhất 1");
+                model.availbleGenres = GetAvailbleGenres();
+                return View(model);
+            }
+
+
             var existingStory = _context.Stories.FirstOrDefault(s => s.Title == model.Title);
             if (existingStory != null)
             {
-                ModelState.AddModelError("Title", "Title already exists");
+                ModelState.AddModelError("Title", "Tên truyện đã tồn tại");
+                model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
 
@@ -50,14 +64,16 @@ namespace PBL3.Controllers
             {
                 if (model.UploadCover.Length > 1024 * 1024)
                 {
-                    ModelState.AddModelError("UploadCover", "Cover image must be less than 1MB");
+                    ModelState.AddModelError("UploadCover", "Size ảnh phải nhỏ hơn 1MB");
+                    model.availbleGenres = GetAvailbleGenres();
                     return View(model);
                 }
 
                 var fileExtension = Path.GetExtension(model.UploadCover.FileName);
                 if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
                 {
-                    ModelState.AddModelError("UploadCover", "Cover image must be in jpg, jpeg or png format");
+                    ModelState.AddModelError("UploadCover", "Ảnh phải thuộc định dạng jpg, jpeg hoặc png");
+                    model.availbleGenres = GetAvailbleGenres();
                     return View(model);
                 }
 
@@ -77,14 +93,47 @@ namespace PBL3.Controllers
                 Status = StoryModel.StoryStatus.Inactive,
                 CreatedAt = DateTime.Now,
                 UpdatedAt = DateTime.Now,
-                AuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
+                AuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)),
+                Genres = new List<StoryGenreModel>()
             };
 
             await _context.Stories.AddAsync(newStory);
             await _context.SaveChangesAsync();
 
+            if (model.GenreIDs != null && model.GenreIDs.Count > 0)
+            {
+                foreach (var genre in model.GenreIDs)
+                {
+                    _context.StoryGenres.Add(new StoryGenreModel
+                    {
+                        StoryID = newStory.StoryID,
+                        GenreID = genre
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
+            
             return RedirectToAction("MyStories", "User");
         }
+
+        ////POST: Story/Delete/{id}
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Tasl<IActionResult> Delete(int id)
+        //{
+        //    var story = await _context.Stories.Include(s => s.Chapters).Include(s => s.Comments).FirstOrDefaultAsync(s => s.StoryID == id);
+
+        //    if (story == null)
+        //    {
+        //        TempData["ErrorMessage"] = "Không xóa được truyện!";
+        //        return RedirectToAction("MyStories", "User");
+        //    }
+
+        //    var relatedComment = _context.Comments
+        //}
+
+
         //GET: Story/EditDetail/{id}
         public async Task<IActionResult> EditDetail(int id)
         {
@@ -132,6 +181,10 @@ namespace PBL3.Controllers
 
             return View(viewModel);
         }
+
+
+
+        //METHOD
         private async Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId)
         {
             return await _context.Chapters
@@ -144,12 +197,22 @@ namespace PBL3.Controllers
                     CreatedAt = c.CreatedAt,
                     UpdatedAt = c.UpdatedAt,
                     ViewCount = c.ViewCount,
-                    ChapterOrder = c.ChapterOrder
+                    ChapterOrder = c.ChapterOrder,
+                    Status = (ChapterSummaryViewModel.ChapterStatus)c.Status
                 })
                 .ToListAsync();
         }
 
-
+        private List<GerneVM> GetAvailbleGenres()
+        {
+            return _context.Genres
+                .Select(g => new GerneVM
+                {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                })
+                .ToList();
+        }
 
     }
 }

@@ -133,13 +133,18 @@
                             <td>@chapter.ViewCount</td>
                             <td>@(chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive ? "Bản thảo" : "Đã đăng")</td>
                             <td>
-                                <a href="@Url.Action("Edit", "Chapter", new { id = chapter.ChapterID })" class="btn btn-sm btn-outline-dark btn-modern">✏️ Edit</a>
+                                <a href="@Url.Action("EditChapter", "Chapter", new { chapterId = chapter.ChapterID, storyId = Model.StoryID })"
+                                   class="btn btn-sm btn-outline-dark btn-modern">
+                                    ✏️ Edit
+                                </a>
+
                                 <form asp-action="DeleteChapter" asp-controller="Chapter" method="post" style="display:inline;">
                                     <input type="hidden" name="chapterID" value="@chapter.ChapterID" />
                                     <input type="hidden" name="storyID" value="@Model.StoryID" />
                                     <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Are you sure you want to delete this chapter?');">🗑️</button>
                                 </form>
                             </td>
+
                         </tr>
                     }
                 }
