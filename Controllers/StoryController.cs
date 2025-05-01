@@ -150,7 +150,7 @@ namespace PBL3.Controllers
                 .Where(s => s.StoryID == StoryID)
                 .FirstOrDefaultAsync();
             _context.Stories.Remove(story);
-
+            await _context.SaveChangesAsync();
             return RedirectToAction("MyStories", "User");
         }
         

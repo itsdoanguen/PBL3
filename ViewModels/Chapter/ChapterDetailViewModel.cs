@@ -16,7 +16,7 @@ namespace PBL3.ViewModels.Chapter
         public List<CommentModel> Comments { get; set; }
 
         public int NextChapterID { get; set; }
-        public int PreviousChapterID { get; set; }
+        public int PreviousChapterID { get; set; } 
 
         public List<ChapterList> ChapterList = new List<ChapterList>();
     }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace PBL3.Service
 {
@@ -15,7 +13,7 @@ namespace PBL3.Service
         public async Task DeleteChapterAsync(int chapterId, int storyId)
         {
             var chapter = await _context.Chapters.FindAsync(chapterId);
-            if(chapter == null)
+            if (chapter == null)
             {
                 return;
             }
@@ -25,10 +23,10 @@ namespace PBL3.Service
             _context.Comments.RemoveRange(relatedComments);
 
             var chapterToUpdate = await _context.Chapters
-                .Where(c => c.ChapterOrder > chapter.ChapterOrder && c.StoryID == storyId)
-                .ToListAsync();
+            .Where(c => c.ChapterOrder > chapter.ChapterOrder && c.StoryID == storyId)
+            .ToListAsync();
 
-            foreach(var c in chapterToUpdate)
+            foreach (var c in chapterToUpdate)
             {
                 c.ChapterOrder--;
             }

@@ -54,7 +54,7 @@ namespace PBL3.Controllers
 
                 CookieOptions options = new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(10), // Thời gian sống của cookie
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(1), // Thời gian sống của cookie
                                                                     
                     // Có nghĩa là người sau 30p nữa mới tính là 1 lượt xem
                     HttpOnly = true,
