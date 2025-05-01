@@ -30,7 +30,6 @@ namespace PBL3.Controllers
             {
                 return NotFound();
             }
-
             //Không cho xem nếu truyện vẫn đang trạng thái bản thảo
             if (chapter.Status == ChapterStatus.Inactive)
             {
@@ -38,10 +37,27 @@ namespace PBL3.Controllers
             }
 
 
-            //TODO: Chỉnh lại update view count theo cookie để chống spam
-            chapter.ViewCount++;
-            _context.Update(chapter);
-            await _context.SaveChangesAsync();
+            // Tên cookie riêng biệt cho chương truyện
+            string cookieName = $"viewedchapter{id}";
+
+            //Kiểm tra xem người dùng đã đăng nhập chưa
+            if (Request.Cookies.ContainsKey(cookieName))
+            {
+                //TODO: Chỉnh lại update view count theo cookie để chống spam
+                chapter.ViewCount++;
+                _context.Update(chapter);
+                await _context.SaveChangesAsync();
+
+                CookieOptions options = new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(30), // Thời gian sống của cookie
+                                                                    // Có nghĩa là người sau 30p nữa mới tính là 1 lượt xem
+                    HttpOnly = true,
+                    IsEssential = true
+                };
+
+                Response.Cookies.Append(cookieName, "true", options);
+            }
 
             var viewModel = new ChapterDetailViewModel
             {
