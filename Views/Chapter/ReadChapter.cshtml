@@ -20,6 +20,12 @@
         </ul>
     </div>
 
+    <form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" style="display:inline;">
+        <input type="hidden" name="chapterID" value="@Model.ChapterID" />
+        <input type="hidden" name="storyID" value="@Model.StoryID" />
+        <button type="submit" class="btn btn-sm btn-outline-primary btn-modern">❤️ Like</button>
+    </form>
+
     <!-- Main content -->
     <div class="chapter-container flex-grow-1 p-3">
         <!-- Nút toggle -->
