@@ -152,9 +152,9 @@ namespace PBL3.Service
             };
         }
 
-        public async Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus)
-        {
-            return NotImplementedException();
-        }
+        //public async Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus)
+        //{
+        //    return NotImplementedException();
+        //}
     }
 }

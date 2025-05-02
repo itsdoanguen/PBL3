@@ -19,6 +19,8 @@ builder.Services.AddScoped<IStoryService, StoryService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ILikeChapterService, LikeChapterService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(dbConnectionString));
