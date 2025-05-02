@@ -15,6 +15,8 @@ builder.Services.AddControllersWithViews();
 
 //Add IchapterService vao builder
 builder.Services.AddScoped<IChapterService, ChapterService>();
+builder.Services.AddScoped<ILikeChapterService, LikeChapterService>();
+
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

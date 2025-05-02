@@ -7,8 +7,8 @@ namespace PBL3.Service
 {
     public interface IStoryService
     {
-        //Task<int?> CreateStoryAsync(StoryCreateViewModel model, int authorID);
-        //Task DeleteStoryAsync(int storyID);
+        Task<int?> CreateStoryAsync(StoryCreateViewModel model, int authorID);
+        Task DeleteStoryAsync(int storyID);
         //Task<StoryEditViewModel> getStoryEditDetailsAsync(int storyID, int authorID);
     }
 }
