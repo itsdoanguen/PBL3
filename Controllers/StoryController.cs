@@ -81,6 +81,22 @@ namespace PBL3.Controllers
             return RedirectToAction("MyStories", "User");
         }
 
+        //POST: Story/UpdateStatus/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int StoryID, string newStatus)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var (isSuccess, errorMessage, storyID) = await _storyService.UpdateStoryStatusAsync(StoryID, currentUserID, newStatus);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("MyStories", "User");
+            }
+            TempData["SuccessMessage"] = "Cập nhật trạng thái truyện thành công!";
+            return RedirectToAction("EditDetail", new { id = storyID });    
+        }
 
 
         // GET: Story/EditDetail/{id}

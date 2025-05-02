@@ -28,7 +28,10 @@ namespace PBL3.Service
                 .Select(s => s.Status)
                 .FirstOrDefaultAsync();
 
-            if (chapter.Status == ChapterStatus.Inactive /*|| storyStatus == StoryModel.StoryStatus.Inactive*/)
+            if (storyStatus == StoryModel.StoryStatus.Inactive)
+                return null;
+
+            if (chapter.Status == ChapterStatus.Inactive)
                 return null;
 
             // Xử lý ViewCount và Cookie
@@ -190,6 +193,7 @@ namespace PBL3.Service
             }
 
             chapter.Status = parsedStatus;
+            chapter.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);
