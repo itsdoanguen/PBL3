@@ -92,7 +92,7 @@ namespace PBL3.Service
             await _context.Chapters.AddAsync(newChapter);
             await _context.SaveChangesAsync();
 
-            return newChapter; 
+            return newChapter;
         }
 
         //Xóa chapter
@@ -162,7 +162,7 @@ namespace PBL3.Service
 
             chapter.Title = model.Title;
             chapter.Content = model.Content;
-            chapter.UpdatedAt = DateTime.UtcNow; 
+            chapter.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return true;
@@ -185,6 +185,15 @@ namespace PBL3.Service
             if (authorId != currentUserId)
             {
                 return (false, "AccessDenied", chapter.StoryID);
+            }
+
+            var storyStatus = await _context.Stories
+                .Where(s => s.StoryID == chapter.StoryID)
+                .Select(s => s.Status)
+                .FirstOrDefaultAsync();
+            if (storyStatus == StoryModel.StoryStatus.Inactive)
+            {
+                return (false, "Truyện chưa được xuất bản, không thể xuất bản chương!", chapter.StoryID);
             }
 
             if (!Enum.TryParse<ChapterStatus>(newStatus, out var parsedStatus))
