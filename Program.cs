@@ -15,7 +15,9 @@ builder.Services.AddControllersWithViews();
 
 //Add IchapterService vao builder
 builder.Services.AddScoped<IChapterService, ChapterService>();
-
+builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<BlobService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(dbConnectionString));
@@ -28,8 +30,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LoginPath = "/Authentication/Login";
         options.AccessDeniedPath = "/Authentication/AccessDenied";
     });
-//Them BlobService vao builder
-builder.Services.AddScoped<BlobService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

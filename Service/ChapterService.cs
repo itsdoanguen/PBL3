@@ -195,6 +195,25 @@ namespace PBL3.Service
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);
         }
 
+        public async Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId)
+        {
+            return await _context.Chapters
+                .Where(c => c.StoryID == storyId)
+                .OrderByDescending(c => c.CreatedAt)
+                .Select(c => new ChapterSummaryViewModel
+                {
+                    ChapterID = c.ChapterID,
+                    Title = c.Title,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt,
+                    ViewCount = c.ViewCount,
+                    ChapterOrder = c.ChapterOrder,
+                    Status = (ChapterSummaryViewModel.ChapterStatus)c.Status
+                })
+                .ToListAsync();
+        }
+
+
         //METHOD
         private async Task<List<ChapterList>> GetChapterList(int storyID)
         {

@@ -6,6 +6,13 @@
 	Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+	<div class="alert alert-success" role="alert">
+		@TempData["SuccessMessage"]
+	</div>
+}
+
 <div class="container py-5">
 	<h2 class="mb-4 text-center">Tạo Truyện Mới</h2>
 	<form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-4">
