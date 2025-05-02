@@ -12,6 +12,6 @@ namespace PBL3.Service
         Task<ChapterEditViewModel> GetChapterForEditAsync(int chapterId, int storyId, int currentUserId);
         Task<bool> UpdateChapterAsync(ChapterEditViewModel model);
         Task<(bool Success, string Message, int StoryId)> UpdateChapterStatusAsync(int chapterId, int currentUserId, string newStatus);
-
+        Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId);
     }
 }
