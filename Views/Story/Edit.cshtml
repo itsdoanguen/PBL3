@@ -1,0 +1,65 @@
+﻿@using PBL3.ViewModels.Story
+@model StoryEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Story";
+    Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";  
+}
+
+<div class="container py-5">
+    <h2>Edit Story</h2>
+
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="StoryID" />
+
+        <div class="mb-3">
+            <label asp-for="Title" class="form-label"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label"></label>
+            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Genres</label>
+            <div class="d-flex flex-wrap gap-2">
+                @foreach (var genre in Model.AvailableGenres)
+                {
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="GenreIDs" value="@genre.GenreID" @(Model.GenreIDs.Contains(genre.GenreID) ? "checked" : "") />
+                        <label class="form-check-label">@genre.Name</label>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="StoryStatus" class="form-label"></label>
+            <select asp-for="StoryStatus" class="form-select">
+                <option value="0">Inactive (Draft)</option>
+                <option value="1">Active (Published)</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Cover Image</label><br />
+            <img src="@Model.CoverImage" alt="Cover" style="max-height:200px;" class="mb-2" /><br />
+            <input type="file" name="CoverImageFile" class="form-control" />
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark btn-modern">💾 Save Changes</button>
+            <a asp-action="EditDetail" asp-route-storyId="@Model.StoryID" class="btn btn-secondary btn-modern">Cancel</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

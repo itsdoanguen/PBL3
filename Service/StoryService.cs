@@ -149,9 +149,71 @@ namespace PBL3.Service
                 TotalChapter = chapterList.Count,
                 TotalView = totalView,
                 Chapters = chapterList,
-                StoryStatus = story.Status
+                StoryStatus = story.Status,
+                GenreIDs = await _context.StoryGenres
+                    .Where(sg => sg.StoryID == storyID)
+                    .Select(sg => sg.GenreID)
+                    .ToListAsync(),
+                AvailableGenres = await _context.Genres.Select(g => new GerneVM
+                {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                }).ToListAsync()
             };
         }
+
+        public async Task<(bool isSuccess, string errorMessage)> UpdateStoryAsync(StoryEditViewModel model, int currentUserID)
+        {
+            var story = await _context.Stories
+     .Where(s => s.StoryID == model.StoryID)
+     .FirstOrDefaultAsync();
+            if (story == null)
+            {
+                return (false, "Truyện không tồn tại");
+            }
+            if (story.AuthorID != currentUserID)
+            {
+                return (false, "AccessDenied");
+            }
+            if (model.GenreIDs == null || !model.GenreIDs.Any())
+            {
+                return (false, "Thể loại là bắt buộc, hãy chọn ít nhất 1");
+            }
+            string coverImagePath = story.CoverImage;
+            if (model.UploadCover != null)
+            {
+                var (uploadSuccess, errorMessage, uploadedUrl) = await _imageService.UploadValidateImageAsync(model.UploadCover, "covers");
+                if (!uploadSuccess)
+                {
+                    return (false, errorMessage);
+                }
+                coverImagePath = uploadedUrl;
+            }
+
+            story.Title = model.Title;
+            story.Description = model.Description;
+            story.CoverImage = coverImagePath;
+            story.UpdatedAt = DateTime.UtcNow;
+            
+            _context.Stories.Update(story);
+            await _context.SaveChangesAsync();
+            
+            var existingGenres = await _context.StoryGenres
+                .Where(sg => sg.StoryID == model.StoryID)
+                .ToListAsync();
+            _context.StoryGenres.RemoveRange(existingGenres);
+            
+            var newStoryGenres = model.GenreIDs.Select(genreID => new StoryGenreModel
+            {
+                StoryID = model.StoryID,
+                GenreID = genreID
+            }).ToList();
+            
+            await _context.StoryGenres.AddRangeAsync(newStoryGenres);
+            await _context.SaveChangesAsync();
+            return (true, "Cập nhật truyện thành công");
+        }
+
         public async Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus)
         {
             var story = await _context.Stories
@@ -182,5 +244,7 @@ namespace PBL3.Service
 
             return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
         }
+
+
     }
 }

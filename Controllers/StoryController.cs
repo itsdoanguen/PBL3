@@ -1,12 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using PBL3.Models;
-using PBL3.ViewModels;
-using PBL3.ViewModels.Chapter;
-using PBL3.ViewModels.Story;
 using PBL3.Service;
+using PBL3.ViewModels.Story;
 
 namespace PBL3.Controllers
 {
@@ -95,7 +91,7 @@ namespace PBL3.Controllers
                 return RedirectToAction("MyStories", "User");
             }
             TempData["SuccessMessage"] = "Cập nhật trạng thái truyện thành công!";
-            return RedirectToAction("EditDetail", new { id = storyID });    
+            return RedirectToAction("EditDetail", new { id = storyID });
         }
 
 
@@ -112,6 +108,39 @@ namespace PBL3.Controllers
             }
 
             return View(viewModel);
+        }
+
+        //GET: Story/Edit
+        public async Task<IActionResult> Edit(int id)
+        {
+            int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var viewModel = await _storyService.GetStoryDetailForEditAsync(id, currentAuthorID);
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+
+            return View(viewModel);
+        }
+
+        //POST: Story/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(StoryEditViewModel model, int currentUserID)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.UpdateStoryAsync(model, currentAuthorID);
+            if (!isSuccess)
+            {
+                ModelState.AddModelError(string.Empty, errorMessage);
+                return View(model);
+            }
+            TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
+            return RedirectToAction("MyStories", "User");
         }
 
         //METHOD
