@@ -20,11 +20,18 @@
         </ul>
     </div>
 
-    <form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" style="display:inline;">
-        <input type="hidden" name="chapterID" value="@Model.ChapterID" />
-        <input type="hidden" name="storyID" value="@Model.StoryID" />
-        <button type="submit" class="btn btn-sm btn-outline-primary btn-modern">❤️ Like</button>
+    <!-- ✅ Form Like -->
+    <form id="likeForm" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="chapterId" value="@Model.ChapterID" />
+        <button type="button" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-primary") btn-modern"
+                data-liked="@Model.IsLikedByCurrentUser.ToString().ToLower()"
+                id="likeButton">
+            ❤️ <span id="likeText">@((Model.IsLikedByCurrentUser) ? "Đã thích" : "Like")</span>
+            (<span id="likeCount">@Model.LikeCount</span>)
+        </button>
     </form>
+
 
     <!-- Main content -->
     <div class="chapter-container flex-grow-1 p-3">
@@ -60,7 +67,6 @@
             }
         </div>
 
-
         <h4>Bình luận (@Model.Comments.Count)</h4>
         @foreach (var comment in Model.Comments)
         {
@@ -82,11 +88,48 @@
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById('chapterSidebar');
-            if (sidebar.style.display === "none") {
-                sidebar.style.display = "block";
-            } else {
-                sidebar.style.display = "none";
-            }
+            sidebar.style.display = (sidebar.style.display === "none") ? "block" : "none";
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const likeButton = document.getElementById("likeButton");
+            const token = document.querySelector('#likeForm input[name="__RequestVerificationToken"]').value;
+            const chapterId = document.querySelector('#likeForm input[name="chapterId"]').value;
+
+            likeButton.addEventListener("click", function () {
+                fetch("/LikeChapter/LikeChapter", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: `chapterId=${chapterId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const likeText = document.getElementById('likeText');
+                        const likeCount = document.getElementById('likeCount');
+
+                        if (data.liked) {
+                            likeButton.classList.remove("btn-outline-primary");
+                            likeButton.classList.add("btn-primary");
+                            likeText.textContent = "Đã thích";
+                        } else {
+                            likeButton.classList.remove("btn-primary");
+                            likeButton.classList.add("btn-outline-primary");
+                            likeText.textContent = "Like";
+                        }
+
+                        likeCount.textContent = data.likeCount;
+                    }
+                })
+                .catch(error => {
+                    console.error("Like request failed:", error);
+                });
+            });
+        });
     </script>
 }
+
+

@@ -43,7 +43,12 @@ namespace PBL3.Controllers
             }
             return View(profile);
         }
-         
+
+        //Đổi Mật Khẩu
+        // GET: User/ChangePassword
+
+        //
+
         //GET: User/EditProfile
         public async Task<IActionResult> EditProfile()
         {
