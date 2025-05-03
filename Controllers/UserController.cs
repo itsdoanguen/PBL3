@@ -43,6 +43,7 @@ namespace PBL3.Controllers
             }
             return View(profile);
         }
+         
         //GET: User/EditProfile
         public async Task<IActionResult> EditProfile()
         {

@@ -74,7 +74,7 @@ namespace PBL3.Service
             await _context.SaveChangesAsync();
 
             return (true, "Tạo truyện mới thành công!", newStory.StoryID);
-        } 
+        }
 
         public async Task<(bool isSuccess, string errorMessage)> DeleteStoryAsync(int storyID, int currentUserID)
         {
@@ -148,13 +148,39 @@ namespace PBL3.Service
                 TotalComment = totalComment,
                 TotalChapter = chapterList.Count,
                 TotalView = totalView,
-                Chapters = chapterList
+                Chapters = chapterList,
+                StoryStatus = story.Status
             };
         }
+        public async Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus)
+        {
+            var story = await _context.Stories
+                .Where(s => s.StoryID == storyID)
+                .FirstOrDefaultAsync();
+            if (story == null)
+            {
+                return (false, "Truyện không tồn tại", 0);
+            }
 
-        //public async Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus)
-        //{
-        //    return NotImplementedException();
-        //}
+            var authorID = await _context.Stories
+                .Where(s => s.StoryID == storyID)
+                .Select(s => s.AuthorID)
+                .FirstOrDefaultAsync();
+            if (authorID != currentUserID)
+            {
+                return (false, "AccessDenied", 0);
+            }
+
+            if (!Enum.TryParse<StoryModel.StoryStatus>(newStatus, out var parsedStatus))
+            {
+                return (false, "Trạng thái không hợp lệ", 0);
+            }
+
+            story.Status = parsedStatus;
+            story.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
+
+            return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
+        }
     }
 }

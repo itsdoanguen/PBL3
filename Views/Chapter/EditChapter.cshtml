@@ -7,6 +7,20 @@
 	ViewBag.ChapterStatus = Model.ChapterStatus.ToString();
 }
 
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <h2>@ViewData["Title"]</h2>
 
 <form asp-action="EditChapter" method="post">

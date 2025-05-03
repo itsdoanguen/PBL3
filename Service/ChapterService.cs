@@ -28,7 +28,10 @@ namespace PBL3.Service
                 .Select(s => s.Status)
                 .FirstOrDefaultAsync();
 
-            if (chapter.Status == ChapterStatus.Inactive /*|| storyStatus == StoryModel.StoryStatus.Inactive*/)
+            if (storyStatus == StoryModel.StoryStatus.Inactive)
+                return null;
+
+            if (chapter.Status == ChapterStatus.Inactive)
                 return null;
 
             // Xử lý ViewCount và Cookie
@@ -89,7 +92,7 @@ namespace PBL3.Service
             await _context.Chapters.AddAsync(newChapter);
             await _context.SaveChangesAsync();
 
-            return newChapter; 
+            return newChapter;
         }
 
         //Xóa chapter
@@ -159,7 +162,7 @@ namespace PBL3.Service
 
             chapter.Title = model.Title;
             chapter.Content = model.Content;
-            chapter.UpdatedAt = DateTime.UtcNow; 
+            chapter.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return true;
@@ -184,12 +187,22 @@ namespace PBL3.Service
                 return (false, "AccessDenied", chapter.StoryID);
             }
 
+            var storyStatus = await _context.Stories
+                .Where(s => s.StoryID == chapter.StoryID)
+                .Select(s => s.Status)
+                .FirstOrDefaultAsync();
+            if (storyStatus == StoryModel.StoryStatus.Inactive)
+            {
+                return (false, "Truyện chưa được xuất bản, không thể xuất bản chương!", chapter.StoryID);
+            }
+
             if (!Enum.TryParse<ChapterStatus>(newStatus, out var parsedStatus))
             {
                 return (false, "Trạng thái không hợp lệ.", chapter.StoryID);
             }
 
             chapter.Status = parsedStatus;
+            chapter.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);
