@@ -11,14 +11,19 @@ namespace PBL3.Controllers
     [Authorize(Roles = "User")]
     public class UserController : Controller
     {
+        private const string DefaultAvatar = "/image/default-avatar.png";
+        private const string DefaultBanner = "/image/default-banner.png";
+
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
         private readonly IUserService _userService;
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService)
+        private readonly IImageService _imageService;
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
         {
             _context = context;
             _blobService = blobService;
             _userService = userService;
+            _imageService = imageService;
         }
         //GET: User/Index
         public IActionResult Index()
@@ -60,64 +65,49 @@ namespace PBL3.Controllers
             }
 
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userInfo = _context.Users.Find(currentUserID);
+            var userInfo = await _context.Users.FindAsync(currentUserID);
             if (userInfo == null)
             {
                 return NotFound();
             }
 
-            //Xử lý upload avatar và banner, ở đây giới hạn kích thước file là 1MB và chỉ cho phép file ảnh có đuôi là jpg, jpeg, png
-            if (avatarUpload != null && avatarUpload.Length > 0)
+
+            //Upload avatar
+            if(avatarUpload != null)
             {
-                if (avatarUpload.Length > 1024 * 1024)
+                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(avatarUpload, "avatars");
+
+                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
                 {
-                    ModelState.AddModelError("Avatar", "Avatar must be less than 1MB");
-                    return View(profile);
-                }
-                var fileExtension = Path.GetExtension(avatarUpload.FileName); //Lấy đuôi file
-                if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
-                {
-                    ModelState.AddModelError("Avatar", "Avatar must be in jpg, jpeg or png format");
+                    profile.Avatar = userInfo.Avatar;
+                    profile.Banner = userInfo.Banner;
+                    ModelState.AddModelError("Avatar", errorMessage);
                     return View(profile);
                 }
 
-                var fileName = $"avatars/{currentUserID}_avatar{fileExtension}"; //Tạo blob name ở chỗ này
-                using (var stream = avatarUpload.OpenReadStream())
-                {
-                    //Dùng service đã định gnhiax ở BlobService để upload file 
-                    var result = await _blobService.UploadFileAsync(stream, fileName);
-                    userInfo.Avatar = result;
-                }
+                userInfo.Avatar = imageUrl;
             }
             else
             {
-                //Nếu không user không upload avatar trong form edit thì lấy avatar cũ
-                userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
+                userInfo.Avatar = profile.Avatar ?? DefaultAvatar;
             }
-            //Thằng này tương tự với avatar
-            if (bannerUpload != null && bannerUpload.Length > 0)
+
+            //Upload banner
+            if (bannerUpload != null)
             {
-                if (bannerUpload.Length > 1024 * 1024)
+                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(bannerUpload, "banners");
+                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
                 {
-                    ModelState.AddModelError("Banner", "Banner must be less than 1MB");
+                    profile.Avatar = userInfo.Avatar;
+                    profile.Banner = userInfo.Banner;
+                    ModelState.AddModelError("Banner", errorMessage);
                     return View(profile);
                 }
-                var fileExtension = Path.GetExtension(bannerUpload.FileName);
-                if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
-                {
-                    ModelState.AddModelError("Banner", "Banner must be in jpg, jpeg or png format");
-                    return View(profile);
-                }
-                var fileName = $"banners/{currentUserID}_banner{fileExtension}";
-                using (var stream = bannerUpload.OpenReadStream())
-                {
-                    var result = await _blobService.UploadFileAsync(stream, fileName);
-                    userInfo.Banner = result;
-                }
+                userInfo.Banner = imageUrl;
             }
             else
             {
-                userInfo.Banner = profile.Banner;
+                userInfo.Banner = profile.Banner ?? DefaultBanner;
             }
 
             userInfo.DisplayName = profile.DisplayName;
