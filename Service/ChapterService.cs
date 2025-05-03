@@ -270,5 +270,15 @@ namespace PBL3.Service
 
             return previousChapter?.ChapterID ?? -1;
         }
+        public int CountWordsInChapter(string content)
+        {
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                return 0;
+            }
+
+            var words = content.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
+            return words.Length;
+        }
     }
 }

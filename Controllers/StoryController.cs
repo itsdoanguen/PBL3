@@ -20,8 +20,20 @@ namespace PBL3.Controllers
             _storyService = storyService;
         }
 
-        //GET: Story/View/{id}
-        //TODO: Lấy các thông tin của truyện, cũng như hiển thị các comment,....
+        // GET: Story/View/{id}
+        public async Task<IActionResult> View(int id)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var storyDetail = await _storyService.GetStoryDetailAsync(id, currentUserID);
+            if (storyDetail == null)
+            {
+                return NotFound();
+            }
+
+            return View(storyDetail);
+        }
+
 
 
         // GET: Story/Create

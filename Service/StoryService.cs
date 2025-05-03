@@ -2,9 +2,6 @@
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.ViewModels.Story;
-using PBL3.ViewModels.Chapter;
-using PBL3.Service;
-using System.Security.Claims;
 
 namespace PBL3.Service
 {
@@ -194,21 +191,21 @@ namespace PBL3.Service
             story.Description = model.Description;
             story.CoverImage = coverImagePath;
             story.UpdatedAt = DateTime.UtcNow;
-            
+
             _context.Stories.Update(story);
             await _context.SaveChangesAsync();
-            
+
             var existingGenres = await _context.StoryGenres
                 .Where(sg => sg.StoryID == model.StoryID)
                 .ToListAsync();
             _context.StoryGenres.RemoveRange(existingGenres);
-            
+
             var newStoryGenres = model.GenreIDs.Select(genreID => new StoryGenreModel
             {
                 StoryID = model.StoryID,
                 GenreID = genreID
             }).ToList();
-            
+
             await _context.StoryGenres.AddRangeAsync(newStoryGenres);
             await _context.SaveChangesAsync();
             return (true, "Cập nhật truyện thành công");
@@ -245,6 +242,136 @@ namespace PBL3.Service
             return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
         }
 
+        public async Task<StoryDetailViewModel> GetStoryDetailAsync(int storyID, int currentUserID)
+        {
 
+            var story = await _context.Stories.Where(s => s.StoryID == storyID && s.Status == StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.Completed).FirstOrDefaultAsync();
+            if (story == null)
+            {
+                return null;
+            }
+            var author = await _context.Users
+                .Where(u => u.UserID == story.AuthorID)
+                .Select(u => new UserInfo
+                {
+                    UserID = u.UserID,
+                    UserName = u.DisplayName,
+                    UserAvatar = u.Avatar
+                })
+                .FirstOrDefaultAsync();
+
+            var viewModel = new StoryDetailViewModel
+            {
+                StoryID = story.StoryID,
+                StoryName = story.Title,
+                StoryDescription = story.Description,
+                StoryImage = story.CoverImage,
+                LastUpdated = story.UpdatedAt,
+                StoryStatus = story.Status,
+                Author = author,
+                gerneVMs = GetGerneForStory(storyID),
+                TotalChapter = await _context.Chapters.CountAsync(c => c.StoryID == storyID && c.Status == ChapterStatus.Active),
+                TotalComment = await _context.Comments.CountAsync(c => c.StoryID == storyID),
+                TotalView = await _context.Chapters.Where(c => c.StoryID == storyID).SumAsync(c => c.ViewCount),
+                TotalFollow = await _context.FollowStories.CountAsync(f => f.StoryID == storyID),
+                TotalWord = await GetTotalStoryWordAsync(storyID),
+                TotalBookmark = await _context.Bookmarks.CountAsync(b => b.Chapter.StoryID == storyID),
+                Comments = GetCommentForStory(storyID),
+                Chapters = GetChapterForStory(storyID),
+                IsFollowed = await _context.FollowStories
+                    .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
+                Rating = await GetTotalStoryWordAsync(storyID)
+            };
+
+            return viewModel;
+        }
+
+
+        private List<CommentInfo> GetCommentForStory(int storyID)
+        {
+            var comments = _context.Comments
+                .Where(c => c.StoryID == storyID)
+                .Select(c => new CommentInfo
+                {
+                    CommentID = c.CommentID,
+                    Content = c.Content,
+                    CreatedAt = c.CreatedAt,
+                    User = new UserInfo
+                    {
+                        UserID = c.User.UserID,
+                        UserName = c.User.DisplayName,
+                        UserAvatar = c.User.Avatar
+                    }
+                })
+                .ToList();
+
+            return comments;
+        }
+        private List<GerneVM> GetGerneForStory(int storyID)
+        {
+            var genres = _context.StoryGenres
+                .Where(sg => sg.StoryID == storyID)
+                .Select(sg => new GerneVM
+                {
+                    GenreID = sg.Genre.GenreID,
+                    Name = sg.Genre.Name
+                })
+                .ToList();
+            return genres;
+        }
+        private List<ChapterInfo> GetChapterForStory(int storyID)
+        {
+            var chapters = _context.Chapters
+                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c=> c.ChapterOrder)
+                .Select(c => new ChapterInfo
+                {
+                    ChapterID = c.ChapterID,
+                    Title = c.Title,
+                    UpdatedAt = c.UpdatedAt
+                })
+                .ToList();
+            return chapters;
+        }
+        private async Task<int> GetTotalStoryWordAsync(int storyID)
+        {
+            var chapters = await _context.Chapters
+                .Where(c => c.StoryID == storyID)
+                .Select(c => c.Content)
+                .ToListAsync();
+
+            int totalWord = chapters.Sum(content => _chapterService.CountWordsInChapter(content));
+            return totalWord;
+        }
+
+        private async Task<double> RatingStoryAsync(int storyID)
+        {
+            var chapters = await _context.Chapters
+                .Where(c => c.StoryID == storyID)
+                .Select(c => new
+                {
+                    c.ChapterID,
+                    c.ViewCount
+                })
+                .ToListAsync();
+
+            int totalChapter = chapters.Count;
+            if (totalChapter == 0) return 0;
+
+            int totalLike = 0;
+            foreach (var c in chapters)
+            {
+                totalLike += await _context.LikeChapters.CountAsync(l => l.ChapterID == c.ChapterID);
+            }
+
+            int totalView = chapters.Sum(c => c.ViewCount);
+            int totalWord = await GetTotalStoryWordAsync(storyID);
+
+            double averageLike = (double)totalLike / totalChapter;
+            double averageView = (double)totalView / totalChapter;
+            double averageWord = (double)totalWord / totalChapter;
+
+            double rating = (averageLike * 0.5) + (averageView * 0.2) + (averageWord * 0.3);
+            return rating;
+        }
     }
 }
