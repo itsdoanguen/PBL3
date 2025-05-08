@@ -1,31 +1,49 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using PBL3.Models;
-using PBL3.ViewModels;
-using PBL3.ViewModels.Chapter;
+using PBL3.Service;
 using PBL3.ViewModels.Story;
+
 namespace PBL3.Controllers
 {
     public class StoryController : Controller
     {
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
-        public StoryController(ApplicationDbContext context, BlobService blobService)
+        private readonly IChapterService _chapterService;
+        private readonly IStoryService _storyService;
+        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IStoryService storyService)
         {
             _context = context;
             _blobService = blobService;
+            _chapterService = chapterService;
+            _storyService = storyService;
         }
 
-        //GET: Story/ViewStory
-        //TODO: Lấy các thông tin của truyện, cũng như hiển thị các comment,....
+        // GET: Story/View/{id}
+        public async Task<IActionResult> View(int id)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var storyDetail = await _storyService.GetStoryDetailAsync(id, currentUserID);
+            if (storyDetail == null)
+            {
+                return NotFound();
+            }
+
+            return View(storyDetail);
+        }
+
 
 
         // GET: Story/Create
         public IActionResult Create()
         {
-            return View();
+            var model = new StoryCreateViewModel
+            {
+                availbleGenres = GetAvailbleGenres()
+            };
+            return View(model);
         }
 
         // POST: Story/Create
@@ -35,121 +53,119 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
-            }
-            var existingStory = _context.Stories.FirstOrDefault(s => s.Title == model.Title);
-            if (existingStory != null)
-            {
-                ModelState.AddModelError("Title", "Title already exists");
+                model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
 
-            string coverImagePath = "/image/default-cover.jpg";
+            int authorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (model.UploadCover != null && model.UploadCover.Length > 0)
+            var (isSuccess, errorMessage, storyID) = await _storyService.CreateStoryAsync(model, authorID);
+
+            if (!isSuccess)
             {
-                if (model.UploadCover.Length > 1024 * 1024)
-                {
-                    ModelState.AddModelError("UploadCover", "Cover image must be less than 1MB");
-                    return View(model);
-                }
-
-                var fileExtension = Path.GetExtension(model.UploadCover.FileName);
-                if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
-                {
-                    ModelState.AddModelError("UploadCover", "Cover image must be in jpg, jpeg or png format");
-                    return View(model);
-                }
-
-                var fileName = $"covers/{Guid.NewGuid()}_cover{fileExtension}";
-                using (var stream = model.UploadCover.OpenReadStream())
-                {
-                    var result = await _blobService.UploadFileAsync(stream, fileName);
-                    coverImagePath = result;
-                }
+                ModelState.AddModelError(string.Empty, errorMessage);
+                model.availbleGenres = GetAvailbleGenres();
+                return View(model);
             }
 
-            var newStory = new StoryModel
-            {
-                Title = model.Title,
-                Description = model.Description,
-                CoverImage = coverImagePath,
-                Status = StoryModel.StoryStatus.Inactive,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-                AuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier))
-            };
-
-            await _context.Stories.AddAsync(newStory);
-            await _context.SaveChangesAsync();
-
+            TempData["SuccessMessage"] = "Tạo truyện mới thành công!";
             return RedirectToAction("MyStories", "User");
         }
-        //GET: Story/EditDetail/{id}
+
+        //POST: Story/Delete/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int StoryID)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.DeleteStoryAsync(StoryID, currentUserID);
+
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("MyStories", "User");
+            }
+            TempData["SuccessMessage"] = "Xóa truyện thành công!";
+            return RedirectToAction("MyStories", "User");
+        }
+
+        //POST: Story/UpdateStatus/{id}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateStatus(int StoryID, string newStatus)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var (isSuccess, errorMessage, storyID) = await _storyService.UpdateStoryStatusAsync(StoryID, currentUserID, newStatus);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("MyStories", "User");
+            }
+            TempData["SuccessMessage"] = "Cập nhật trạng thái truyện thành công!";
+            return RedirectToAction("EditDetail", new { id = storyID });
+        }
+
+
+        // GET: Story/EditDetail/{id}
         public async Task<IActionResult> EditDetail(int id)
         {
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var story = await _context.Stories
-                .Where(s => s.AuthorID == currentAuthorID && s.StoryID == id)
-                .FirstOrDefaultAsync();
 
-            if (story == null)
+            var viewModel = await _storyService.GetStoryDetailForEditAsync(id, currentAuthorID);
+
+            if (viewModel == null)
             {
                 return NotFound();
             }
 
-            var chapterList = await GetChaptersForStoryAsync(id);
+            return View(viewModel);
+        }
 
-            var totalLike = await _context.LikeChapters
-                .Where(l => l.Chapter.StoryID == id)
-                .CountAsync();
-
-            var totalBookmark = await _context.Bookmarks
-                .Where(b => b.Chapter.StoryID == id)
-                .CountAsync();
-
-            var totalComment = await _context.Comments
-                .Where(c => c.Chapter.StoryID == id)
-                .CountAsync();
-
-            var totalView = await _context.Chapters
-                .Where(c => c.StoryID == id)
-                .SumAsync(c => c.ViewCount);
-
-            var viewModel = new StoryEditViewModel
+        //GET: Story/Edit
+        public async Task<IActionResult> Edit(int id)
+        {
+            int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var viewModel = await _storyService.GetStoryDetailForEditAsync(id, currentAuthorID);
+            if (viewModel == null)
             {
-                StoryID = story.StoryID,
-                Title = story.Title,
-                Description = story.Description,
-                CoverImage = story.CoverImage,
-                TotalLike = totalLike,
-                TotalBookmark = totalBookmark,
-                TotalComment = totalComment,
-                TotalChapter = chapterList.Count,
-                TotalView = totalView,
-                Chapters = chapterList
-            };
+                return NotFound();
+            }
 
             return View(viewModel);
         }
-        private async Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId)
+
+        //POST: Story/Edit
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(StoryEditViewModel model, int currentUserID)
         {
-            return await _context.Chapters
-                .Where(c => c.StoryID == storyId)
-                .OrderByDescending(c => c.CreatedAt)
-                .Select(c => new ChapterSummaryViewModel
-                {
-                    ChapterID = c.ChapterID,
-                    Title = c.Title,
-                    CreatedAt = c.CreatedAt,
-                    UpdatedAt = c.UpdatedAt,
-                    ViewCount = c.ViewCount,
-                    ChapterOrder = c.ChapterOrder
-                })
-                .ToListAsync();
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.UpdateStoryAsync(model, currentAuthorID);
+            if (!isSuccess)
+            {
+                ModelState.AddModelError(string.Empty, errorMessage);
+                return View(model);
+            }
+            TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
+            return RedirectToAction("MyStories", "User");
         }
 
-
+        //METHOD
+        private List<GerneVM> GetAvailbleGenres()
+        {
+            return _context.Genres
+                .Select(g => new GerneVM
+                {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                })
+                .ToList();
+        }
 
     }
 }

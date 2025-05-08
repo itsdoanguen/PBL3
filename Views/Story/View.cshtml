@@ -1,0 +1,81 @@
+﻿@model PBL3.ViewModels.Story.StoryDetailViewModel
+
+@{
+    ViewData["Title"] = Model.StoryName ?? "Chi tiết truyện";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col-md-3 text-center">
+            <img src="@Model.StoryImage" alt="Ảnh bìa" class="img-fluid rounded mb-2" style="max-width: 100%; height: auto;" />
+            <p class="fw-bold">@Model.TotalChapter chương</p>
+            <p>@Model.TotalView.ToString("N0") lượt xem</p>
+            <p>@Model.TotalFollow.ToString("N0") theo dõi</p>
+            <p>@Model.TotalBookmark.ToString("N0") bookmark</p>
+        </div>
+        <div class="col-md-9">
+            <h2 class="fw-bold">@Model.StoryName</h2>
+            <p><strong>Tác giả:</strong> @Model.Author?.UserName ?? "Chưa có..."</p>
+            <p><strong>Trạng thái:</strong> @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "Đang phát hành" : "Hoàn thành")</p>
+            <p>
+                <strong>Thể loại:</strong>
+                @if (Model.gerneVMs != null && Model.gerneVMs.Any())
+                {
+                    @foreach (var genre in Model.gerneVMs)
+                    {
+                        <span class="badge bg-secondary me-1">@genre.Name</span>
+                    }
+                }
+                else
+                {
+                    <span>Chưa có...</span>
+                }
+            </p>
+            <p><strong>Số từ:</strong> @Model.TotalWord.ToString("N0")</p>
+            <p><strong>Đánh giá:</strong> <span class="text-warning">@Model.Rating.ToString("0.0")</span></p>
+            <p><strong>Cập nhật lần cuối:</strong> @Model.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có..."</p>
+
+            <hr />
+            <p><strong>Mô tả:</strong></p>
+            <p>@Model.StoryDescription ?? "Chưa có mô tả..."</p>
+        </div>
+    </div>
+
+    <h4 class="mb-3">Danh sách chương</h4>
+    @if (Model.Chapters != null && Model.Chapters.Any())
+    {
+        <ul class="list-group mb-4">
+            @foreach (var chapter in Model.Chapters)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span>@chapter.Title</span>
+                    <small class="text-muted">@chapter.UpdatedAt?.ToString("dd/MM/yyyy")</small>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Chưa có chương nào.</p>
+    }
+
+    <h4 class="mb-3">Bình luận</h4>
+    @if (Model.Comments != null && Model.Comments.Any())
+    {
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="border p-3 rounded mb-2">
+                <p class="mb-1">
+                    <strong>@(comment.User?.UserName ?? "Ẩn danh")</strong>
+                    - <small class="text-muted">@comment.CreatedAt.ToString("dd/MM/yyyy")</small>
+                </p>
+                <p class="mb-0">@comment.Content</p>
+            </div>
+        }
+    }
+    else
+    {
+        <p>Chưa có bình luận nào.</p>
+    }
+</div>

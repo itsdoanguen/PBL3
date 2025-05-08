@@ -2,49 +2,78 @@
 @model StoryCreateViewModel
 
 @{
-    ViewData["Title"] = "Tạo Truyện Mới";
-    Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
+	ViewData["Title"] = "Tạo Truyện Mới";
+	Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+	<div class="alert alert-success" role="alert">
+		@TempData["SuccessMessage"]
+	</div>
 }
 
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Tạo Truyện Mới</h2>
-    <form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-4">
-        <!-- Cột bên trái: Ảnh bìa -->
-        <div class="col-md-4 d-flex flex-column align-items-center">
-            <label for="coverPreview" class="form-label">Ảnh Bìa</label>
-            <div class="border rounded p-2 w-100 d-flex justify-content-center" style="height: 350px;">
-                <img id="coverPreview" src="/image/default-cover.jpg" class="img-fluid rounded" style="max-height: 100%;">
-            </div>
-            <input type="file" id="coverInput" name="UploadCover" class="form-control mt-2" accept="image/*" onchange="previewImage(event)">
-            <span asp-validation-for="UploadCover" class="text-danger"></span>
-        </div>
+	<h2 class="mb-4 text-center">Tạo Truyện Mới</h2>
+	<form asp-action="Create" method="post" enctype="multipart/form-data" class="row g-4">
+		<!-- Cột bên trái: Ảnh bìa -->
+		<div class="col-md-4 d-flex flex-column align-items-center">
+			<label for="coverPreview" class="form-label">Ảnh Bìa</label>
+			<div class="border rounded p-2 w-100 d-flex justify-content-center" style="height: 350px;">
+				<img id="coverPreview" src="/image/default-cover.jpg" class="img-fluid rounded" style="max-height: 100%;">
+			</div>
+			<input type="file" id="coverInput" name="UploadCover" class="form-control mt-2" accept="image/*" onchange="previewImage(input)">
+			<span asp-validation-for="UploadCover" class="text-danger"></span>
+		</div>
 
-        <!-- Cột bên phải: Form nhập thông tin -->
-        <div class="col-md-8">
-            <div class="mb-3">
-                <label for="Title" class="form-label">Tiêu đề</label>
-                <input asp-for="Title" class="form-control" required />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
+		<!-- Cột bên phải: Form nhập thông tin -->
+		<div class="col-md-8">
+			<div class="mb-3">
+				<label for="Title" class="form-label">Tiêu đề</label>
+				<input asp-for="Title" class="form-control" required />
+				<span asp-validation-for="Title" class="text-danger"></span>
+			</div>
 
-            <div class="mb-3">
-                <label for="Description" class="form-label">Mô tả</label>
-                <textarea asp-for="Description" class="form-control" rows="8" required></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
+			<div class="mb-3">
+				<label for="Description" class="form-label">Mô tả</label>
+				<textarea asp-for="Description" class="form-control" rows="8" required></textarea>
+				<span asp-validation-for="Description" class="text-danger"></span>
+			</div>
 
-            <button type="submit" class="btn btn-success w-100">Tạo Truyện</button>
-        </div>
-    </form>
+			<!-- Thể loại -->
+			<div class="mb-3">
+				<label for="Genres" class="form-label">Thể loại</label>
+				<div>
+					@foreach (var genre in Model.availbleGenres)
+					{
+						<div class="form-check">
+							<input type="checkbox" class="form-check-input"
+								   name="GenreIDs" value="@genre.GenreID"
+								   id="genre_@genre.GenreID"
+							@(genre.IsSelected ? "checked" : "")>
+
+							<label class="form-check-label" for="genre_@genre.GenreID">
+								@genre.Name
+							</label>
+						</div>
+					}
+				</div>
+				<span asp-validation-for="GenreIDs" class="text-danger"></span>
+			</div>
+
+
+			<button type="submit" class="btn btn-success w-100">Tạo Truyện</button>
+		</div>
+	</form>
 </div>
 
 <script>
-    function previewImage(event) {
-        var reader = new FileReader();
-        reader.onload = function(){
-            var output = document.getElementById('coverPreview');
-            output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
+	function previewImage(input) {
+		var reader = new FileReader();
+		reader.onload = function(){
+			var output = document.getElementById('coverPreview');
+			output.src = reader.result;
+		};
+		reader.readAsDataURL(input.target.files[0]);
+	}
 </script>

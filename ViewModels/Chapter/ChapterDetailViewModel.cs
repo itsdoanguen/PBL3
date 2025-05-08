@@ -13,7 +13,19 @@ namespace PBL3.ViewModels.Chapter
         public string StoryTitle { get; set; }
         public int StoryID { get; set; }
 
+        public bool IsLikedByCurrentUser { get; set; } // để hiển thị đúng nút
+        public int LikeCount { get; set; } // để hiện số lượt thích
         public List<CommentModel> Comments { get; set; }
+
+        public int NextChapterID { get; set; }
+        public int PreviousChapterID { get; set; } 
+
+        public List<ChapterList> ChapterList = new List<ChapterList>();
+    }
+
+    public class ChapterList { 
+        public int ChapterID { get; set; }
+        public string Title { get; set; }
     }
 
 }

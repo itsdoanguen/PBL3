@@ -1,30 +1,135 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
     ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="chapter-container">
-    <h2>@Model.StoryTitle - Chương: @Model.Title</h2>
-    <p><strong>Ngày đăng:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy") | <strong>Lượt xem:</strong> @Model.ViewCount</p>
-
-    <hr />
-    <div class="chapter-content">
-        @Html.Raw(Model.Content.Replace("\n", "<br/>"))
+<div class="d-flex">
+    <!-- Sidebar -->
+    <div id="chapterSidebar" class="p-3 border" style="width: 250px; display: none;">
+        <h4>Danh sách chương</h4>
+        <ul>
+            @foreach (var chap in Model.ChapterList)
+            {
+                <li>
+                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@chap.ChapterID">
+                        @chap.Title
+                    </a>
+                </li>
+            }
+        </ul>
     </div>
 
-    <hr />
-    <h4>Bình luận (@Model.Comments.Count)</h4>
-    @foreach (var comment in Model.Comments)
-    {
-        <div class="comment">
-            <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
-            <p>@comment.Content</p>
-        </div>
-    }
-
-    <form asp-action="PostComment" asp-controller="Comment" method="post">
-        <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-        <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
-        <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+    <!-- ✅ Form Like -->
+    <form id="likeForm" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="chapterId" value="@Model.ChapterID" />
+        <button type="button" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-primary") btn-modern"
+                data-liked="@Model.IsLikedByCurrentUser.ToString().ToLower()"
+                id="likeButton">
+            ❤️ <span id="likeText">@((Model.IsLikedByCurrentUser) ? "Đã thích" : "Like")</span>
+            (<span id="likeCount">@Model.LikeCount</span>)
+        </button>
     </form>
+
+
+    <!-- Main content -->
+    <div class="chapter-container flex-grow-1 p-3">
+        <!-- Nút toggle -->
+        <button class="btn btn-info mb-3" onclick="toggleSidebar()">📚 Danh sách chương</button>
+
+        <h2>@Model.StoryTitle - Chương: @Model.Title</h2>
+        <p><strong>Ngày đăng:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy") | <strong>Lượt xem:</strong> @Model.ViewCount</p>
+
+        <hr />
+        <div class="chapter-content">
+            @Html.Raw(Model.Content.Replace("\n", "<br/>"))
+        </div>
+
+        <hr />
+        <div class="chapter-navigation mb-3">
+            @if (Model.PreviousChapterID != -1)
+            {
+                <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-secondary">⬅ Chương trước</a>
+            }
+            else
+            {
+                <button class="btn btn-secondary disabled" disabled>⬅ Chương trước</button>
+            }
+
+            @if (Model.NextChapterID != -1)
+            {
+                <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-secondary ml-2">Chương sau ➡</a>
+            }
+            else
+            {
+                <button class="btn btn-secondary disabled ml-2" disabled>Chương sau ➡</button>
+            }
+        </div>
+
+        <h4>Bình luận (@Model.Comments.Count)</h4>
+        @foreach (var comment in Model.Comments)
+        {
+            <div class="comment">
+                <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
+                <p>@comment.Content</p>
+            </div>
+        }
+
+        <form asp-action="PostComment" asp-controller="Comment" method="post">
+            <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
+            <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
+            <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+        </form>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById('chapterSidebar');
+            sidebar.style.display = (sidebar.style.display === "none") ? "block" : "none";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const likeButton = document.getElementById("likeButton");
+            const token = document.querySelector('#likeForm input[name="__RequestVerificationToken"]').value;
+            const chapterId = document.querySelector('#likeForm input[name="chapterId"]').value;
+
+            likeButton.addEventListener("click", function () {
+                fetch("/LikeChapter/LikeChapter", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: `chapterId=${chapterId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const likeText = document.getElementById('likeText');
+                        const likeCount = document.getElementById('likeCount');
+
+                        if (data.liked) {
+                            likeButton.classList.remove("btn-outline-primary");
+                            likeButton.classList.add("btn-primary");
+                            likeText.textContent = "Đã thích";
+                        } else {
+                            likeButton.classList.remove("btn-primary");
+                            likeButton.classList.add("btn-outline-primary");
+                            likeText.textContent = "Like";
+                        }
+
+                        likeCount.textContent = data.likeCount;
+                    }
+                })
+                .catch(error => {
+                    console.error("Like request failed:", error);
+                });
+            });
+        });
+    </script>
+}
+
+
