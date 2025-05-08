@@ -76,6 +76,7 @@ namespace PBL3.Controllers
                 await _context.SaveChangesAsync();
 
                 await SignIn(user);
+                TempData["SuccessMessage"] = "Đăng ký tài khoản thành công!";
                 return RedirectToAction("Index", "User");
             }
             return View(model);
@@ -107,10 +108,12 @@ namespace PBL3.Controllers
                 if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
                 {
                     ModelState.AddModelError("Email", "Invalid email or password");
+                    TempData["ErrorMessage"] = "Đăng nhập thất bại. Email hoặc mật khẩu không đúng.";
                     return View(model);
                 }
 
                 await SignIn(user);
+                TempData["SuccessMessage"] = "Đăng nhập thành công!";
                 if (user.Role == UserModel.UserRole.Admin)
                 {
                     return RedirectToAction("Index", "Admin");
@@ -129,6 +132,7 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            TempData["SuccessMessage"] = "Đăng xuất thành công!";
             return RedirectToAction("Index", "Authentication");
         }
 
