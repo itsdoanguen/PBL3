@@ -2,6 +2,8 @@
 {
     public interface ILikeChapterService
     {
-        Task<(bool Liked, int LikeCount)> LikeChapterAsync(int chapterId, int userId);
+        Task<bool> LikeChapterAsync(int chapterId, int userId);
+        Task<bool> IsLikedByCurrentUserAsync(int chapterId, int userId);
+        Task<int> GetLikeCountAsync(int chapterId);
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using PBL3.Models;
 using PBL3.Service;
 using PBL3.ViewModels.Chapter;
 

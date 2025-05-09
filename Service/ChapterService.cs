@@ -8,9 +8,11 @@ namespace PBL3.Service
     public class ChapterService : IChapterService
     {
         private readonly ApplicationDbContext _context;
-        public ChapterService(ApplicationDbContext context)
+        private readonly ILikeChapterService _likeChapterService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService)
         {
             _context = context;
+            _likeChapterService = likeChapterService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -45,7 +47,7 @@ namespace PBL3.Service
 
                 var options = new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(1),
+                    Expires = DateTimeOffset.UtcNow.AddMinutes(10),
                     HttpOnly = true,
                     IsEssential = true
                 };
@@ -64,7 +66,9 @@ namespace PBL3.Service
                 Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
-                ChapterList = await GetChapterList(chapter.StoryID)
+                ChapterList = await GetChapterList(chapter.StoryID),
+                IsLikedByCurrentUser = await _likeChapterService.IsLikedByCurrentUserAsync(chapter.ChapterID, int.Parse(currentUserId)),
+                LikeCount = await _likeChapterService.GetLikeCountAsync(chapter.ChapterID)
             };
         }
 

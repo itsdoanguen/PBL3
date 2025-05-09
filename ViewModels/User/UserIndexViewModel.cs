@@ -1,28 +1,28 @@
-using PBL3.Models;
-using PBL3.ViewModels.Story;
 using PBL3.ViewModels.UserProfile;
-using System.Collections.Generic;
 
 namespace PBL3.ViewModels.User
 {
-   /* public class UserIndexViewModel
-    {
-        // Thông tin cơ bản của người dùng
-        public UserProfileViewModel UserProfile { get; set; }
-        
-        // Danh sách truyện đang theo dõi
-        public List<StoryCardViewModel> FollowingStories { get; set; } = new List<StoryCardViewModel>();
-        
-        // Danh sách truyện đã đọc gần đây
-        public List<RecentReadViewModel> RecentlyRead { get; set; } = new List<RecentReadViewModel>();
-        
-        // Danh sách truyện đề xuất
-        public List<StoryCardViewModel> RecommendedStories { get; set; } = new List<StoryCardViewModel>();
-        
-        // Thống kê hoạt động
-        public UserActivityStats ActivityStats { get; set; }
+     public class UserIndexViewModel
+     {
+
+
+        public List<UserStoryCardViewModel> TopStoryInWeek = new List<UserStoryCardViewModel>();
+
+        //// Thông tin cơ bản của người dùng
+        //public UserProfileViewModel UserProfile { get; set; }
+
+        //// Danh sách truyện đang theo dõi
+        //public List<StoryCardViewModel> FollowingStories { get; set; } = new List<StoryCardViewModel>();
+
+        //// Danh sách truyện đã đọc gần đây
+        //public List<RecentReadViewModel> RecentlyRead { get; set; } = new List<RecentReadViewModel>();
+
+        //// Danh sách truyện đề xuất
+        //public List<StoryCardViewModel> RecommendedStories { get; set; } = new List<StoryCardViewModel>();
+
+        //// Thống kê hoạt động
+        //public UserActivityStats ActivityStats { get; set; }
     }
-   */
     public class RecentReadViewModel
     {
         public int StoryID { get; set; }

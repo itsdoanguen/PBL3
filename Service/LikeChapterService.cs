@@ -13,7 +13,7 @@ namespace PBL3.Service
             _context = context;
         }
 
-        public async Task<(bool Liked, int LikeCount)> LikeChapterAsync(int chapterId, int userId)
+        public async Task<bool> LikeChapterAsync(int chapterId, int userId)
         {
             var existingLike = await _context.LikeChapters
                 .FirstOrDefaultAsync(l => l.UserID == userId && l.ChapterID == chapterId);
@@ -22,9 +22,8 @@ namespace PBL3.Service
             {
                 _context.LikeChapters.Remove(existingLike);
                 await _context.SaveChangesAsync();
-                int newLikeCount = await _context.LikeChapters
-                    .CountAsync(l => l.ChapterID == chapterId);
-                return (false, newLikeCount);
+
+                return false;
             }
 
             var newLike = new LikeChapterModel
@@ -36,10 +35,18 @@ namespace PBL3.Service
             _context.LikeChapters.Add(newLike);
             await _context.SaveChangesAsync();
 
-            int updatedLikeCount = await _context.LikeChapters
+            return false;
+        }
+        public async Task<bool> IsLikedByCurrentUserAsync(int chapterId, int userId)
+        {
+            var like = await _context.LikeChapters
+                .FirstOrDefaultAsync(l => l.UserID == userId && l.ChapterID == chapterId);
+            return like != null;
+        }
+        public async Task<int> GetLikeCountAsync(int chapterId)
+        {
+            return await _context.LikeChapters
                 .CountAsync(l => l.ChapterID == chapterId);
-            return (true, updatedLikeCount);
-           
         }
     }
 }
