@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
+using PBL3.Service.Discovery;
+using PBL3.ViewModels.User;
 using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Service.User
@@ -8,10 +10,12 @@ namespace PBL3.Service.User
     {
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
-        public UserService(ApplicationDbContext context, BlobService blobService)
+        private readonly IStoryRankingService _storyRankingService;
+        public UserService(ApplicationDbContext context, BlobService blobService, IStoryRankingService storyRankingService)
         {
             _context = context;
             _blobService = blobService;
+            _storyRankingService = storyRankingService;
         }
         public async Task<List<UserStoryCardViewModel>> GetUserStoryCard(int userId)
         {
@@ -90,5 +94,20 @@ namespace PBL3.Service.User
 
             return url;
         }
+
+        public async Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId)
+        {
+            var userIndexViewModel = new UserIndexViewModel();
+
+            var topStory = await _storyRankingService.GetTopStoriesOfWeekAsync(10);
+
+            if (topStory != null)
+            {
+                userIndexViewModel.TopStoryInWeek = topStory;
+            }
+
+            return userIndexViewModel;
+        }
+
     }
 }

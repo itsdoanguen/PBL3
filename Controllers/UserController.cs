@@ -18,6 +18,7 @@ namespace PBL3.Controllers
         private readonly BlobService _blobService;
         private readonly IUserService _userService;
         private readonly IImageService _imageService;
+        
         public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
         {
             _context = context;
@@ -26,9 +27,13 @@ namespace PBL3.Controllers
             _imageService = imageService;
         }
         //GET: User/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var viewModel = await _userService.GetUserIndexViewModelAsync(currentUserID);
+
+            return View(viewModel);
         }
         //GET: User/MyProfile
         public async Task<IActionResult> MyProfile()
@@ -63,7 +68,7 @@ namespace PBL3.Controllers
         //POST: User/EditProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) //Tham số IFormFile để lấy file ảnh từ form
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) 
         {
             if (!ModelState.IsValid)
             {

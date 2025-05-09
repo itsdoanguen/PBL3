@@ -7,6 +7,7 @@ using PBL3.Service.Image;
 using PBL3.Service.Story;
 using PBL3.Service.User;
 using PBL3.Service.Like;
+using PBL3.Service.Discovery;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.Services.AddScoped<IStoryService, StoryService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ILikeChapterService, LikeChapterService>();
+
+builder.Services.AddScoped<IStoryRankingService, StoryRankingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
