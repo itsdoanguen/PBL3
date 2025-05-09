@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Models;
-using PBL3.Service;
+using PBL3.Service.Like;
 
 namespace PBL3.Controllers
 {

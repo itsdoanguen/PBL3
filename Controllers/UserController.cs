@@ -1,10 +1,10 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
+using PBL3.Service.Image;
+using PBL3.Service.User;
 using PBL3.ViewModels.UserProfile;
-using PBL3.Service;
 
 namespace PBL3.Controllers
 {
@@ -79,7 +79,7 @@ namespace PBL3.Controllers
 
 
             //Upload avatar
-            if(avatarUpload != null)
+            if (avatarUpload != null)
             {
                 var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(avatarUpload, "avatars");
 

@@ -1,6 +1,6 @@
 ﻿using PBL3.ViewModels.UserProfile;
 
-namespace PBL3.Service
+namespace PBL3.Service.User
 {
     public interface IUserService
     {

@@ -1,11 +1,8 @@
-﻿using PBL3.Data;
-using PBL3.ViewModels;
-using PBL3.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
 using PBL3.ViewModels.UserProfile;
 
-namespace PBL3.Service
+namespace PBL3.Service.User
 {
     public class UserService : IUserService
     {
@@ -37,7 +34,7 @@ namespace PBL3.Service
         public async Task<UserProfileViewModel> GetUserProfile(int userId)
         {
             var userInfo = await _context.Users.FindAsync(userId);
-            if(userInfo == null)
+            if (userInfo == null)
             {
                 return null;
             }

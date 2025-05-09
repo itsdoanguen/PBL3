@@ -3,7 +3,7 @@ using PBL3.ViewModels;
 using PBL3.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace PBL3.Service
+namespace PBL3.Service.Like
 {
     public class LikeChapterService : ILikeChapterService
     {

@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Chapter;
+using PBL3.Service.Image;
 using PBL3.ViewModels.Story;
 
-namespace PBL3.Service
+namespace PBL3.Service.Story
 {
     public class StoryService : IStoryService
     {
@@ -370,7 +372,7 @@ namespace PBL3.Service
             double averageView = (double)totalView / totalChapter;
             double averageWord = (double)totalWord / totalChapter;
 
-            double rating = (averageLike * 0.5) + (averageView * 0.2) + (averageWord * 0.3);
+            double rating = averageLike * 0.5 + averageView * 0.2 + averageWord * 0.3;
             return rating;
         }
     }

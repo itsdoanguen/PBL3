@@ -1,5 +1,4 @@
-﻿
-namespace PBL3.Service
+﻿namespace PBL3.Service.Image
 {
     public class ImageService : IImageService
     {

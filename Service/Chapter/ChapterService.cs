@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Like;
 using PBL3.ViewModels.Chapter;
 
-namespace PBL3.Service
+namespace PBL3.Service.Chapter
 {
     public class ChapterService : IChapterService
     {

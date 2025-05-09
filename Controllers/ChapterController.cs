@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
-using PBL3.Service;
+using PBL3.Service.Chapter;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers

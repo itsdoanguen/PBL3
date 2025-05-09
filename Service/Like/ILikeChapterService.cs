@@ -1,4 +1,4 @@
-﻿namespace PBL3.Service
+﻿namespace PBL3.Service.Like
 {
     public interface ILikeChapterService
     {
