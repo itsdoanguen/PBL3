@@ -7,9 +7,11 @@ namespace PBL3.Service.Discovery
     public class StoryRankingService : IStoryRankingService
     {
         private readonly ApplicationDbContext _context;
-        public StoryRankingService(ApplicationDbContext context)
+        private readonly BlobService _blobService;
+        public StoryRankingService(ApplicationDbContext context, BlobService blobService)
         {
             _context = context;
+            _blobService = blobService;
         }
 
         public async Task<List<UserStoryCardViewModel>> GetTopStoriesOfWeekAsync(int topCount = 10)
@@ -41,6 +43,12 @@ namespace PBL3.Service.Discovery
                     Status = s.Story.Status
                 })
                 .ToListAsync();
+
+
+            foreach (var story in stories)
+            {
+                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+            }
 
             return stories;
         }

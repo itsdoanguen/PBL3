@@ -31,6 +31,12 @@ namespace PBL3.Service.User
                     TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID)
                 })
                 .ToListAsync();
+
+            //Lấy URL của ảnh bìa từ blob
+            foreach (var story in stories)
+            {
+                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+            }
             return stories;
         }
 
@@ -45,13 +51,8 @@ namespace PBL3.Service.User
 
             var stories = await GetUserStoryCard(userId);
 
-            //Tách Url của avatar và banner
-            string avatarBlobName = ExtractBlobName(userInfo.Avatar);
-            string bannerBlobName = ExtractBlobName(userInfo.Banner);
-
-            //Kiểm tra nếu có avatar hoặc banner thì lấy URL của blob, còn không thì trả về null
-            var avatarUrl = string.IsNullOrEmpty(avatarBlobName) ? null : await _blobService.GetBlobSasUrlAsync(avatarBlobName);
-            var bannerUrl = string.IsNullOrEmpty(bannerBlobName) ? null : await _blobService.GetBlobSasUrlAsync(bannerBlobName);
+            var avatarUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Avatar);
+            var bannerUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Banner);
 
             var profile = new UserProfileViewModel
             {
@@ -76,24 +77,6 @@ namespace PBL3.Service.User
 
         }
 
-        //Hàm tách tên blob từ URL
-        private string ExtractBlobName(string url)
-        {
-            if (string.IsNullOrEmpty(url)) return null;
-
-            //Vì URL có định dạng là "https://<storageName>.blob.core.windows.net/<containerName>/<blobName>" 
-            //Dùng hàm IndexOf để tìm vị trí của tên container
-            //Sau đó lấy phần còn lại của URL từ vị trí của container đến hết
-            string containerName = "pbl3container/";
-            int index = url.IndexOf(containerName);
-
-            if (index != -1)
-            {
-                return url.Substring(index + containerName.Length);
-            }
-
-            return url;
-        }
 
         public async Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId)
         {

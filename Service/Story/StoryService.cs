@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Chapter;
@@ -141,7 +142,7 @@ namespace PBL3.Service.Story
                 StoryID = story.StoryID,
                 Title = story.Title,
                 Description = story.Description,
-                CoverImage = story.CoverImage,
+                CoverImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 TotalLike = totalLike,
                 TotalBookmark = totalBookmark,
                 TotalComment = totalComment,
@@ -178,11 +179,12 @@ namespace PBL3.Service.Story
             {
                 return (false, "Thể loại là bắt buộc, hãy chọn ít nhất 1");
             }
+
             string coverImagePath = story.CoverImage;
             if (model.UploadCover != null)
             {
                 var (uploadSuccess, errorMessage, uploadedUrl) = await _imageService.UploadValidateImageAsync(model.UploadCover, "covers");
-                if (!uploadSuccess)
+                if (!uploadSuccess || string.IsNullOrEmpty(uploadedUrl))
                 {
                     return (false, errorMessage);
                 }
@@ -267,7 +269,7 @@ namespace PBL3.Service.Story
                 StoryID = story.StoryID,
                 StoryName = story.Title,
                 StoryDescription = story.Description,
-                StoryImage = story.CoverImage,
+                StoryImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 LastUpdated = story.UpdatedAt,
                 StoryStatus = story.Status,
                 Author = author,
@@ -282,7 +284,7 @@ namespace PBL3.Service.Story
                 Chapters = GetChapterForStory(storyID),
                 IsFollowed = await _context.FollowStories
                     .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
-                Rating = await GetTotalStoryWordAsync(storyID)
+                Rating = await RatingStoryAsync(storyID)
             };
 
             return viewModel;

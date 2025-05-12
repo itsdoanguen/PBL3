@@ -4,6 +4,7 @@ using Azure.Storage.Sas;
 public class BlobService
 {
     private readonly BlobContainerClient _containerClient;
+    private const string ContainerName = "pbl3container/";
 
     public BlobService(IConfiguration configuration)
     {
@@ -18,7 +19,12 @@ public class BlobService
     //Hàm upload file lên Azure Blob Storage
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
     {
-        //Tạo một blob mới để up ảnh lên
+        //Reset stream trước khi upload
+        if (fileStream.CanSeek)
+        {
+            fileStream.Position = 0;
+        }
+
         var blobClient = _containerClient.GetBlobClient(fileName);
         await blobClient.UploadAsync(fileStream, overwrite: true);
 
@@ -26,17 +32,14 @@ public class BlobService
     }
 
     //Hàm tạo SAS token cho blob
-    public async Task<String> GetBlobSasUrlAsync(string blobName)
+    public async Task<string> GetBlobSasUrlAsync(string blobName)
     {
-
-        //Tạo một blob để kiểm tra xem blob đang tìm kiếm có tồn tại trên container không
         var blobClient = _containerClient.GetBlobClient(blobName);
         if (!await blobClient.ExistsAsync())
         {
             return null;
         }
 
-        //Tạo một SAS token với thời gian bắt đầu và kết thúc, ở đây -4 vì đang set Storage ở múi giờ UTC-4 nên phải trừ 4 giờ
         var sasBuilder = new BlobSasBuilder()
         {
             BlobName = blobName,
@@ -45,11 +48,33 @@ public class BlobService
             ExpiresOn = DateTimeOffset.UtcNow.AddHours(1)
         };
 
-        //Cấp quyền đọc cho token
         sasBuilder.SetPermissions(BlobSasPermissions.Read);
-        //Tạo SAS token
         var sasToken = blobClient.GenerateSasUri(sasBuilder);
 
         return sasToken.ToString();
+    }
+
+    // ✅ Hàm chuẩn: Lấy ảnh có SAS hoặc giữ nguyên nếu là ảnh default
+    public async Task<string> GetSafeImageUrlAsync(string imageUrl)
+    {
+        if (string.IsNullOrEmpty(imageUrl)) return null;
+
+        // Nếu ảnh là default (vd: /image/default-cover.jpg) thì giữ nguyên
+        if (!imageUrl.StartsWith("https://")) return imageUrl;
+
+        // Extract blob name
+        string blobName = ExtractBlobName(imageUrl);
+        if (string.IsNullOrEmpty(blobName)) return imageUrl;
+
+        // Tạo SAS URL
+        var sasUrl = await GetBlobSasUrlAsync(blobName);
+        return string.IsNullOrEmpty(sasUrl) ? imageUrl : sasUrl;
+    }
+
+    // Hàm extract blob name
+    private string ExtractBlobName(string url)
+    {
+        int index = url.IndexOf(ContainerName);
+        return (index != -1) ? url.Substring(index + ContainerName.Length) : url;
     }
 }
