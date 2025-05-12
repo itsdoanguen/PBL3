@@ -48,7 +48,7 @@ namespace PBL3.Service.Chapter
 
                 var options = new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(10),
+                    Expires = DateTimeOffset.Now.AddMinutes(10),
                     HttpOnly = true,
                     IsEssential = true
                 };
@@ -169,12 +169,12 @@ namespace PBL3.Service.Chapter
 
             chapter.Title = model.Title;
             chapter.Content = model.Content;
-            chapter.UpdatedAt = DateTime.UtcNow;
+            chapter.UpdatedAt = DateTime.Now;
 
             var story = await _context.Stories.FirstOrDefaultAsync(s => s.StoryID == model.StoryID);
             if (story != null)
             {
-                story.UpdatedAt = DateTime.UtcNow;
+                story.UpdatedAt = DateTime.Now;
             }
 
 
@@ -216,7 +216,7 @@ namespace PBL3.Service.Chapter
             }
 
             chapter.Status = parsedStatus;
-            chapter.UpdatedAt = DateTime.UtcNow;
+            chapter.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);

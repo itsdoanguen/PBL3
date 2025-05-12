@@ -194,7 +194,7 @@ namespace PBL3.Service.Story
             story.Title = model.Title;
             story.Description = model.Description;
             story.CoverImage = coverImagePath;
-            story.UpdatedAt = DateTime.UtcNow;
+            story.UpdatedAt = DateTime.Now;
 
             _context.Stories.Update(story);
             await _context.SaveChangesAsync();
@@ -240,7 +240,7 @@ namespace PBL3.Service.Story
             }
 
             story.Status = parsedStatus;
-            story.UpdatedAt = DateTime.UtcNow;
+            story.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
@@ -362,21 +362,30 @@ namespace PBL3.Service.Story
             int totalChapter = chapters.Count;
             if (totalChapter == 0) return 0;
 
-            int totalLike = 0;
-            foreach (var c in chapters)
-            {
-                totalLike += await _context.LikeChapters.CountAsync(l => l.ChapterID == c.ChapterID);
-            }
+            // Tính tổng số lượt thích trực tiếp trong một truy vấn duy nhất
+            int totalLike = await _context.LikeChapters
+                .Where(l => chapters.Select(c => c.ChapterID).Contains(l.ChapterID))
+                .CountAsync();
 
+            // Tính tổng lượt xem
             int totalView = chapters.Sum(c => c.ViewCount);
+
+            // Lấy tổng số từ trong truyện
             int totalWord = await GetTotalStoryWordAsync(storyID);
 
+            // Tính các giá trị trung bình
             double averageLike = (double)totalLike / totalChapter;
             double averageView = (double)totalView / totalChapter;
             double averageWord = (double)totalWord / totalChapter;
 
+            // Điều chỉnh lại trọng số cho hợp lý, nếu cần
             double rating = averageLike * 0.5 + averageView * 0.2 + averageWord * 0.3;
+
+            // Đảm bảo rating không vượt quá 10 hoặc dưới 0
+            rating = Math.Max(0, Math.Min(rating, 10)); // Giới hạn rating từ 0 đến 10
+
             return rating;
         }
+
     }
 }

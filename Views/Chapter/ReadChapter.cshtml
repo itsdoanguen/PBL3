@@ -7,7 +7,7 @@
 @functions {
     string GetTimeAgo(DateTime? date)
     {
-        var span = DateTime.UtcNow.AddHours(-7) - date;
+        var span = DateTime.Now - date;
         if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
         if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
         if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
@@ -31,7 +31,7 @@
     /* Sidebar trượt */
     #chapterSidebar {
         position: fixed;
-        top: 0;
+        top: 40;
         left: -300px;
         width: 300px;
         height: 100%;
@@ -42,6 +42,10 @@
         overflow-y: auto;
     }
 
+        #chapterSidebar .card-body {
+            max-height: calc(100vh - 100px); 
+            overflow-y: auto; 
+        }
         #chapterSidebar.active {
             left: 0;
         }
@@ -83,6 +87,40 @@
         margin-bottom: 10px;
     }
 
+    #chap_list {
+        list-style-type: none;
+        padding-left: 0;
+        max-height: 100%; 
+        overflow-y: auto;
+    }
+
+        #chap_list li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+            #chap_list li.current {
+                background-color: #f1f1f1;
+            }
+
+    .sub-chap_list {
+        list-style-type: none;
+        padding-left: 20px;
+    }
+
+        .sub-chap_list li {
+            padding: 5px;
+        }
+
+    #chap_list li a {
+        color: #333;
+        text-decoration: none;
+    }
+
+        #chap_list li a:hover {
+            color: #007bff;
+        }
+
 
 </style>
 
@@ -92,19 +130,20 @@
 <div id="chapterSidebar">
     <div class="card-body">
         <h5 class="card-title">Danh sách chương</h5>
-        <ul class="list-group list-group-flush">
+        
+        <ul id="chap_list" class="unstyled">
             @foreach (var chap in Model.ChapterList)
             {
-                <li class="list-group-item list-group-item-action">
-                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@chap.ChapterID" class="d-block text-decoration-none">
+                <li class="@(chap.ChapterID == Model.ChapterID ? "current" : "")">
+                    <a href="@Url.Action("ReadChapter", "Chapter", new { id = chap.ChapterID })" class="d-block text-decoration-none">
                         @chap.Title
                     </a>
                 </li>
             }
         </ul>
-
     </div>
 </div>
+
 
 <!-- Thanh nav dọc -->
 <div id="floatingNav">
