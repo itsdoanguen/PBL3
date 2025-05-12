@@ -5,62 +5,241 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
+<style>
+    .series-cover {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+
+    .series-type {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: #d9534f;
+        color: white;
+        font-size: 0.75rem;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .a6-ratio {
+        position: relative;
+        width: 100%;
+        padding-top: 150%;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .img-in-ratio {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .series-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: .5rem;
+        display: block;
+    }
+
+    .series-gernes a {
+        display: inline-block;
+        background: #f1f1f1;
+        padding: 4px 8px;
+        border-radius: 12px;
+        margin: 0 5px 5px 0;
+        font-size: 0.85rem;
+        text-decoration: none;
+        color: #333;
+    }
+
+    .info-item {
+        margin-bottom: .5rem;
+        font-size: 0.95rem;
+    }
+
+        .info-item .info-name {
+            font-weight: bold;
+            margin-right: .5rem;
+        }
+
+    .statistic-list {
+        margin-top: 2rem;
+        border-top: 1px solid #eee;
+        padding-top: 1rem;
+    }
+
+    .statistic-item {
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .statistic-name {
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .statistic-value {
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .series-summary {
+        margin-top: 2rem;
+    }
+
+    .summary-content p {
+        margin-bottom: .5rem;
+    }
+
+    .action-buttons a {
+        margin-right: 10px;
+        margin-top: 1rem;
+    }
+
+    .avatar-frame {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #ddd;
+        margin: 0 auto;
+    }
+
+    .author-avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    /* Khung trắng cho từng vùng */
+    .section-block {
+        background: #fff;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    /* Màu nền chung cho trang */
+    body {
+        background-color: #f9f9f9;
+    }
+
+    /* Giãn cách phần tóm tắt */
+    .series-summary {
+        margin-top: 2rem;
+    }
+
+    /* Giãn cách danh sách chương */
+    .mb-5 {
+        margin-bottom: 3rem !important;
+    }
+
+</style>
+
 <div class="container py-4">
-    <div class="row mb-4">
-        <!-- Cột trái: ảnh và thống kê -->
-        <div class="col-md-4 text-center">
-            <img src="@Model.StoryImage" alt="Ảnh bìa" class="img-fluid rounded mb-3 shadow-sm" />
-            <div class="d-grid gap-2">
-                <div class="badge bg-primary fs-6">@Model.TotalChapter chương</div>
-                <div class="text-muted">@Model.TotalView.ToString("N0") lượt xem</div>
-                <div class="text-muted">@Model.TotalFollow.ToString("N0") theo dõi</div>
-                <div class="text-muted">@Model.TotalBookmark.ToString("N0") bookmark</div>
+    <main class="section-body section-block">
+        <div class="row">
+            <!-- Left: Ảnh bìa -->
+            <div class="col-md-3">
+                <div class="series-cover">
+                    <div class="series-type">Truyện đăng</div>
+                    <div class="a6-ratio">
+                        <div class="content img-in-ratio" style="background-image: url('@Model.StoryImage')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Thông tin -->
+            <div class="col-md-9 d-flex flex-column">
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <!-- Cột trái: Thông tin truyện -->
+                        <div class="col-md-8">
+                            <span class="series-name">@Model.StoryName</span>
+
+                            <!-- Thể loại -->
+                            <div class="series-gernes mb-2">
+                                @foreach (var genre in Model.gerneVMs)
+                                {
+                                    <a>@genre.Name</a>
+                                }
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="info-item">
+                                <span class="info-name">Tình trạng:</span>
+                                <span class="info-value">
+                                    @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "Đang phát hành" : "Hoàn thành")
+                                </span>
+                            </div>
+
+                            <!-- Nút hành động -->
+                            <div class="action-buttons d-flex flex-wrap">
+                                <a class="btn btn-danger rounded-pill" href="@Url.Action("ReadChapter", "Chapter", new { id = Model.Chapters?.FirstOrDefault()?.ChapterID })">Đọc tiếp</a>
+                                <a class="btn btn-warning rounded-pill" href="#">Đánh giá</a>
+                                <a class="btn btn-secondary rounded-pill" href="#chapterlist">Mục lục</a>
+                                <a class="btn btn-info rounded-pill" href="#comments">Bình luận</a>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải: Thẻ tác giả -->
+                        <div class="col-md-4 d-flex justify-content-center align-items-start">
+                            <div class="author-card text-center">
+                                <div class="avatar-frame mb-2">
+                                    <img src=@Model.Author?.UserAvatar ?? Url.Content("~/image/default-avatar.png") alt="Tác giả" class="author-avatar" />
+
+                                </div>
+                                <div class="author-name">@Model.Author?.UserName</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Thống kê -->
+                <div class="row statistic-list">
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Lần cuối</div>
+                        <div class="statistic-value">@Model.LastUpdated?.ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Số từ</div>
+                        <div class="statistic-value">@Model.TotalWord.ToString("N0")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Đánh giá</div>
+                        <div class="statistic-value">@Model.Rating.ToString("0.0")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Lượt xem</div>
+                        <div class="statistic-value">@Model.TotalView.ToString("N0")</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Cột phải: thông tin truyện -->
-        <div class="col-md-8">
-            <h2 class="fw-bold">@Model.StoryName</h2>
-            <p><strong>Tác giả:</strong> @Model.Author?.UserName ?? "Chưa có..."</p>
-            <p>
-                <strong>Trạng thái:</strong>
-                <span class="badge @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "bg-success" : "bg-secondary")">
-                    @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "Đang phát hành" : "Hoàn thành")
-                </span>
-            </p>
-            <p>
-                <strong>Thể loại:</strong>
-                @if (Model.gerneVMs != null && Model.gerneVMs.Any())
-                {
-                    @foreach (var genre in Model.gerneVMs)
-                    {
-                        <span class="badge bg-secondary me-1">@genre.Name</span>
-                    }
-                }
-                else
-                {
-                    <span>Chưa có...</span>
-                }
-            </p>
-            <p><strong>Số từ:</strong> @Model.TotalWord.ToString("N0")</p>
-            <p>
-                <strong>Đánh giá:</strong>
-                <span class="text-warning fw-bold">@Model.Rating.ToString("0.0")</span>
-            </p>
-            <p><strong>Cập nhật lần cuối:</strong> @Model.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có..."</p>
-
-            <hr />
-            <p><strong>Mô tả:</strong></p>
-            <p class="text-justify">@Model.StoryDescription ?? "Chưa có mô tả..."</p>
+        <!-- Tóm tắt -->
+        <div class="series-summary section-block">
+            <h4 class="font-bold">Tóm tắt</h4>
+            <div class="summary-content">
+                <p>@Html.Raw((Model.StoryDescription ?? "Chưa có mô tả...").Replace("\n","<br/>"))</p>
+            </div>
         </div>
-    </div>
+    </main>
 
     <!-- Danh sách chương -->
-    <div class="mb-5">
+    <div class="mb-5 section-block" id="chapterlist">
         <h4 class="mb-3">📚 Danh sách chương</h4>
-        @if (Model.Chapters != null && Model.Chapters.Any())
+        @if (Model.Chapters?.Any() == true)
         {
-            <ul class="list-group shadow-sm">
+            <div class="list-group shadow-sm">
                 @foreach (var chapter in Model.Chapters)
                 {
                     <a href="@Url.Action("ReadChapter", "Chapter", new { id = chapter.ChapterID })" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
@@ -68,7 +247,7 @@
                         <small class="text-muted">@chapter.UpdatedAt?.ToString("dd/MM/yyyy")</small>
                     </a>
                 }
-            </ul>
+            </div>
         }
         else
         {
@@ -77,13 +256,13 @@
     </div>
 
     <!-- Bình luận -->
-    <div>
+    <div class="section-block" id="comments">
         <h4 class="mb-3">💬 Bình luận</h4>
-        @if (Model.Comments != null && Model.Comments.Any())
+        @if (Model.Comments?.Any() == true)
         {
             @foreach (var comment in Model.Comments)
             {
-                <div class="border rounded p-3 mb-3 shadow-sm">
+                <div class="border rounded p-3 mb-3 shadow-sm bg-light">
                     <div class="d-flex justify-content-between mb-1">
                         <strong>@(comment.User?.UserName ?? "Ẩn danh")</strong>
                         <small class="text-muted">@comment.CreatedAt.ToString("dd/MM/yyyy")</small>
@@ -97,7 +276,6 @@
             <p>Chưa có bình luận nào.</p>
         }
 
-        <!-- Form bình luận -->
         @if (User.Identity.IsAuthenticated)
         {
             <form method="post" action="@Url.Action("AddComment", "Story", new { id = Model.StoryID })">

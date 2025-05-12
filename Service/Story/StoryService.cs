@@ -263,6 +263,7 @@ namespace PBL3.Service.Story
                     UserAvatar = u.Avatar
                 })
                 .FirstOrDefaultAsync();
+            author.UserAvatar = await _blobService.GetSafeImageUrlAsync(author.UserAvatar);
 
             var viewModel = new StoryDetailViewModel
             {
