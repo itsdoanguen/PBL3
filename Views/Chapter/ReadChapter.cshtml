@@ -4,108 +4,246 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
+@functions {
+    string GetTimeAgo(DateTime? date)
+    {
+        var span = DateTime.UtcNow.AddHours(-7) - date;
+        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+        return "Vừa xong";
+    }
+}
+
 <style>
-    .center-container {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
+    /* Overlay khi mở danh sách */
+    #overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        display: none;
+        z-index: 900;
     }
 
-    .chapter-content {
-        text-align: left;
-        white-space: pre-line;
+    /* Sidebar trượt */
+    #chapterSidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100%;
+        background-color: #fff;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+        z-index: 1000;
+        transition: left 0.3s;
+        overflow-y: auto;
     }
 
-    .chapter-navigation {
-        margin-top: 20px;
+        #chapterSidebar.active {
+            left: 0;
+        }
+
+    /* Thanh nav dọc */
+    #floatingNav {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        border-radius: 10px;
+        width: 100px;
+        background-color: #f8f9fa;
+        box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        display: none;
     }
 
-    .comment {
-        text-align: left;
-        margin-bottom: 15px;
+    /* List chương hover sáng */
+    #chapterSidebar .list-group-item:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
     }
+
+    /* Làm borderless cho card chính */
+    .card.borderless {
+        border: none;
+        box-shadow: none;
+    }
+
+    /* Comment vẫn có border */
+    .comment-box {
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+
 </style>
 
-<div class="center-container p-3">
+<div id="overlay" onclick="toggleSidebar()"></div>
 
-    <!-- ✅ Sidebar toggle -->
-    <button class="btn btn-info mb-3" onclick="toggleSidebar()">📚 Danh sách chương</button>
-
-    <div id="chapterSidebar" class="p-3 border mb-3" style="display: none;">
-        <h4>Danh sách chương</h4>
-        <ul class="list-unstyled">
+<!-- Sidebar Danh sách chương -->
+<div id="chapterSidebar">
+    <div class="card-body">
+        <h5 class="card-title">Danh sách chương</h5>
+        <ul class="list-group list-group-flush">
             @foreach (var chap in Model.ChapterList)
             {
-                <li>
-                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@chap.ChapterID">
+                <li class="list-group-item list-group-item-action">
+                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@chap.ChapterID" class="d-block text-decoration-none">
                         @chap.Title
                     </a>
                 </li>
             }
         </ul>
+
     </div>
+</div>
 
-    <h2>@Model.StoryTitle - Chương: @Model.Title</h2>
-    <p><strong>Ngày đăng:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy") | <strong>Lượt xem:</strong> @Model.ViewCount</p>
+<!-- Thanh nav dọc -->
+<div id="floatingNav">
+    <!-- Chương trước -->
+    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
+       class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+        <i class="bi bi-arrow-left"></i>
+    </a>
 
-    <!-- ✅ Form Like -->
-    <form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="my-3">
+    <!-- Quay lại truyện -->
+    <a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
+       class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+        <i class="bi bi-house-door"></i>
+    </a>
+
+    <!-- Like -->
+    <form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="m-0 p-0 d-flex justify-content-center">
         @Html.AntiForgeryToken()
         <input type="hidden" name="chapterId" value="@Model.ChapterID" />
-        <button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-primary") btn-modern">
-            ❤️ @((Model.IsLikedByCurrentUser) ? "Đã thích" : "Like") (@Model.LikeCount)
+        <button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="Thích chương này">
+            <i class="bi bi-heart@(Model.IsLikedByCurrentUser ? "-fill" : "")"></i>
         </button>
     </form>
 
-    <hr />
-    <div class="chapter-content">
-        @Html.Raw(Model.Content)
-    </div>
+    <!-- Bookmark -->
+    <button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
+        <i class="bi bi-bookmark"></i>
+    </button>
 
-    <hr />
-    <div class="chapter-navigation">
-        @if (Model.PreviousChapterID != -1)
-        {
-            <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-secondary">⬅ Chương trước</a>
-        }
-        else
-        {
-            <button class="btn btn-secondary disabled" disabled>⬅ Chương trước</button>
-        }
+    <!-- Danh sách chương -->
+    <button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
+        <i class="bi bi-list"></i>
+    </button>
 
-        @if (Model.NextChapterID != -1)
-        {
-            <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-secondary ml-2">Chương sau ➡</a>
-        }
-        else
-        {
-            <button class="btn btn-secondary disabled ml-2" disabled>Chương sau ➡</button>
-        }
-    </div>
+    <!-- Cài đặt đọc -->
+    <button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc">
+        <i class="bi bi-gear"></i>
+    </button>
 
-    <hr />
-    <h4>Bình luận (@Model.Comments.Count)</h4>
-    @foreach (var comment in Model.Comments)
-    {
-        <div class="comment border p-2 rounded">
-            <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
-            <p>@comment.Content</p>
+    <!-- Chương sau -->
+    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
+       class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+        <i class="bi bi-arrow-right"></i>
+    </a>
+</div>
+
+<!-- Nội dung chương -->
+<div class="container py-4 position-relative" onclick="showFloatingNav()">
+
+    <div class="card borderless">
+        <div class="card-body">
+            <!-- Thông tin chương -->
+            <div class="title-top" style="padding-top: 20px">
+                <h2 class="title-item text-xl font-bold text-center">@Model.StoryTitle</h2>
+                <h4 class="title-item text-base font-bold text-center">Chương @Model.Title</h4>
+                <h6 class="title-item font-bold text-center">
+                    <a href="#chapter-comments" style="text-decoration: underline">@Model.Comments.Count Bình luận</a> -
+                    Độ dài: @Model.TotalWord từ -
+                    Cập nhật:
+                    <time class="topic-time" title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
+                        @GetTimeAgo(Model.UpdatedAt)
+                    </time>
+                </h6>
+            </div>
+
+
+            <hr />
+            <div class="chapter-content" style="white-space: pre-line;">
+                @Html.Raw(Model.Content)
+            </div>
+
+            <hr />
+            <!-- 3 Nút Navigation dưới cùng (icon + center) -->
+            <div class="d-flex justify-content-center gap-3 my-4">
+                @if (Model.PreviousChapterID != -1)
+                {
+                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-outline-secondary" title="Chương trước">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary disabled" disabled title="Chương trước"><i class="bi bi-arrow-left"></i></button>
+                }
+
+                <button class="btn btn-outline-info" onclick="toggleSidebar()" title="Danh sách chương">
+                    <i class="bi bi-list"></i>
+                </button>
+
+                @if (Model.NextChapterID != -1)
+                {
+                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-outline-secondary" title="Chương sau">
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                }
+                else
+                {
+                    <button class="btn btn-outline-secondary disabled" disabled title="Chương sau"><i class="bi bi-arrow-right"></i></button>
+                }
+            </div>
+
+
+            <h5 id="chapter-comments">Bình luận (@Model.Comments.Count)</h5>
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="comment-box">
+                    <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
+                    <p>@comment.Content</p>
+                </div>
+            }
+
+            <form asp-action="PostComment" asp-controller="Comment" method="post" class="mt-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
+                <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
+                <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+            </form>
         </div>
-    }
-
-    <form asp-action="PostComment" asp-controller="Comment" method="post" class="mt-3">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-        <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
-        <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
-    </form>
+    </div>
 </div>
 
 @section Scripts {
     <script>
+        // Mở/đóng sidebar
         function toggleSidebar() {
             var sidebar = document.getElementById('chapterSidebar');
-            sidebar.style.display = (sidebar.style.display === "none") ? "block" : "none";
+            var overlay = document.getElementById('overlay');
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.style.display = 'none';
+            } else {
+                sidebar.classList.add('active');
+                overlay.style.display = 'block';
+            }
+        }
+
+        // Hiện thanh nav khi click vào chương
+        function showFloatingNav() {
+            document.getElementById('floatingNav').style.display = 'flex';
         }
     </script>
 }

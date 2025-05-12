@@ -9,7 +9,7 @@ namespace PBL3.ViewModels.Story
         [Display(Name = "Tiêu đề")]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Mô tả truyện là bắt buộc"), StringLength(500)]
+        [Required(ErrorMessage = "Mô tả truyện là bắt buộc")]
         [Display(Name = "Mô tả")]
         public string Description { get; set; }
 

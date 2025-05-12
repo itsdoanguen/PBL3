@@ -8,7 +8,9 @@ namespace PBL3.ViewModels.Chapter
         public string Title { get; set; }
         public string Content { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public int ViewCount { get; set; }
+        public int TotalWord { get; set; }
 
         public string StoryTitle { get; set; }
         public int StoryID { get; set; }

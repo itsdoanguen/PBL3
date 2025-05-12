@@ -10,7 +10,7 @@ namespace PBL3.Models
         public int StoryID { get; set; }
         [Required,StringLength(255)]
         public string Title { get; set; }
-        [Required,StringLength(500)]
+        [Required]
         public string Description { get; set; }
         public string? CoverImage { get; set; }
         public StoryStatus Status { get; set; } = StoryStatus.Active;

@@ -61,7 +61,9 @@ namespace PBL3.Service.Chapter
                 Title = chapter.Title,
                 Content = chapter.Content,
                 CreatedAt = chapter.CreatedAt,
+                UpdatedAt = chapter.UpdatedAt,
                 ViewCount = chapter.ViewCount,
+                TotalWord = CountWordsInChapter(chapter.Content),
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
                 Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
@@ -168,6 +170,13 @@ namespace PBL3.Service.Chapter
             chapter.Title = model.Title;
             chapter.Content = model.Content;
             chapter.UpdatedAt = DateTime.UtcNow;
+
+            var story = await _context.Stories.FirstOrDefaultAsync(s => s.StoryID == model.StoryID);
+            if (story != null)
+            {
+                story.UpdatedAt = DateTime.UtcNow;
+            }
+
 
             await _context.SaveChangesAsync();
             return true;
