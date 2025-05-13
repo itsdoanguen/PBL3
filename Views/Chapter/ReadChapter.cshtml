@@ -1,288 +1,290 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
-    ViewData["Title"] = Model.Title;
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+	ViewData["Title"] = Model.Title;
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
 @functions {
-    string GetTimeAgo(DateTime? date)
-    {
-        var span = DateTime.Now - date;
-        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
-        return "Vừa xong";
-    }
+	string GetTimeAgo(DateTime? date)
+	{
+		var span = DateTime.Now - date;
+		if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+		if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+		if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+		return "Vừa xong";
+	}
 }
 
+@section Styles {
+	<link href="~/css/user-readchapter.css" rel="stylesheet" />
+}
 <style>
-    /* Overlay khi mở danh sách */
-    #overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        display: none;
-        z-index: 900;
-    }
-
-    /* Sidebar trượt */
-    #chapterSidebar {
-        position: fixed;
-        top: 40;
-        left: -300px;
-        width: 300px;
-        height: 100%;
-        background-color: #fff;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-        z-index: 1000;
-        transition: left 0.3s;
-        overflow-y: auto;
-    }
-
-        #chapterSidebar .card-body {
-            max-height: calc(100vh - 100px); 
-            overflow-y: auto; 
-        }
-        #chapterSidebar.active {
-            left: 0;
-        }
-
-    /* Thanh nav dọc */
-    #floatingNav {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        z-index: 1001;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px;
-        border-radius: 10px;
-        width: 100px;
-        background-color: #f8f9fa;
-        box-shadow: 0 0 10px rgba(0,0,0,0.2);
-        display: none;
-    }
-
-    /* List chương hover sáng */
-    #chapterSidebar .list-group-item:hover {
-        background-color: #f1f1f1;
-        cursor: pointer;
-    }
-
-    /* Làm borderless cho card chính */
-    .card.borderless {
-        border: none;
-        box-shadow: none;
-    }
-
-    /* Comment vẫn có border */
-    .comment-box {
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-
-    #chap_list {
-        list-style-type: none;
-        padding-left: 0;
-        max-height: 100%; 
-        overflow-y: auto;
-    }
-
-        #chap_list li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-
-            #chap_list li.current {
-                background-color: #f1f1f1;
-            }
-
-    .sub-chap_list {
-        list-style-type: none;
-        padding-left: 20px;
-    }
-
-        .sub-chap_list li {
-            padding: 5px;
-        }
-
-    #chap_list li a {
-        color: #333;
-        text-decoration: none;
-    }
-
-        #chap_list li a:hover {
-            color: #007bff;
-        }
-
-
+	.custom-style {
+		background-color: @Model.Style.BackgroundColorHex;
+		color: @Model.Style.TextColorHex;
+	}
 </style>
 
 <div id="overlay" onclick="toggleSidebar()"></div>
 
 <!-- Sidebar Danh sách chương -->
 <div id="chapterSidebar">
-    <div class="card-body">
-        <h5 class="card-title">Danh sách chương</h5>
-        
-        <ul id="chap_list" class="unstyled">
-            @foreach (var chap in Model.ChapterList)
-            {
-                <li class="@(chap.ChapterID == Model.ChapterID ? "current" : "")">
-                    <a href="@Url.Action("ReadChapter", "Chapter", new { id = chap.ChapterID })" class="d-block text-decoration-none">
-                        @chap.Title
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
+	<div class="card-body">
+		<h5 class="card-title">Danh sách chương</h5>
+
+		<ul id="chap_list" class="unstyled">
+			@foreach (var chap in Model.ChapterList)
+			{
+				<li class="@(chap.ChapterID == Model.ChapterID ? "current" : "")">
+					<a href="@Url.Action("ReadChapter", "Chapter", new { id = chap.ChapterID })" class="d-block text-decoration-none">
+						@chap.Title
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
 </div>
 
 
 <!-- Thanh nav dọc -->
 <div id="floatingNav">
-    <!-- Chương trước -->
-    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
-       class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
-        <i class="bi bi-arrow-left"></i>
-    </a>
+	<!-- Chương trước -->
+	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
+	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+		<i class="bi bi-arrow-left"></i>
+	</a>
 
-    <!-- Quay lại truyện -->
-    <a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
-       class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
-        <i class="bi bi-house-door"></i>
-    </a>
+	<!-- Quay lại truyện -->
+	<a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
+	   class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+		<i class="bi bi-house-door"></i>
+	</a>
 
-    <!-- Like -->
-    <form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="m-0 p-0 d-flex justify-content-center">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="chapterId" value="@Model.ChapterID" />
-        <button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="Thích chương này">
-            <i class="bi bi-heart@(Model.IsLikedByCurrentUser ? "-fill" : "")"></i>
-        </button>
-    </form>
+	<!-- Like -->
+	<form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="m-0 p-0 d-flex justify-content-center">
+		@Html.AntiForgeryToken()
+		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
+		<button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="Thích chương này">
+			<i class="bi bi-heart@(Model.IsLikedByCurrentUser ? "-fill" : "")"></i>
+		</button>
+	</form>
 
-    <!-- Bookmark -->
-    <button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
-        <i class="bi bi-bookmark"></i>
-    </button>
+	<!-- Bookmark -->
+	<button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
+		<i class="bi bi-bookmark"></i>
+	</button>
 
-    <!-- Danh sách chương -->
-    <button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
-        <i class="bi bi-list"></i>
-    </button>
+	<!-- Danh sách chương -->
+	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
+		<i class="bi bi-list"></i>
+	</button>
 
-    <!-- Cài đặt đọc -->
-    <button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc">
-        <i class="bi bi-gear"></i>
-    </button>
+	<!-- Cài đặt đọc -->
+	<button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc" data-bs-toggle="modal" data-bs-target="#styleModal">
+		<i class="bi bi-gear"></i>
+	</button>
 
-    <!-- Chương sau -->
-    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
-       class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
-        <i class="bi bi-arrow-right"></i>
-    </a>
+	<!-- Chương sau -->
+	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
+	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+		<i class="bi bi-arrow-right"></i>
+	</a>
 </div>
 
 <!-- Nội dung chương -->
-<div class="container py-4 position-relative" onclick="showFloatingNav()">
+<div class="container-fluid py-4 position-relative custom-style" onclick="showFloatingNav()">
 
-    <div class="card borderless">
-        <div class="card-body">
-            <!-- Thông tin chương -->
-            <div class="title-top" style="padding-top: 20px">
-                <h2 class="title-item text-xl font-bold text-center">@Model.StoryTitle</h2>
-                <h4 class="title-item text-base font-bold text-center"> @Model.Title</h4>
-                <h6 class="title-item font-bold text-center">
-                    <a href="#chapter-comments" style="text-decoration: underline">@Model.Comments.Count Bình luận</a> -
-                    Độ dài: @Model.TotalWord từ -
-                    Cập nhật:
-                    <time class="topic-time" title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
-                        @GetTimeAgo(Model.UpdatedAt)
-                    </time>
-                </h6>
-            </div>
-
-
-            <hr />
-            <div class="chapter-content" style="white-space: pre-line;">
-                @Html.Raw(Model.Content)
-            </div>
-
-            <hr />
-            <!-- 3 Nút Navigation dưới cùng (icon + center) -->
-            <div class="d-flex justify-content-center gap-3 my-4">
-                @if (Model.PreviousChapterID != -1)
-                {
-                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-outline-secondary" title="Chương trước">
-                        <i class="bi bi-arrow-left"></i>
-                    </a>
-                }
-                else
-                {
-                    <button class="btn btn-outline-secondary disabled" disabled title="Chương trước"><i class="bi bi-arrow-left"></i></button>
-                }
-
-                <button class="btn btn-outline-info" onclick="toggleSidebar()" title="Danh sách chương">
-                    <i class="bi bi-list"></i>
-                </button>
-
-                @if (Model.NextChapterID != -1)
-                {
-                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-outline-secondary" title="Chương sau">
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                }
-                else
-                {
-                    <button class="btn btn-outline-secondary disabled" disabled title="Chương sau"><i class="bi bi-arrow-right"></i></button>
-                }
-            </div>
+	<div class="card borderless custom-style">
+		<div class="card-body custom-style">
+			<!-- Thông tin chương -->
+			<div class="title-top" style="padding-top: 20px">
+				<h2 class="title-item text-xl font-bold text-center">@Model.StoryTitle</h2>
+				<h4 class="title-item text-base font-bold text-center"> @Model.Title</h4>
+				<h6 class="title-item font-bold text-center">
+					<a href="#chapter-comments" style="text-decoration: underline">@Model.Comments.Count Bình luận</a> -
+					Độ dài: @Model.TotalWord từ -
+					Cập nhật:
+					<time class="topic-time" title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
+						@GetTimeAgo(Model.UpdatedAt)
+					</time>
+				</h6>
+			</div>
 
 
-            <h5 id="chapter-comments">Bình luận (@Model.Comments.Count)</h5>
-            @foreach (var comment in Model.Comments)
-            {
-                <div class="comment-box">
-                    <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
-                    <p>@comment.Content</p>
-                </div>
-            }
+			<hr />
+			<div class="chapter-content center-cl" style="white-space: pre-line; font-family: @Model.Style.FontFamily.ToString(); font-size: @(Model.Style.FontSize + "px")">
+				@Html.Raw(Model.Content)
+			</div>
 
-            <form asp-action="PostComment" asp-controller="Comment" method="post" class="mt-3">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-                <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
-                <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
-            </form>
-        </div>
-    </div>
+			<hr />
+			<!-- 3 Nút Navigation dưới cùng (icon + center) -->
+			<div class="d-flex justify-content-center gap-3 my-4">
+				@if (Model.PreviousChapterID != -1)
+				{
+					<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-outline-secondary" title="Chương trước">
+						<i class="bi bi-arrow-left"></i>
+					</a>
+				}
+				else
+				{
+					<button class="btn btn-outline-secondary disabled" disabled title="Chương trước"><i class="bi bi-arrow-left"></i></button>
+				}
+
+				<button class="btn btn-outline-info" onclick="toggleSidebar()" title="Danh sách chương">
+					<i class="bi bi-list"></i>
+				</button>
+
+				@if (Model.NextChapterID != -1)
+				{
+					<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-outline-secondary" title="Chương sau">
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				}
+				else
+				{
+					<button class="btn btn-outline-secondary disabled" disabled title="Chương sau"><i class="bi bi-arrow-right"></i></button>
+				}
+			</div>
+
+
+			<h5 class="center-cl" id="chapter-comments">Bình luận (@Model.Comments.Count)</h5>
+			@foreach (var comment in Model.Comments)
+			{
+				<div class="comment-box">
+					<strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
+					<p>@comment.Content</p>
+				</div>
+			}
+
+			<form asp-action="PostComment" asp-controller="Comment" method="post" class="mt-3 center-cl">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="ChapterID" value="@Model.ChapterID" />
+				<textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
+				<button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+			</form>
+		</div>
+	</div>
 </div>
 
-@section Scripts {
-    <script>
-        // Mở/đóng sidebar
-        function toggleSidebar() {
-            var sidebar = document.getElementById('chapterSidebar');
-            var overlay = document.getElementById('overlay');
-            if (sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-                overlay.style.display = 'none';
-            } else {
-                sidebar.classList.add('active');
-                overlay.style.display = 'block';
-            }
-        }
+<!-- Modal Cài đặt đọc -->
+<div class="modal fade" id="styleModal" tabindex="-1" aria-labelledby="styleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form asp-action="UpdateStyle" asp-controller="Style" method="post" id="styleForm">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="UserID" value="@Model.Style.UserID" />
+				<input type="hidden" name="StyleID" value="@Model.Style.StyleID" />
+				<input type="hidden" name="ReturnChapterID" value="@Model.ChapterID" />
 
-        // Hiện thanh nav khi click vào chương
-        function showFloatingNav() {
-            document.getElementById('floatingNav').style.display = 'flex';
-        }
-    </script>
+				<div class="modal-header">
+					<h5 class="modal-title" id="styleModalLabel">Cài đặt đọc</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<!-- Font chữ -->
+					<div class="mb-3">
+						<label for="FontFamily" class="form-label">Phông chữ</label>
+						<select name="FontFamily" class="form-select">
+							@foreach (var font in Enum.GetValues(typeof(PBL3.Models.FontFamily)))
+							{
+								var isSelected = Model.Style.FontFamily == (PBL3.Models.FontFamily)font ? "selected" : "";
+								@Html.Raw($"<option value=\"{font}\" {isSelected}>{font}</option>")
+							}
+						</select>
+					</div>
+
+					<!-- Cỡ chữ -->
+					<div class="mb-3">
+						<label for="FontSize" class="form-label">Cỡ chữ (px)</label>
+						<input type="number" name="FontSize" class="form-control" value="@Model.Style.FontSize" min="12" max="48" />
+					</div>
+
+					<!-- Màu nền -->
+					<div class="mb-3">
+						<label for="BackgroundColor" class="form-label">Màu nền</label>
+						<select name="BackgroundColor" class="form-select">
+							@foreach (var bg in Enum.GetValues(typeof(PBL3.Models.BackgroundColor)))
+							{
+								var isSelected = Model.Style.BackgroundColor == (PBL3.Models.BackgroundColor)bg ? "selected" : "";
+								@Html.Raw($"<option value=\"{bg}\" {isSelected}>{bg}</option>")
+							}
+						</select>
+					</div>
+
+					<!-- Màu chữ hiển thị (read-only) -->
+					<div class="mb-3">
+						<label class="form-label">Màu chữ hiển thị</label>
+						<input type="color" class="form-control form-control-color" value="@Model.Style.TextColorHex" disabled />
+					</div>
+
+					<!-- Màu nền hiển thị (read-only) -->
+					<div class="mb-3">
+						<label class="form-label">Màu nền hiển thị</label>
+						<input type="color" class="form-control form-control-color" value="@Model.Style.BackgroundColorHex" disabled />
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+					<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+
+@section Scripts {
+	<script>
+		// Mở/đóng sidebar
+		function toggleSidebar() {
+			var sidebar = document.getElementById('chapterSidebar');
+			var overlay = document.getElementById('overlay');
+			if (sidebar.classList.contains('active')) {
+				sidebar.classList.remove('active');
+				overlay.style.display = 'none';
+			} else {
+				sidebar.classList.add('active');
+				overlay.style.display = 'block';
+			}
+		}
+
+		// Hiện thanh nav khi click vào chương
+		function showFloatingNav() {
+			document.getElementById('floatingNav').style.display = 'flex';
+		}
+	</script>
+
+	<script>
+		$(document).ready(function () {
+			$("#styleForm").submit(function (e) {
+				e.preventDefault(); // chặn form gửi theo cách mặc định
+
+				var form = $(this);
+				var formData = form.serialize();
+
+				$.ajax({
+					type: "POST",
+					url: form.attr("action"),
+					data: formData,
+					success: function (response) {
+						// Bạn có thể cập nhật UI ở đây nếu cần
+
+						// Đóng modal
+						$('#yourModalId').modal('hide');
+
+						// Có thể reload chapter để áp dụng style mới nếu cần
+						// location.reload();
+					},
+					error: function (xhr, status, error) {
+						alert("Đã xảy ra lỗi: " + error);
+					}
+				});
+			});
+		});
+	</script>
+
 }

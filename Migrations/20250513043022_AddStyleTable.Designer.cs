@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PBL3.Data;
 
@@ -11,9 +12,11 @@ using PBL3.Data;
 namespace PBL3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513043022_AddStyleTable")]
+    partial class AddStyleTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,8 +311,7 @@ namespace PBL3.Migrations
 
                     b.HasKey("StyleID");
 
-                    b.HasIndex("UserID")
-                        .IsUnique();
+                    b.HasIndex("UserID");
 
                     b.ToTable("Styles");
                 });
@@ -523,8 +525,8 @@ namespace PBL3.Migrations
             modelBuilder.Entity("PBL3.Models.StyleModel", b =>
                 {
                     b.HasOne("PBL3.Models.UserModel", "User")
-                        .WithOne("Style")
-                        .HasForeignKey("PBL3.Models.StyleModel", "UserID")
+                        .WithMany()
+                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -573,8 +575,6 @@ namespace PBL3.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Stories");
-
-                    b.Navigation("Style");
                 });
 #pragma warning restore 612, 618
         }

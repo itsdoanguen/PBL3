@@ -8,6 +8,7 @@ using PBL3.Service.Story;
 using PBL3.Service.User;
 using PBL3.Service.Like;
 using PBL3.Service.Discovery;
+using PBL3.Service.Style;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +25,7 @@ builder.Services.AddScoped<IStoryService, StoryService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ILikeChapterService, LikeChapterService>();
-
+builder.Services.AddScoped<IStyleService, StyleService>();
 builder.Services.AddScoped<IStoryRankingService, StoryRankingService>();
 builder.Services.AddScoped<IUserService, UserService>();
 

@@ -28,7 +28,7 @@ namespace PBL3.Models
         public UserGender? Gender { get; set; }
 
         // Navigation properties
-
+        public StyleModel? Style { get; set; }
         public ICollection<StoryModel> Stories { get; set; }
         public ICollection<CommentModel> Comments { get; set; }
         public ICollection<NotificationModel> Notifications { get; set; }

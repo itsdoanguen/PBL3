@@ -20,6 +20,7 @@ namespace PBL3.Data
         public DbSet<NotificationModel> Notifications { get; set; }
         public DbSet<GenreModel> Genres { get; set; }
         public DbSet<StoryGenreModel> StoryGenres { get; set; }
+        public DbSet<StyleModel> Styles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

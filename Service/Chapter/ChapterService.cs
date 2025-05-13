@@ -2,6 +2,7 @@
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Like;
+using PBL3.Service.Style;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Service.Chapter
@@ -10,10 +11,12 @@ namespace PBL3.Service.Chapter
     {
         private readonly ApplicationDbContext _context;
         private readonly ILikeChapterService _likeChapterService;
-        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService)
+        private readonly IStyleService _styleService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService)
         {
             _context = context;
             _likeChapterService = likeChapterService;
+            _styleService = styleService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -55,6 +58,21 @@ namespace PBL3.Service.Chapter
                 setCookie(cookieName, "true", options);
             }
 
+            var userStyle = await _context.Styles
+                .FirstOrDefaultAsync(s => s.UserID == int.Parse(currentUserId));
+            if (userStyle == null)
+            {
+                userStyle = await _styleService.InitStyleForUserAsync(int.Parse(currentUserId));
+            }
+            var StyleViewModel = new StyleViewModel
+            {
+                StyleID = userStyle.StyleID,
+                UserID = userStyle.UserID,
+                FontFamily = userStyle.FontFamily,
+                FontSize = userStyle.FontSize,
+                BackgroundColor = userStyle.BackgroundColor
+            };
+
             return new ChapterDetailViewModel
             {
                 ChapterID = chapter.ChapterID,
@@ -66,12 +84,14 @@ namespace PBL3.Service.Chapter
                 TotalWord = CountWordsInChapter(chapter.Content),
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
+
                 Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
                 ChapterList = await GetChapterList(chapter.StoryID),
                 IsLikedByCurrentUser = await _likeChapterService.IsLikedByCurrentUserAsync(chapter.ChapterID, int.Parse(currentUserId)),
-                LikeCount = await _likeChapterService.GetLikeCountAsync(chapter.ChapterID)
+                LikeCount = await _likeChapterService.GetLikeCountAsync(chapter.ChapterID),
+                Style = StyleViewModel
             };
         }
 
