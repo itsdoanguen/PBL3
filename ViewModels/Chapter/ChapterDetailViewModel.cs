@@ -1,4 +1,5 @@
 ﻿using PBL3.Models;
+using PBL3.ViewModels.Comment;
 
 namespace PBL3.ViewModels.Chapter
 {
@@ -17,7 +18,7 @@ namespace PBL3.ViewModels.Chapter
 
         public bool IsLikedByCurrentUser { get; set; }
         public int LikeCount { get; set; }
-        public List<CommentModel> Comments { get; set; }
+        public List<CommentTreeViewModel> Comments { get; set; }
 
         public int NextChapterID { get; set; }
         public int PreviousChapterID { get; set; }
@@ -53,5 +54,10 @@ namespace PBL3.ViewModels.Chapter
             BackgroundColor.Gray => "#ECECEC",
             _ => "#FFFFFF"
         };
+    }
+    public class CommentTreeViewModel
+    {
+        public CommentPostViewModel Comment { get; set; } = null;
+        public List<CommentTreeViewModel> Replies { get; set; } = new List<CommentTreeViewModel>();
     }
 }

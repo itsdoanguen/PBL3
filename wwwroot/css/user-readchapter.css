@@ -112,3 +112,33 @@
 .chapter-content {
     text-align: justify;
 }
+
+.comment-box {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 10px 0;
+}
+
+.reply-box {
+    background-color: #f9f9f9;
+    border-left: 3px solid #ccc;
+    padding: 8px 10px;
+}
+
+.avatar-circle, .avatar-circle-sm {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.avatar-circle-sm {
+    width: 24px;
+    height: 24px;
+    font-size: 0.8rem;
+}
+

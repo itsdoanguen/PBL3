@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Comment;
 using PBL3.Service.Like;
 using PBL3.Service.Style;
 using PBL3.ViewModels.Chapter;
@@ -12,11 +13,13 @@ namespace PBL3.Service.Chapter
         private readonly ApplicationDbContext _context;
         private readonly ILikeChapterService _likeChapterService;
         private readonly IStyleService _styleService;
-        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService)
+        private readonly ICommentService _commentService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService)
         {
             _context = context;
             _likeChapterService = likeChapterService;
             _styleService = styleService;
+            _commentService = commentService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -85,7 +88,7 @@ namespace PBL3.Service.Chapter
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
 
-                Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
+                Comments = await _commentService.GetCommentsAsync("chapter", chapter.ChapterID),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
                 ChapterList = await GetChapterList(chapter.StoryID),

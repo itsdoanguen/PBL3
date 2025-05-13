@@ -50,13 +50,13 @@
 <div id="floatingNav">
 	<!-- Chương trước -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
-	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+	class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
 		<i class="bi bi-arrow-left"></i>
 	</a>
 
 	<!-- Quay lại truyện -->
 	<a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
-	   class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+	class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
 		<i class="bi bi-house-door"></i>
 	</a>
 
@@ -86,7 +86,7 @@
 
 	<!-- Chương sau -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
-	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+	class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
 		<i class="bi bi-arrow-right"></i>
 	</a>
 </div>
@@ -147,21 +147,80 @@
 			</div>
 
 
-			<h5 class="center-cl" id="chapter-comments">Bình luận (@Model.Comments.Count)</h5>
-			@foreach (var comment in Model.Comments)
+			<h5 class="center-cl mb-3" id="chapter-comments">
+				Bình luận (@Model.Comments.Count)
+			</h5>
+
+			<div class="comment-section">
+				@foreach (var commentTree in Model.Comments)
+				{
+					<div class="comment">
+						<!-- Display the comment -->
+						<div class="comment-body">
+							<strong>@commentTree.Comment.UserName</strong>
+							<span class="text-muted">@GetTimeAgo(commentTree.Comment.CreatedAt)</span>
+							<p>
+								@if (!string.IsNullOrEmpty(commentTree.Comment.ParentUserName))
+								{
+									<span class="text-muted">Trả lời <strong>@commentTree.Comment.ParentUserName</strong></span>
+
+									<br />
+								}
+								@commentTree.Comment.Content
+							</p>
+
+
+							<!-- Reply Button -->
+							<button type="button" class="btn btn-link" onclick="replyToComment(@commentTree.Comment.CommentID)">
+								Trả lời
+							</button>
+						</div>
+
+						<!-- Recursively display replies -->
+						@if (commentTree.Replies.Any())
+						{
+							<div class="replies">
+								@foreach (var reply in commentTree.Replies)
+								{
+									<div class="comment reply">
+										<div class="comment-body">
+											<strong>@reply.Comment.UserName</strong>
+											<span class="text-muted">@GetTimeAgo(reply.Comment.CreatedAt)</span>
+											<p>@reply.Comment.Content</p>
+										</div>
+									</div>
+								}
+							</div>
+						}
+					</div>
+				}
+			</div>
+
+
+			@if (TempData["ErrorMessage"] != null)
 			{
-				<div class="comment-box">
-					<strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
-					<p>@comment.Content</p>
-				</div>
+				<p class="btn-danger">@TempData["ErrorMessage"]</p>
 			}
 
-			<form asp-action="PostComment" asp-controller="Comment" method="post" class="mt-3 center-cl">
+
+			<form asp-action="Post" asp-controller="Comment" method="post" class="mt-4 center-cl">
 				@Html.AntiForgeryToken()
 				<input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-				<textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
-				<button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
+				<input type="hidden" name="UserID" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
+				<input type="hidden" name="ParentCommentID" id="parentCommentInput" value="" />
+				<small class="text-muted">Đang trả lời: <span id="replyingToDisplay"></span></small>
+
+				<input type="hidden" name="type" value="chapter" />
+				<div class="mb-3">
+					<textarea name="Content" rows="3" class="form-control" placeholder="Viết bình luận..."></textarea>
+				</div>
+
+				<div class="d-flex justify-content-between align-items-center">
+					<button type="submit" class="btn btn-primary">Gửi bình luận</button>
+					<button type="button" class="btn btn-link d-none" id="cancelReplyBtn" onclick="cancelReply()">Hủy trả lời</button>
+				</div>
 			</form>
+
 		</div>
 	</div>
 </div>
@@ -287,4 +346,22 @@
 		});
 	</script>
 
+	<script>
+		function replyToComment(commentId) {
+			document.getElementById('parentCommentInput').value = commentId;
+			document.getElementById('cancelReplyBtn').classList.remove('d-none');
+
+		document.getElementById('replyingToDisplay').innerText = commentId;
+			window.scrollTo(0, document.getElementById('chapter-comments').offsetTop);
+		}
+
+		function cancelReply() {
+			document.getElementById('parentCommentInput').value = "";
+			document.getElementById('cancelReplyBtn').classList.add('d-none');
+		}
+
+		function  
+	</script>
 }
+
+
