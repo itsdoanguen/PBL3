@@ -150,19 +150,6 @@
 			<h5 class="center-cl mb-3" id="chapter-comments">
 				Bình luận (@Model.Comments.Count)
 			</h5>
-
-			@foreach (var comment in Model.Comments)
-			{
-				@Html.Partial("_CommentPartial", comment)
-			}
-
-
-			@if (TempData["ErrorMessage"] != null)
-			{
-				<p class="btn-danger">@TempData["ErrorMessage"]</p>
-			}
-
-
 			<form asp-action="Post" asp-controller="Comment" method="post" class="mt-4 center-cl">
 				@Html.AntiForgeryToken()
 				<input type="hidden" name="ChapterID" value="@Model.ChapterID" />
@@ -181,6 +168,12 @@
 				</div>
 			</form>
 
+			<div class="comment-box center-cl">
+				@foreach (var comment in Model.Comments)
+				{
+					@Html.Partial("_CommentPartial", comment)
+				}
+			</div>
 		</div>
 	</div>
 </div>
@@ -308,20 +301,29 @@
 
 	<script>
 		function replyToComment(commentId) {
-			document.getElementById('parentCommentInput').value = commentId;
-			document.getElementById('cancelReplyBtn').classList.remove('d-none');
+			document.getElementById("parentCommentInput").value = commentId;
+			document.getElementById("cancelReplyBtn").classList.remove("d-none");
+			document.querySelector('input[name="type"]').value = "reply";
 
-		document.getElementById('replyingToDisplay').innerText = commentId;
-			window.scrollTo(0, document.getElementById('chapter-comments').offsetTop);
+			const replyingTo = document.querySelector(`#comment-${commentId} .comment-user`);
+
+			if (replyingTo) {
+				document.getElementById("replyingToDisplay").innerText = replyingTo.textContent;
+
+			}
+
 		}
 
 		function cancelReply() {
-			document.getElementById('parentCommentInput').value = "";
-			document.getElementById('cancelReplyBtn').classList.add('d-none');
-		}
+			document.getElementById("parentCommentInput").value = "";
+			document.getElementById("replyingToDisplay").innerText = "";
+			document.getElementById("cancelReplyBtn").classList.add("d-none");
 
-		function  
+
+			document.querySelector('input[name="type"]').value = "chapter";
+		}
 	</script>
+
 }
 
 

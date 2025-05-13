@@ -11,28 +11,31 @@
     }
 }
 
-<div class="comment @(Model.Comment.ParentCommentID != null ? "reply" : "")">
-    <div class="comment-body">
-        <strong>@Model.Comment.UserName</strong>
-        <span class="text-muted">@GetTimeAgo(Model.Comment.CreatedAt)</span>
-        <p>
-            @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
-            {
-                <span class="text-muted">Trả lời <strong>@Model.Comment.ParentUserName</strong></span>
-
-                <br />
-            }
+<div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
+    <div class="comment-header">
+        <span class="comment-user">@Model.Comment.UserName</span>
+        <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>
+    </div>
+    <div class="comment-content">
+        @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
+        {
+            <div class="reply-to">
+                Trả lời <strong>@Model.Comment.ParentUserName</strong>
+            </div>
+        }
+        <div class="comment-text">
             @Model.Comment.Content
-        </p>
-
-        <button type="button" class="btn btn-link" onclick="replyToComment(@Model.Comment.CommentID)">
+        </div>
+    </div>
+    <div class="comment-actions">
+        <button type="button" class="btn btn-sm btn-outline-primary" onclick="replyToComment(@Model.Comment.CommentID)">
             Trả lời
         </button>
     </div>
 
     @if (Model.Replies.Any())
     {
-        <div class="replies">
+        <div class="comment-replies">
             @foreach (var reply in Model.Replies)
             {
                 @Html.Partial("_CommentPartial", reply)
