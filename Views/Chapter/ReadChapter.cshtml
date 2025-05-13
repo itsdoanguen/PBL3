@@ -151,50 +151,10 @@
 				Bình luận (@Model.Comments.Count)
 			</h5>
 
-			<div class="comment-section">
-				@foreach (var commentTree in Model.Comments)
-				{
-					<div class="comment">
-						<!-- Display the comment -->
-						<div class="comment-body">
-							<strong>@commentTree.Comment.UserName</strong>
-							<span class="text-muted">@GetTimeAgo(commentTree.Comment.CreatedAt)</span>
-							<p>
-								@if (!string.IsNullOrEmpty(commentTree.Comment.ParentUserName))
-								{
-									<span class="text-muted">Trả lời <strong>@commentTree.Comment.ParentUserName</strong></span>
-
-									<br />
-								}
-								@commentTree.Comment.Content
-							</p>
-
-
-							<!-- Reply Button -->
-							<button type="button" class="btn btn-link" onclick="replyToComment(@commentTree.Comment.CommentID)">
-								Trả lời
-							</button>
-						</div>
-
-						<!-- Recursively display replies -->
-						@if (commentTree.Replies.Any())
-						{
-							<div class="replies">
-								@foreach (var reply in commentTree.Replies)
-								{
-									<div class="comment reply">
-										<div class="comment-body">
-											<strong>@reply.Comment.UserName</strong>
-											<span class="text-muted">@GetTimeAgo(reply.Comment.CreatedAt)</span>
-											<p>@reply.Comment.Content</p>
-										</div>
-									</div>
-								}
-							</div>
-						}
-					</div>
-				}
-			</div>
+			@foreach (var comment in Model.Comments)
+			{
+				@Html.Partial("_CommentPartial", comment)
+			}
 
 
 			@if (TempData["ErrorMessage"] != null)

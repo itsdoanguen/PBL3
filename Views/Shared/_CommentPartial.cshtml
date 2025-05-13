@@ -1,1 +1,42 @@
-﻿
+﻿@model PBL3.ViewModels.Chapter.CommentTreeViewModel
+
+@functions {
+    string GetTimeAgo(DateTime? date)
+    {
+        var span = DateTime.Now - date;
+        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+        return "Vừa xong";
+    }
+}
+
+<div class="comment @(Model.Comment.ParentCommentID != null ? "reply" : "")">
+    <div class="comment-body">
+        <strong>@Model.Comment.UserName</strong>
+        <span class="text-muted">@GetTimeAgo(Model.Comment.CreatedAt)</span>
+        <p>
+            @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
+            {
+                <span class="text-muted">Trả lời <strong>@Model.Comment.ParentUserName</strong></span>
+
+                <br />
+            }
+            @Model.Comment.Content
+        </p>
+
+        <button type="button" class="btn btn-link" onclick="replyToComment(@Model.Comment.CommentID)">
+            Trả lời
+        </button>
+    </div>
+
+    @if (Model.Replies.Any())
+    {
+        <div class="replies">
+            @foreach (var reply in Model.Replies)
+            {
+                @Html.Partial("_CommentPartial", reply)
+            }
+        </div>
+    }
+</div>
