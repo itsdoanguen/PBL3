@@ -37,12 +37,12 @@ namespace PBL3.Service.Comment
             {
                 "story" => await _context.Comments
                               .Where(c => c.StoryID == id)
-                              .OrderBy(c => c.CreatedAt)
+                              .OrderByDescending(c => c.CreatedAt)
                               .ToListAsync(),
 
                 "chapter" => await _context.Comments
                                 .Where(c => c.ChapterID == id)
-                                .OrderBy(c => c.CreatedAt)
+                                .OrderByDescending(c => c.CreatedAt)
                                 .ToListAsync(),
 
                 _ => throw new ArgumentException("Loại comment không hợp lệ")

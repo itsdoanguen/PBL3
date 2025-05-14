@@ -1,5 +1,4 @@
 ﻿@model PBL3.ViewModels.Chapter.CommentTreeViewModel
-
 @functions {
     string GetTimeAgo(DateTime? date)
     {
@@ -10,7 +9,6 @@
         return "Vừa xong";
     }
 }
-
 <div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
     <div class="comment-content">
         <div class="comment-header">
@@ -21,7 +19,6 @@
             </div>
             <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>
         </div>
-
         @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
         {
             <div class="reply-to">
@@ -31,22 +28,21 @@
         <div class="comment-text">
             @Model.Comment.Content
         </div>
-
         <div class="comment-actions">
-        <button type="button" class="btn btn-sm btn-outline-primary" onclick="replyToComment(@Model.Comment.CommentID)">
-            Trả lời
-        </button>
-    </div>
-
-    @if (Model.Replies.Any())
-    {
-        <div class="comment-replies">
-            @foreach (var reply in Model.Replies)
-            {
-                @Html.Partial("_CommentPartial", reply)
-            }
+            <button type="button" class="btn btn-sm btn-outline-primary reply-btn" 
+                    data-comment-id="@Model.Comment.CommentID" 
+                    data-user-name="@Model.Comment.UserName">
+                Trả lời
+            </button>
         </div>
-    }
+        @if (Model.Replies.Any())
+        {
+            <div class="comment-replies">
+                @foreach (var reply in Model.Replies)
+                {
+                    @Html.Partial("_CommentPartial", reply)
+                }
+            </div>
+        }
     </div>
-    
 </div>

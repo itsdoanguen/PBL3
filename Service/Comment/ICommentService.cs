@@ -5,7 +5,7 @@ namespace PBL3.Service.Comment
 {
     public interface ICommentService
     {
-        Task<(bool isSuccess, string message)> PostCommentAsync(CommentPostViewModel model, string type);
+        Task<(bool isSuccess, string message, int? commentId)> PostCommentAsync(CommentPostViewModel model, string type);
         Task<(bool isSuccess, string message)> CommentValidateAsync(CommentPostViewModel model, string type);
         Task<List<CommentTreeViewModel>> GetCommentsAsync(string type, int id);
     }

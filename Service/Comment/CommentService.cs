@@ -16,45 +16,49 @@ namespace PBL3.Service.Comment
             _blobService = blobService;
             _commentMappingService = commentMappingService;
         }
-        public async Task<(bool isSuccess, string message)> PostCommentAsync(CommentPostViewModel model, string type)
+        public async Task<(bool isSuccess, string message, int? commentId)> PostCommentAsync(CommentPostViewModel model, string type)
         {
+            int? newCommentId = null;
             var (isValid, message) = await CommentValidateAsync(model, type);
             if (!isValid)
             {
-                return (false, message);
+                return (false, message, null);
             }
 
             switch (type)
             {
                 case "chapter":
-                    var (postChapterSucess, postChapterMessage) = await PostCommentOnChapterAsync(model);
+                    var (postChapterSucess, postChapterMessage, postChapterCommentId) = await PostCommentOnChapterAsync(model);
                     if (!postChapterSucess)
                     {
-                        return (false, postChapterMessage);
+                        return (false, postChapterMessage, null);
                     }
+                    newCommentId = postChapterCommentId;
                     break;
                 case "story":
-                    var (postStorySucess, postStoryMessage) = await PostCommentOnStoryAsync(model);
+                    var (postStorySucess, postStoryMessage, postStoryCommentId) = await PostCommentOnStoryAsync(model);
                     if (!postStorySucess)
                     {
-                        return (false, postStoryMessage);
+                        return (false, postStoryMessage, null);
                     }
+                    newCommentId = postStoryCommentId;
                     break;
                 case "reply":
-                    var (postReplySucess, postReplyMessage) = await PostReplyAsync(model);
+                    var (postReplySucess, postReplyMessage, postReplyCommentId) = await PostReplyAsync(model);
                     if (!postReplySucess)
                     {
-                        return (false, postReplyMessage);
+                        return (false, postReplyMessage, null);
                     }
+                    newCommentId = postReplyCommentId;
                     break;
                 default:
-                    return (false, "Loại bình luận không hợp lệ");
+                    return (false, "Loại bình luận không hợp lệ", null);
             }
 
-            return (true, "Bình luận thành công");
+            return (true, "Bình luận thành công", newCommentId);
         }
 
-        private async Task<(bool isSuccess, string message)> PostCommentOnChapterAsync(CommentPostViewModel model)
+        private async Task<(bool isSuccess, string message, int? commentId)> PostCommentOnChapterAsync(CommentPostViewModel model)
         {
             var comment = new CommentModel
             {
@@ -70,10 +74,10 @@ namespace PBL3.Service.Comment
 
             await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
-            return (true, "Bình luận trên chương thành công");
+            return (true, "Bình luận trên chương thành công", comment.CommentID);
         }
 
-        private async Task<(bool isSuccess, string message)> PostCommentOnStoryAsync(CommentPostViewModel model)
+        private async Task<(bool isSuccess, string message, int? commentId)> PostCommentOnStoryAsync(CommentPostViewModel model)
         {
             var comment = new CommentModel
             {
@@ -89,15 +93,15 @@ namespace PBL3.Service.Comment
 
             await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
-            return (true, "Bình luận trên story thành công");
+            return (true, "Bình luận trên story thành công", comment.CommentID);
         }
 
-        private async Task<(bool isSuccess, string message)> PostReplyAsync(CommentPostViewModel model)
+        private async Task<(bool isSuccess, string message, int? commentId)> PostReplyAsync(CommentPostViewModel model)
         {
             var parentComment = await _context.Comments.FindAsync(model.ParentCommentID);
             if (parentComment == null)
             {
-                return (false, "Không tìm thấy comment đang reply tới");
+                return (false, "Không tìm thấy comment đang reply tới", null);
             }
 
             var chapterId = parentComment.ChapterID;
@@ -111,13 +115,13 @@ namespace PBL3.Service.Comment
                 StoryID = storyId,
                 ParentCommentID = model.ParentCommentID,
                 Content = model.Content,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
                 isDeleted = false
             };
             await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
-            return (true, "Trả lời thành công");
+            return (true, "Trả lời thành công", comment.CommentID);
         }
 
         public async Task<(bool isSuccess, string message)> CommentValidateAsync(CommentPostViewModel model, string type)

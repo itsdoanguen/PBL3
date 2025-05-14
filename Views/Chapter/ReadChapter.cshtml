@@ -1,31 +1,36 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
-    ViewData["Title"] = Model.Title;
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+	ViewData["Title"] = Model.Title;
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
 @functions {
-    string GetTimeAgo(DateTime? date)
-    {
-        var span = DateTime.Now - date;
-        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
-        return "Vừa xong";
-    }
-    int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
-    {
+	string GetTimeAgo(DateTime? date)
+	{
+		var span = DateTime.Now - date;
+		if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+		if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+		if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+		return "Vừa xong";
+	}
+	int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
+	{
 		int total = 0;
 		foreach (var comment in comments)
 		{
-			total += 1; 
+			total += 1;
 			if (comment.Replies != null && comment.Replies.Any())
 			{
-				total += CountAllComments(comment.Replies); 
+				total += CountAllComments(comment.Replies);
 			}
 		}
 		return total;
 	}
+}
+
+@if (TempData["ScrollToComment"] != null)
+{
+	<input type="hidden" id="scrollToComment" value="@TempData["ScrollToComment"]" />
 }
 
 @section Styles {
@@ -63,13 +68,13 @@
 <div id="floatingNav">
 	<!-- Chương trước -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
-	class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
 		<i class="bi bi-arrow-left"></i>
 	</a>
 
 	<!-- Quay lại truyện -->
 	<a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
-	class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+	   class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
 		<i class="bi bi-house-door"></i>
 	</a>
 
@@ -99,7 +104,7 @@
 
 	<!-- Chương sau -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
-	class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
 		<i class="bi bi-arrow-right"></i>
 	</a>
 </div>
@@ -166,24 +171,15 @@
 				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
 
 				<!-- Form bình luận -->
-				<form asp-action="Post" asp-controller="Comment" method="post" class="comment-form mb-4">
-					@Html.AntiForgeryToken()
-					<input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-					<input type="hidden" name="UserID" value="@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value" />
-					<input type="hidden" name="ParentCommentID" id="parentCommentInput" value="" />
-					<input type="hidden" name="type" value="chapter" />
-
-					<small class="text-muted">Đang trả lời: <span id="replyingToDisplay"></span></small>
-
-					<div class="mb-3 mt-2">
-						<textarea name="Content" rows="3" class="form-control" placeholder="Viết bình luận..."></textarea>
-					</div>
-
-					<div class="d-flex justify-content-between align-items-center">
-						<button type="submit" class="btn btn-primary">Gửi bình luận</button>
-						<button type="button" class="btn btn-link d-none" id="cancelReplyBtn" onclick="cancelReply()">Hủy trả lời</button>
-					</div>
-				</form>
+				<div id="mainCommentForm">
+					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
+{
+	ChapterID = Model.ChapterID,
+	UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+	Type = "chapter",
+	FormId = "main"
+})
+				</div>
 
 				<!-- Danh sách bình luận -->
 				<div class="comment-box" id="commentList">
@@ -269,119 +265,9 @@
 	</div>
 </div>
 
-
 @section Scripts {
-	<script>
-		// Mở/đóng sidebar
-		function toggleSidebar() {
-			var sidebar = document.getElementById('chapterSidebar');
-			var overlay = document.getElementById('overlay');
-			if (sidebar.classList.contains('active')) {
-				sidebar.classList.remove('active');
-				overlay.style.display = 'none';
-			} else {
-				sidebar.classList.add('active');
-				overlay.style.display = 'block';
-			}
-		}
-
-		// Hiện thanh nav khi click vào chương
-		function showFloatingNav() {
-			document.getElementById('floatingNav').style.display = 'flex';
-		}
-	</script>
-
-	<script>
-		$(document).ready(function () {
-			$("#styleForm").submit(function (e) {
-				e.preventDefault(); // chặn form gửi theo cách mặc định
-
-				var form = $(this);
-				var formData = form.serialize();
-
-				$.ajax({
-					type: "POST",
-					url: form.attr("action"),
-					data: formData,
-					success: function (response) {
-						// Bạn có thể cập nhật UI ở đây nếu cần
-
-						// Đóng modal
-						$('#yourModalId').modal('hide');
-
-						// Có thể reload chapter để áp dụng style mới nếu cần
-						// location.reload();
-					},
-					error: function (xhr, status, error) {
-						alert("Đã xảy ra lỗi: " + error);
-					}
-				});
-			});
-		});
-	</script>
-
-	<script>
-		function replyToComment(commentId) {
-			document.getElementById("parentCommentInput").value = commentId;
-			document.getElementById("cancelReplyBtn").classList.remove("d-none");
-			document.querySelector('input[name="type"]').value = "reply";
-
-			const replyingTo = document.querySelector(`#comment-${commentId} .comment-user`);
-
-			if (replyingTo) {
-				document.getElementById("replyingToDisplay").innerText = replyingTo.textContent;
-
-			}
-
-		}
-
-		function cancelReply() {
-			document.getElementById("parentCommentInput").value = "";
-			document.getElementById("replyingToDisplay").innerText = "";
-			document.getElementById("cancelReplyBtn").classList.add("d-none");
-
-
-			document.querySelector('input[name="type"]').value = "chapter";
-		}
-	</script>
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			const commentsPerPage = 5;
-			const commentList = document.getElementById("commentList");
-			const comments = Array.from(commentList.children);
-			const totalPages = Math.ceil(comments.length / commentsPerPage);
-			const paginationControls = document.getElementById("paginationControls");
-
-			function showPage(page) {
-				const start = (page - 1) * commentsPerPage;
-				const end = start + commentsPerPage;
-
-				comments.forEach((comment, index) => {
-					comment.style.display = (index >= start && index < end) ? "block" : "none";
-				});
-
-				renderPagination(page);
-			}
-
-			function renderPagination(currentPage) {
-				paginationControls.innerHTML = "";
-
-				for (let i = 1; i <= totalPages; i++) {
-					const btn = document.createElement("button");
-					btn.innerText = i;
-					btn.className = "btn btn-sm " + (i === currentPage ? "btn-primary" : "btn-outline-primary");
-					btn.style.margin = "0 5px";
-					btn.onclick = () => showPage(i);
-					paginationControls.appendChild(btn);
-				}
-			}
-
-			// Khởi tạo trang đầu tiên
-			if (comments.length > commentsPerPage) {
-				showPage(1);
-			}
-		});
-	</script>
+	<script src="~/js/user-readchapter.js"></script>
 }
+
 
 

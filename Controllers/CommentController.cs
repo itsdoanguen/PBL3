@@ -15,21 +15,28 @@ namespace PBL3.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CommentPostViewModel model, string type)
         {
+            int? newCommentId = null;
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Dữ liệu không hợp lệ";
             } else
             {
-                var (isSuccess, message) = await _commentService.PostCommentAsync(model, type);
+                var (isSuccess, message, commentId) = await _commentService.PostCommentAsync(model, type);
 
                 if (isSuccess)
                 {
                     TempData["SuccessMessage"] = message;
+                    newCommentId = commentId;
                 }
                 else
                 {
                     TempData["ErrorMessage"] = message;
                 }
+            }
+
+            if (newCommentId != null)
+            {
+                TempData["ScrollToComment"] = $"comment-{newCommentId}";
             }
 
             if (model.ChapterID != null)
@@ -40,6 +47,21 @@ namespace PBL3.Controllers
             {
                 return RedirectToAction("View", "Story", new { id = model.StoryID });
             }
+        }
+
+        public IActionResult GetCommentFormPartial(int chapterId, string userId, int? parentCommentId, string replyingToUsername, string formId, string type)
+        {
+            var viewModel = new PBL3.ViewModels.Chapter.CommentFormViewModel
+            {
+                ChapterID = chapterId,
+                UserID = userId,
+                ParentCommentID = parentCommentId,
+                ReplyingToUsername = replyingToUsername,
+                FormId = formId,
+                Type = type
+            };
+
+            return PartialView("_CommentFormPartial", viewModel);
         }
     }
 }
