@@ -1,0 +1,278 @@
+﻿.series-cover {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.series-type {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #d9534f;
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.a6-ratio {
+    position: relative;
+    width: 100%;
+    padding-top: 150%;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.img-in-ratio {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.series-name {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: .5rem;
+    display: block;
+}
+
+.series-gernes a {
+    display: inline-block;
+    background: #f1f1f1;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin: 0 5px 5px 0;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: #333;
+}
+
+.info-item {
+    margin-bottom: .5rem;
+    font-size: 0.95rem;
+}
+
+    .info-item .info-name {
+        font-weight: bold;
+        margin-right: .5rem;
+    }
+
+.statistic-list {
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.statistic-item {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.statistic-name {
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.statistic-value {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.series-summary {
+    margin-top: 2rem;
+}
+
+.summary-content p {
+    margin-bottom: .5rem;
+}
+
+.action-buttons a {
+    margin-right: 10px;
+    margin-top: 1rem;
+}
+
+.avatar-frame {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    margin: 0 auto;
+}
+
+.author-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+/* Khung trắng cho từng vùng */
+.section-block {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Màu nền chung cho trang */
+body {
+    background-color: #f9f9f9;
+}
+
+/* Giãn cách phần tóm tắt */
+.series-summary {
+    margin-top: 2rem;
+}
+
+/* Giãn cách danh sách chương */
+.mb-5 {
+    margin-bottom: 3rem !important;
+}
+
+/* =====================
+    COMMENT SECTION
+===================== */
+.chapter-comments h5 {
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.comment-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-container {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.3s;
+}
+
+    .comment-container:hover {
+        background-color: #f9f9f9;
+    }
+
+    .comment-container.is-reply {
+        margin-left: 40px;
+        background-color: #fdfdfd;
+        border-left: 4px solid #dcdcdc;
+    }
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+
+.comment-user {
+    margin: 0 0 0 12px;
+    font-weight: 600;
+    color: #222;
+}
+
+.comment-time {
+    font-size: 0.85em;
+    color: #999;
+}
+
+.reply-to {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: center;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-text {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    padding: 6px 12px;
+    margin-top: 6px;
+    background-color: #fdfdfd;
+    border-radius: 6px;
+}
+
+
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+    .comment-actions .btn {
+        font-size: 0.85rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+.comment-replies {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-highlight {
+    animation: highlight-comment 3s ease-out;
+}
+
+@keyframes highlight-comment {
+    0% {
+        background-color: rgba(255, 236, 179, 1);
+        box-shadow: 0 0 8px rgba(255, 193, 7, 0.8);
+    }
+
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+/* =====================
+    AVATAR STYLES
+===================== */
+.avatar-circle,
+.avatar-circle-sm {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+.avatar-circle-sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+}

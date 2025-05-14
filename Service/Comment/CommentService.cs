@@ -86,8 +86,8 @@ namespace PBL3.Service.Comment
                 ChapterID = null,
                 ParentCommentID = null,
                 Content = model.Content,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
                 isDeleted = false
             };
 

@@ -1,4 +1,5 @@
-﻿using static PBL3.Models.StoryModel;
+﻿using PBL3.ViewModels.Chapter;
+using static PBL3.Models.StoryModel;
 
 namespace PBL3.ViewModels.Story
 {
@@ -23,7 +24,7 @@ namespace PBL3.ViewModels.Story
         public UserInfo Author { get; set; } = new UserInfo();
         public bool IsFollowed { get; set; } = false;
 
-        public List<CommentInfo> Comments { get; set; } = new List<CommentInfo>();
+        public List<CommentTreeViewModel> Comments { get; set; } = new List<CommentTreeViewModel>();
         public List<ChapterInfo> Chapters { get; set; } = new List<ChapterInfo>();
     }
 

@@ -173,12 +173,12 @@
 				<!-- Form bình luận -->
 				<div id="mainCommentForm">
 					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
-{
-	ChapterID = Model.ChapterID,
-	UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
-	Type = "chapter",
-	FormId = "main"
-})
+						{
+							ChapterID = Model.ChapterID,
+							UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+							Type = "chapter",
+							FormId = "main"
+						})
 				</div>
 
 				<!-- Danh sách bình luận -->

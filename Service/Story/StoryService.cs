@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Chapter;
+using PBL3.Service.Comment;
 using PBL3.Service.Image;
 using PBL3.ViewModels.Story;
 
@@ -14,13 +15,15 @@ namespace PBL3.Service.Story
         private readonly BlobService _blobService;
         private readonly IChapterService _chapterService;
         private readonly IImageService _imageService;
+        private readonly ICommentService _commentService;
 
-        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService)
+        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService, ICommentService commentService)
         {
             _context = context;
             _blobService = blobService;
             _chapterService = chapterService;
             _imageService = imageService;
+            _commentService = commentService;
         }
 
         public async Task<(bool isSuccess, string errorMessage, int? storyID)> CreateStoryAsync(StoryCreateViewModel model, int authorID)
@@ -269,7 +272,7 @@ namespace PBL3.Service.Story
             {
                 StoryID = story.StoryID,
                 StoryName = story.Title,
-                StoryDescription = story.Description,
+                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n","<br/>"),
                 StoryImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 LastUpdated = story.UpdatedAt,
                 StoryStatus = story.Status,
@@ -281,7 +284,7 @@ namespace PBL3.Service.Story
                 TotalFollow = await _context.FollowStories.CountAsync(f => f.StoryID == storyID),
                 TotalWord = await GetTotalStoryWordAsync(storyID),
                 TotalBookmark = await _context.Bookmarks.CountAsync(b => b.Chapter.StoryID == storyID),
-                Comments = GetCommentForStory(storyID),
+                Comments = await _commentService.GetCommentsAsync("story", storyID),
                 Chapters = GetChapterForStory(storyID),
                 IsFollowed = await _context.FollowStories
                     .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
@@ -289,28 +292,6 @@ namespace PBL3.Service.Story
             };
 
             return viewModel;
-        }
-
-
-        private List<CommentInfo> GetCommentForStory(int storyID)
-        {
-            var comments = _context.Comments
-                .Where(c => c.StoryID == storyID)
-                .Select(c => new CommentInfo
-                {
-                    CommentID = c.CommentID,
-                    Content = c.Content,
-                    CreatedAt = c.CreatedAt,
-                    User = new UserInfo
-                    {
-                        UserID = c.User.UserID,
-                        UserName = c.User.DisplayName,
-                        UserAvatar = c.User.Avatar
-                    }
-                })
-                .ToList();
-
-            return comments;
         }
         private List<GerneVM> GetGerneForStory(int storyID)
         {
