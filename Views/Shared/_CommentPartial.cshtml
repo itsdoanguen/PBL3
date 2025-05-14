@@ -12,11 +12,16 @@
 }
 
 <div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
-    <div class="comment-header">
-        <span class="comment-user">@Model.Comment.UserName</span>
-        <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>
-    </div>
     <div class="comment-content">
+        <div class="comment-header">
+            <div class="comment-meta">
+                <img src="@(Model.Comment.UserAvatar != null ? Model.Comment.UserAvatar : Url.Content("~/image/default-avatar.png"))"
+                     class="avatar-circle" alt="Avatar">
+                <span class="comment-user">@Model.Comment.UserName</span>
+            </div>
+            <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>
+        </div>
+
         @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
         {
             <div class="reply-to">
@@ -26,8 +31,8 @@
         <div class="comment-text">
             @Model.Comment.Content
         </div>
-    </div>
-    <div class="comment-actions">
+
+        <div class="comment-actions">
         <button type="button" class="btn btn-sm btn-outline-primary" onclick="replyToComment(@Model.Comment.CommentID)">
             Trả lời
         </button>
@@ -42,4 +47,6 @@
             }
         </div>
     }
+    </div>
+    
 </div>
