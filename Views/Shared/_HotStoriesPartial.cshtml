@@ -1,0 +1,31 @@
+@model List<PBL3.ViewModels.User.StoryViewModel>
+
+@foreach (var story in Model)
+{
+    <div class="story-item">
+        <a asp-controller="Story" asp-action="Details" asp-route-id="@story.Id" class="d-block text-decoration-none">
+            <div class="story-item__image">
+                <img src="@story.CoverImageUrl" alt="@story.Title" class="img-fluid" width="150"
+                     height="230" loading="lazy">
+            </div>
+            <h3 class="story-item__name text-one-row story-name">@story.Title</h3>
+
+            <div class="list-badge">
+                @if (story.IsCompleted)
+                {
+                    <span class="story-item__badge badge text-bg-success">Full</span>
+                }
+
+                @if (story.IsHot)
+                {
+                    <span class="story-item__badge story-item__badge-hot badge text-bg-danger">Hot</span>
+                }
+
+                @if (story.IsNew)
+                {
+                    <span class="story-item__badge story-item__badge-new badge text-bg-info text-light">New</span>
+                }
+            </div>
+        </a>
+    </div>
+} 

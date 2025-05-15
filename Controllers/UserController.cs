@@ -1,10 +1,18 @@
-﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Security.Claims;
+using PBL3.ViewModels.User;
+using PBL3.Models;
 using PBL3.Data;
 using PBL3.Service.Image;
 using PBL3.Service.User;
 using PBL3.ViewModels.UserProfile;
+using PBL3.Service;
 
 namespace PBL3.Controllers
 {
@@ -154,5 +162,150 @@ namespace PBL3.Controllers
 
             return View(stories);
         }
+
+        // GET: User/Intro
+        [AllowAnonymous]
+        public async Task<IActionResult> Intro()
+        {
+            // Create a view model for the Intro page
+            var viewModel = new IntroViewModel
+            {
+                HeaderMessage = "KHÁM PHÁ THẾ GIỚI TRUYỆN TIỂU THUYẾT CÙNG CHÚNG TÔI!",
+                
+                // Get hot stories from database
+                HotStories = await GetHotStoriesAsync(),
+                
+                // Get new stories from database
+                NewStories = await GetNewStoriesAsync(),
+                
+                // Get completed stories from database
+                CompletedStories = await GetCompletedStoriesAsync(),
+                
+                // Get all categories for sidebar
+                AllCategories = await GetAllCategoriesAsync(),
+                
+                // Create select list for category dropdown
+                CategorySelectList = new SelectList(await GetAllCategoriesAsync(), "Id", "Name")
+            };
+
+            return View(viewModel);
+        }
+
+        // GET: User/GetHotStoriesByCategory
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetHotStoriesByCategory(int categoryId)
+        {
+            var stories = await GetHotStoriesByCategoryAsync(categoryId);
+            return PartialView("_HotStoriesPartial", stories);
+        }
+
+        #region Helper Methods
+
+        private async Task<List<StoryViewModel>> GetHotStoriesAsync()
+        {
+            return await _context.Stories
+                .Where(s => s.Status == StoryModel.StoryStatus.Active)
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(16)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
+                    IsHot = true, // Assuming all stories from this query are "hot"
+                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
+                    ChapterCount = s.Chapters.Count
+                })
+                .ToListAsync();
+        }
+
+        private async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId)
+        {
+            if (categoryId == 0)
+            {
+                return await GetHotStoriesAsync();
+            }
+
+            return await _context.Stories
+                .Where(s => s.Status == StoryModel.StoryStatus.Active && 
+                       s.Genres.Any(sg => sg.GenreID == categoryId))
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(16)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
+                    IsHot = true, // Assuming all stories from this query are "hot"
+                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
+                    ChapterCount = s.Chapters.Count
+                })
+                .ToListAsync();
+        }
+
+        private async Task<List<StoryViewModel>> GetNewStoriesAsync()
+        {
+            return await _context.Stories
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(15)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    IsHot = true, // For demo purposes
+                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
+                    Categories = s.Genres
+                        .Select(sg => new CategoryViewModel
+                        {
+                            Id = sg.GenreID,
+                            Name = sg.Genre.Name
+                        })
+                        .ToList(),
+                    LatestChapter = s.Chapters
+                        .OrderByDescending(c => c.ChapterOrder)
+                        .Select(c => new ChapterViewModel
+                        {
+                            Id = c.ChapterID,
+                            ChapterNumber = c.ChapterOrder,
+                            Title = c.Title
+                        })
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
+        }
+
+        private async Task<List<StoryViewModel>> GetCompletedStoriesAsync()
+        {
+            return await _context.Stories
+                .Where(s => s.Status == StoryModel.StoryStatus.Completed)
+                .OrderByDescending(s => s.CreatedAt)
+                .Take(15)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
+                    ChapterCount = s.Chapters.Count
+                })
+                .ToListAsync();
+        }
+
+        private async Task<List<CategoryViewModel>> GetAllCategoriesAsync()
+        {
+            return await _context.Genres
+                .OrderBy(g => g.Name)
+                .Select(g => new CategoryViewModel
+                {
+                    Id = g.GenreID,
+                    Name = g.Name
+                })
+                .ToListAsync();
+        }
+
+        #endregion
     }
 }
