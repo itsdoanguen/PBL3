@@ -5,77 +5,179 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="container py-4">
-    <div class="row mb-4">
-        <div class="col-md-3 text-center">
-            <img src="@Model.StoryImage" alt="Ảnh bìa" class="img-fluid rounded mb-2" style="max-width: 100%; height: auto;" />
-            <p class="fw-bold">@Model.TotalChapter chương</p>
-            <p>@Model.TotalView.ToString("N0") lượt xem</p>
-            <p>@Model.TotalFollow.ToString("N0") theo dõi</p>
-            <p>@Model.TotalBookmark.ToString("N0") bookmark</p>
-        </div>
-        <div class="col-md-9">
-            <h2 class="fw-bold">@Model.StoryName</h2>
-            <p><strong>Tác giả:</strong> @Model.Author?.UserName ?? "Chưa có..."</p>
-            <p><strong>Trạng thái:</strong> @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "Đang phát hành" : "Hoàn thành")</p>
-            <p>
-                <strong>Thể loại:</strong>
-                @if (Model.gerneVMs != null && Model.gerneVMs.Any())
-                {
-                    @foreach (var genre in Model.gerneVMs)
-                    {
-                        <span class="badge bg-secondary me-1">@genre.Name</span>
-                    }
-                }
-                else
-                {
-                    <span>Chưa có...</span>
-                }
-            </p>
-            <p><strong>Số từ:</strong> @Model.TotalWord.ToString("N0")</p>
-            <p><strong>Đánh giá:</strong> <span class="text-warning">@Model.Rating.ToString("0.0")</span></p>
-            <p><strong>Cập nhật lần cuối:</strong> @Model.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có..."</p>
-
-            <hr />
-            <p><strong>Mô tả:</strong></p>
-            <p>@Model.StoryDescription ?? "Chưa có mô tả..."</p>
-        </div>
-    </div>
-
-    <h4 class="mb-3">Danh sách chương</h4>
-    @if (Model.Chapters != null && Model.Chapters.Any())
+@functions {
+    string GetTimeAgo(DateTime? date)
     {
-        <ul class="list-group mb-4">
-            @foreach (var chapter in Model.Chapters)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span>@chapter.Title</span>
-                    <small class="text-muted">@chapter.UpdatedAt?.ToString("dd/MM/yyyy")</small>
-                </li>
-            }
-        </ul>
+        var span = DateTime.Now - date;
+        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+        return "Vừa xong";
     }
-    else
+    int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
     {
-        <p>Chưa có chương nào.</p>
-    }
-
-    <h4 class="mb-3">Bình luận</h4>
-    @if (Model.Comments != null && Model.Comments.Any())
-    {
-        @foreach (var comment in Model.Comments)
+        int total = 0;
+        foreach (var comment in comments)
         {
-            <div class="border p-3 rounded mb-2">
-                <p class="mb-1">
-                    <strong>@(comment.User?.UserName ?? "Ẩn danh")</strong>
-                    - <small class="text-muted">@comment.CreatedAt.ToString("dd/MM/yyyy")</small>
-                </p>
-                <p class="mb-0">@comment.Content</p>
+            total += 1;
+            if (comment.Replies != null && comment.Replies.Any())
+            {
+                total += CountAllComments(comment.Replies);
+            }
+        }
+        return total;
+    }
+}
+
+@section Styles {
+    <link href="~/css/story-view.css" rel="stylesheet" />
+}
+
+@if (TempData["ScrollToComment"] != null)
+{
+    <input type="hidden" id="scrollToComment" value="@TempData["ScrollToComment"]" />
+}
+
+<div class="container py-4">
+    <main class="section-body section-block">
+        <div class="row">
+            <!-- Left: Ảnh bìa -->
+            <div class="col-md-3">
+                <div class="series-cover">
+                    <div class="series-type">Truyện đăng</div>
+                    <div class="a6-ratio">
+                        <div class="content img-in-ratio" style="background-image: url('@Model.StoryImage')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Thông tin -->
+            <div class="col-md-9 d-flex flex-column">
+                <div class="flex-grow-1">
+                    <div class="row">
+                        <!-- Cột trái: Thông tin truyện -->
+                        <div class="col-md-8">
+                            <span class="series-name">@Model.StoryName</span>
+
+                            <!-- Thể loại -->
+                            <div class="series-gernes mb-2">
+                                @foreach (var genre in Model.gerneVMs)
+                                {
+                                    <a>@genre.Name</a>
+                                }
+                            </div>
+
+                            <!-- Trạng thái -->
+                            <div class="info-item">
+                                <span class="info-name">Tình trạng:</span>
+                                <span class="info-value">
+                                    @(Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active ? "Đang phát hành" : "Hoàn thành")
+                                </span>
+                            </div>
+
+                            <!-- Nút hành động -->
+                            <div class="action-buttons d-flex flex-wrap">
+                                <a class="btn btn-danger rounded-pill" href="@Url.Action("ReadChapter", "Chapter", new { id = Model.Chapters?.FirstOrDefault()?.ChapterID })">Đọc tiếp</a>
+                                <a class="btn btn-warning rounded-pill" href="#">Đánh giá</a>
+                                <a class="btn btn-secondary rounded-pill" href="#chapterlist">Mục lục</a>
+                                <a class="btn btn-info rounded-pill" href="#comments">Bình luận</a>
+                            </div>
+                        </div>
+
+                        <!-- Cột phải: Thẻ tác giả -->
+                        <div class="col-md-4 d-flex justify-content-center align-items-start">
+                            <div class="author-card text-center">
+                                <div class="avatar-frame mb-2">
+                                    <img src=@Model.Author?.UserAvatar ?? Url.Content("~/image/default-avatar.png") alt="Tác giả" class="author-avatar" />
+
+                                </div>
+                                <div class="author-name">@Model.Author?.UserName</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Thống kê -->
+                <div class="row statistic-list">
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Lần cuối</div>
+                        <div class="statistic-value">@Model.LastUpdated?.ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Số từ</div>
+                        <div class="statistic-value">@Model.TotalWord.ToString("N0")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Đánh giá</div>
+                        <div class="statistic-value">@Model.Rating.ToString("0.0")</div>
+                    </div>
+                    <div class="col-6 col-md-3 statistic-item">
+                        <div class="statistic-name">Lượt xem</div>
+                        <div class="statistic-value">@Model.TotalView.ToString("N0")</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tóm tắt -->
+        <div class="series-summary section-block">
+            <h4 class="font-bold">Tóm tắt</h4>
+            <div class="summary-content">
+                <p>@Html.Raw(Model.StoryDescription)</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Danh sách chương -->
+    <div class="mb-5 section-block" id="chapterlist">
+        <h4 class="mb-3">📚 Danh sách chương</h4>
+        @if (Model.Chapters?.Any() == true)
+        {
+            <div class="list-group shadow-sm">
+                @foreach (var chapter in Model.Chapters)
+                {
+                    <a href="@Url.Action("ReadChapter", "Chapter", new { id = chapter.ChapterID })" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>@chapter.Title</span>
+                        <small class="text-muted">@chapter.UpdatedAt?.ToString("dd/MM/yyyy")</small>
+                    </a>
+                }
             </div>
         }
-    }
-    else
-    {
-        <p>Chưa có bình luận nào.</p>
-    }
+        else
+        {
+            <p>Chưa có chương nào.</p>
+        }
+    </div>
+
+    <!-- Bình luận -->
+    <div class="story-comments center-cl">
+        <h5 class="mb-3" id="story-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
+
+        <!-- Form bình luận -->
+        <div id="mainCommentForm">
+            @await Html.PartialAsync("_SCommentFormPartial", new PBL3.ViewModels.Story.CommentFormViewModel
+           {
+               StoryID = Model.StoryID,
+               UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+               Type = "story",
+               FormId = "main"
+           })
+        </div>
+
+        <!-- Danh sách bình luận -->
+        <div class="comment-box" id="commentList">
+            @foreach (var comment in Model.Comments)
+            {
+                @Html.Partial("_CommentPartial", comment)
+            }
+        </div>
+        <div id="paginationControls" class="mt-3 text-center"></div>
+    </div>
+
 </div>
+
+@section Scripts {
+
+    <script src="~/js/story-view.js"></script>
+}

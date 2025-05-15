@@ -1,17 +1,18 @@
-﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using PBL3.Data;
-using PBL3.ViewModels.UserProfile;
-using PBL3.Service;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Security.Claims;
 using PBL3.ViewModels.User;
 using PBL3.Models;
+using PBL3.Data;
+using PBL3.Service.Image;
+using PBL3.Service.User;
+using PBL3.ViewModels.UserProfile;
+using PBL3.Service;
 
 namespace PBL3.Controllers
 {
@@ -25,6 +26,7 @@ namespace PBL3.Controllers
         private readonly BlobService _blobService;
         private readonly IUserService _userService;
         private readonly IImageService _imageService;
+        
         public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
         {
             _context = context;
@@ -33,9 +35,13 @@ namespace PBL3.Controllers
             _imageService = imageService;
         }
         //GET: User/Index
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var viewModel = await _userService.GetUserIndexViewModelAsync(currentUserID);
+
+            return View(viewModel);
         }
         //GET: User/MyProfile
         public async Task<IActionResult> MyProfile()
@@ -70,7 +76,7 @@ namespace PBL3.Controllers
         //POST: User/EditProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) //Tham số IFormFile để lấy file ảnh từ form
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) 
         {
             if (!ModelState.IsValid)
             {
@@ -86,7 +92,7 @@ namespace PBL3.Controllers
 
 
             //Upload avatar
-            if(avatarUpload != null)
+            if (avatarUpload != null)
             {
                 var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(avatarUpload, "avatars");
 

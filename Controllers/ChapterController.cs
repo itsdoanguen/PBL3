@@ -1,9 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using PBL3.Models;
-using PBL3.Service;
+using PBL3.Service.Chapter;
+using PBL3.Service.Comment;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers
@@ -12,10 +11,12 @@ namespace PBL3.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IChapterService _chapterService;
-        public ChapterController(ApplicationDbContext context, IChapterService chapterService)
+        private readonly ICommentService _commentService;
+        public ChapterController(ApplicationDbContext context, IChapterService chapterService, ICommentService commentService)
         {
             _context = context;
             _chapterService = chapterService;
+            _commentService = commentService;
         }
         public IActionResult Index()
         {
@@ -152,5 +153,11 @@ namespace PBL3.Controllers
             return RedirectToAction("EditChapter", new { chapterId = chapterId, storyId = result.StoryId });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetCommentsJson(string type, int id)
+        {
+            var comments = await _commentService.GetCommentsAsync(type, id);
+            return Json(comments);
+        }
     }
 }

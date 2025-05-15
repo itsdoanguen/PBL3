@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PBL3.Data;
 
@@ -11,9 +12,11 @@ using PBL3.Data;
 namespace PBL3.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512124312_UpdateStoryDescriptionLimit")]
+    partial class UpdateStoryDescriptionLimit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,13 +98,11 @@ namespace PBL3.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("ParentCommentID")
-                        .HasColumnType("int");
 
                     b.Property<int?>("StoryID")
                         .HasColumnType("int");
@@ -111,9 +112,6 @@ namespace PBL3.Migrations
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
 
                     b.HasKey("CommentID");
 
@@ -283,40 +281,6 @@ namespace PBL3.Migrations
                     b.HasIndex("AuthorID");
 
                     b.ToTable("Stories");
-                });
-
-            modelBuilder.Entity("PBL3.Models.StyleModel", b =>
-                {
-                    b.Property<int>("StyleID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StyleID"));
-
-                    b.Property<int>("BackgroundColor")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("FontFamily")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FontSize")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserID")
-                        .HasColumnType("int");
-
-                    b.HasKey("StyleID");
-
-                    b.HasIndex("UserID")
-                        .IsUnique();
-
-                    b.ToTable("Styles");
                 });
 
             modelBuilder.Entity("PBL3.Models.UserModel", b =>
@@ -525,17 +489,6 @@ namespace PBL3.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("PBL3.Models.StyleModel", b =>
-                {
-                    b.HasOne("PBL3.Models.UserModel", "User")
-                        .WithOne("Style")
-                        .HasForeignKey("PBL3.Models.StyleModel", "UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PBL3.Models.ChapterModel", b =>
                 {
                     b.Navigation("Bookmarks");
@@ -578,8 +531,6 @@ namespace PBL3.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("Stories");
-
-                    b.Navigation("Style");
                 });
 #pragma warning restore 612, 618
         }

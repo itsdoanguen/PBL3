@@ -1,135 +1,273 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
-    ViewData["Title"] = Model.Title;
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+	ViewData["Title"] = Model.Title;
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="d-flex">
-    <!-- Sidebar -->
-    <div id="chapterSidebar" class="p-3 border" style="width: 250px; display: none;">
-        <h4>Danh sách chương</h4>
-        <ul>
-            @foreach (var chap in Model.ChapterList)
-            {
-                <li>
-                    <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@chap.ChapterID">
-                        @chap.Title
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
+@functions {
+	string GetTimeAgo(DateTime? date)
+	{
+		var span = DateTime.Now - date;
+		if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+		if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+		if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+		return "Vừa xong";
+	}
+	int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
+	{
+		int total = 0;
+		foreach (var comment in comments)
+		{
+			total += 1;
+			if (comment.Replies != null && comment.Replies.Any())
+			{
+				total += CountAllComments(comment.Replies);
+			}
+		}
+		return total;
+	}
+}
 
-    <!-- ✅ Form Like -->
-    <form id="likeForm" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="chapterId" value="@Model.ChapterID" />
-        <button type="button" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-primary" : "btn-outline-primary") btn-modern"
-                data-liked="@Model.IsLikedByCurrentUser.ToString().ToLower()"
-                id="likeButton">
-            ❤️ <span id="likeText">@((Model.IsLikedByCurrentUser) ? "Đã thích" : "Like")</span>
-            (<span id="likeCount">@Model.LikeCount</span>)
-        </button>
-    </form>
+@if (TempData["ScrollToComment"] != null)
+{
+	<input type="hidden" id="scrollToComment" value="@TempData["ScrollToComment"]" />
+}
+
+@section Styles {
+	<link href="~/css/user-readchapter.css" rel="stylesheet" />
+}
+<style>
+	.custom-style {
+		background-color: @Model.Style.BackgroundColorHex;
+		color: @Model.Style.TextColorHex;
+	}
+</style>
+
+<div id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar Danh sách chương -->
+<div id="chapterSidebar">
+	<div class="card-body">
+		<h5 class="card-title">Danh sách chương</h5>
+
+		<ul id="chap_list" class="unstyled">
+			@foreach (var chap in Model.ChapterList)
+			{
+				<li class="@(chap.ChapterID == Model.ChapterID ? "current" : "")">
+					<a href="@Url.Action("ReadChapter", "Chapter", new { id = chap.ChapterID })" class="d-block text-decoration-none">
+						@chap.Title
+					</a>
+				</li>
+			}
+		</ul>
+	</div>
+</div>
 
 
-    <!-- Main content -->
-    <div class="chapter-container flex-grow-1 p-3">
-        <!-- Nút toggle -->
-        <button class="btn btn-info mb-3" onclick="toggleSidebar()">📚 Danh sách chương</button>
+<!-- Thanh nav dọc -->
+<div id="floatingNav">
+	<!-- Chương trước -->
+	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
+	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+		<i class="bi bi-arrow-left"></i>
+	</a>
 
-        <h2>@Model.StoryTitle - Chương: @Model.Title</h2>
-        <p><strong>Ngày đăng:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy") | <strong>Lượt xem:</strong> @Model.ViewCount</p>
+	<!-- Quay lại truyện -->
+	<a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
+	   class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+		<i class="bi bi-house-door"></i>
+	</a>
 
-        <hr />
-        <div class="chapter-content">
-            @Html.Raw(Model.Content.Replace("\n", "<br/>"))
-        </div>
+	<!-- Like -->
+	<form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="m-0 p-0 d-flex justify-content-center">
+		@Html.AntiForgeryToken()
+		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
+		<button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="Thích chương này">
+			<i class="bi bi-heart@(Model.IsLikedByCurrentUser ? "-fill" : "")"></i>
+		</button>
+	</form>
 
-        <hr />
-        <div class="chapter-navigation mb-3">
-            @if (Model.PreviousChapterID != -1)
-            {
-                <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-secondary">⬅ Chương trước</a>
-            }
-            else
-            {
-                <button class="btn btn-secondary disabled" disabled>⬅ Chương trước</button>
-            }
+	<!-- Bookmark -->
+	<button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
+		<i class="bi bi-bookmark"></i>
+	</button>
 
-            @if (Model.NextChapterID != -1)
-            {
-                <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-secondary ml-2">Chương sau ➡</a>
-            }
-            else
-            {
-                <button class="btn btn-secondary disabled ml-2" disabled>Chương sau ➡</button>
-            }
-        </div>
+	<!-- Danh sách chương -->
+	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
+		<i class="bi bi-list"></i>
+	</button>
 
-        <h4>Bình luận (@Model.Comments.Count)</h4>
-        @foreach (var comment in Model.Comments)
-        {
-            <div class="comment">
-                <strong>@comment.UserID</strong> - <em>@comment.CreatedAt.ToString("g")</em>
-                <p>@comment.Content</p>
-            </div>
-        }
+	<!-- Cài đặt đọc -->
+	<button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc" data-bs-toggle="modal" data-bs-target="#styleModal">
+		<i class="bi bi-gear"></i>
+	</button>
 
-        <form asp-action="PostComment" asp-controller="Comment" method="post">
-            <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
-            <textarea name="Content" rows="4" placeholder="Viết bình luận..." class="form-control"></textarea>
-            <button type="submit" class="btn btn-primary mt-2">Gửi bình luận</button>
-        </form>
-    </div>
+	<!-- Chương sau -->
+	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
+	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+		<i class="bi bi-arrow-right"></i>
+	</a>
+</div>
+
+<!-- Nội dung chương -->
+<div class="container-fluid py-4 position-relative custom-style" onclick="showFloatingNav()">
+	<div class="card borderless custom-style">
+		<div class="card-body custom-style">
+
+			<!-- Thông tin tiêu đề chương -->
+			<div class="chapter-header text-center py-3">
+				<h2 class="title-item text-xl fw-bold">@Model.StoryTitle</h2>
+				<h4 class="title-item fw-bold">@Model.Title</h4>
+				<h6 class="chapter-meta">
+					<a href="#chapter-comments" class="text-decoration-underline">@CountAllComments(Model.Comments) Bình luận</a> -
+					Độ dài: @Model.TotalWord từ -
+					Cập nhật:
+					<time title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
+						@GetTimeAgo(Model.UpdatedAt)
+					</time>
+				</h6>
+			</div>
+
+			<hr />
+
+			<!-- Nội dung văn bản -->
+			<div class="chapter-content center-cl" style="white-space: pre-line; font-family: @Model.Style.FontFamily.ToString(); font-size: @(Model.Style.FontSize + "px")">
+				@Html.Raw(Model.Content)
+			</div>
+
+			<hr />
+
+			<!-- Navigation dưới chương -->
+			<div class="chapter-navigation d-flex justify-content-center gap-3 my-4">
+				@if (Model.PreviousChapterID != -1)
+				{
+					<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID" class="btn btn-outline-secondary" title="Chương trước">
+						<i class="bi bi-arrow-left"></i>
+					</a>
+				}
+				else
+				{
+					<button class="btn btn-outline-secondary disabled" disabled title="Chương trước"><i class="bi bi-arrow-left"></i></button>
+				}
+
+				<button class="btn btn-outline-info" onclick="toggleSidebar()" title="Danh sách chương">
+					<i class="bi bi-list"></i>
+				</button>
+
+				@if (Model.NextChapterID != -1)
+				{
+					<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID" class="btn btn-outline-secondary" title="Chương sau">
+						<i class="bi bi-arrow-right"></i>
+					</a>
+				}
+				else
+				{
+					<button class="btn btn-outline-secondary disabled" disabled title="Chương sau"><i class="bi bi-arrow-right"></i></button>
+				}
+			</div>
+
+			<!-- Phần bình luận -->
+			<div class="chapter-comments center-cl">
+				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
+
+				<!-- Form bình luận -->
+				<div id="mainCommentForm">
+					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
+						{
+							ChapterID = Model.ChapterID,
+							UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+							Type = "chapter",
+							FormId = "main"
+						})
+				</div>
+
+				<!-- Danh sách bình luận -->
+				<div class="comment-box" id="commentList">
+					@foreach (var comment in Model.Comments)
+					{
+						@Html.Partial("_CommentPartial", comment)
+					}
+				</div>
+				<div id="paginationControls" class="mt-3 text-center"></div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+<!-- Modal Cài đặt đọc -->
+<div class="modal fade" id="styleModal" tabindex="-1" aria-labelledby="styleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form asp-action="UpdateStyle" asp-controller="Style" method="post" id="styleForm">
+				@Html.AntiForgeryToken()
+				<input type="hidden" name="UserID" value="@Model.Style.UserID" />
+				<input type="hidden" name="StyleID" value="@Model.Style.StyleID" />
+				<input type="hidden" name="ReturnChapterID" value="@Model.ChapterID" />
+
+				<div class="modal-header">
+					<h5 class="modal-title" id="styleModalLabel">Cài đặt đọc</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+				</div>
+
+				<div class="modal-body">
+
+					<!-- Font chữ -->
+					<div class="mb-3">
+						<label for="FontFamily" class="form-label">Phông chữ</label>
+						<select name="FontFamily" class="form-select">
+							@foreach (var font in Enum.GetValues(typeof(PBL3.Models.FontFamily)))
+							{
+								var isSelected = Model.Style.FontFamily == (PBL3.Models.FontFamily)font ? "selected" : "";
+								@Html.Raw($"<option value=\"{font}\" {isSelected}>{font}</option>")
+							}
+						</select>
+					</div>
+
+					<!-- Cỡ chữ -->
+					<div class="mb-3">
+						<label for="FontSize" class="form-label">Cỡ chữ (px)</label>
+						<input type="number" name="FontSize" class="form-control" value="@Model.Style.FontSize" min="12" max="48" />
+					</div>
+
+					<!-- Màu nền -->
+					<div class="mb-3">
+						<label for="BackgroundColor" class="form-label">Màu nền</label>
+						<select name="BackgroundColor" class="form-select">
+							@foreach (var bg in Enum.GetValues(typeof(PBL3.Models.BackgroundColor)))
+							{
+								var isSelected = Model.Style.BackgroundColor == (PBL3.Models.BackgroundColor)bg ? "selected" : "";
+								@Html.Raw($"<option value=\"{bg}\" {isSelected}>{bg}</option>")
+							}
+						</select>
+					</div>
+
+					<!-- Màu chữ hiển thị (read-only) -->
+					<div class="mb-3">
+						<label class="form-label">Màu chữ hiển thị</label>
+						<input type="color" class="form-control form-control-color" value="@Model.Style.TextColorHex" disabled />
+					</div>
+
+					<!-- Màu nền hiển thị (read-only) -->
+					<div class="mb-3">
+						<label class="form-label">Màu nền hiển thị</label>
+						<input type="color" class="form-control form-control-color" value="@Model.Style.BackgroundColorHex" disabled />
+					</div>
+
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+					<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
 
 @section Scripts {
-    <script>
-        function toggleSidebar() {
-            var sidebar = document.getElementById('chapterSidebar');
-            sidebar.style.display = (sidebar.style.display === "none") ? "block" : "none";
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const likeButton = document.getElementById("likeButton");
-            const token = document.querySelector('#likeForm input[name="__RequestVerificationToken"]').value;
-            const chapterId = document.querySelector('#likeForm input[name="chapterId"]').value;
-
-            likeButton.addEventListener("click", function () {
-                fetch("/LikeChapter/LikeChapter", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': token
-                    },
-                    body: `chapterId=${chapterId}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        const likeText = document.getElementById('likeText');
-                        const likeCount = document.getElementById('likeCount');
-
-                        if (data.liked) {
-                            likeButton.classList.remove("btn-outline-primary");
-                            likeButton.classList.add("btn-primary");
-                            likeText.textContent = "Đã thích";
-                        } else {
-                            likeButton.classList.remove("btn-primary");
-                            likeButton.classList.add("btn-outline-primary");
-                            likeText.textContent = "Like";
-                        }
-
-                        likeCount.textContent = data.likeCount;
-                    }
-                })
-                .catch(error => {
-                    console.error("Like request failed:", error);
-                });
-            });
-        });
-    </script>
+	<script src="~/js/user-readchapter.js"></script>
 }
+
 
 

@@ -1,0 +1,263 @@
+﻿/* =====================
+    OVERLAY & MODAL
+===================== */
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 900;
+}
+
+/* =====================
+    SIDEBAR CHAPTER LIST
+===================== */
+#chapterSidebar {
+    position: fixed;
+    top: 40px;
+    left: -300px;
+    width: 300px;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+    z-index: 1000;
+    transition: left 0.3s;
+    overflow-y: auto;
+}
+
+    #chapterSidebar.active {
+        left: 0;
+    }
+
+    #chapterSidebar .card-body {
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+    }
+
+    #chapterSidebar .list-group-item:hover {
+        background-color: #f1f1f1;
+        cursor: pointer;
+    }
+
+/* =====================
+    FLOATING NAVIGATION
+===================== */
+#floatingNav {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+    width: 100px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+/* =====================
+    GENERAL LAYOUT
+===================== */
+.center-cl {
+    max-width: 100%;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+
+.chapter-content {
+    text-align: justify;
+}
+
+/* =====================
+    CHAPTER CARD
+===================== */
+.card.borderless {
+    border: none;
+    box-shadow: none;
+}
+
+/* =====================
+    COMMENT SECTION
+===================== */
+.chapter-comments h5 {
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}
+
+.comment-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.comment-container {
+    display: flex;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.3s;
+}
+
+    .comment-container:hover {
+        background-color: #f9f9f9;
+    }
+
+    .comment-container.is-reply {
+        margin-left: 40px;
+        background-color: #fdfdfd;
+        border-left: 4px solid #dcdcdc;
+    }
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+    color: #555;
+}
+
+
+.comment-user {
+    margin: 0 0 0 12px; 
+    font-weight: 600;
+    color: #222;
+}
+
+.comment-time {
+    font-size: 0.85em;
+    color: #999;
+}
+
+.reply-to {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 4px;
+}
+
+.comment-meta {
+    display: flex;
+    justify-content: center;
+}
+
+.comment-content {
+    flex: 1;
+}
+
+.comment-text {
+    font-size: 0.95rem;
+    color: #333;
+    line-height: 1.6;
+    padding: 6px 12px;
+    margin-top: 6px;
+    background-color: #fdfdfd;
+    border-radius: 6px;
+}
+
+
+
+.comment-actions {
+    margin-top: 10px;
+}
+
+    .comment-actions .btn {
+        font-size: 0.85rem;
+        padding: 4px 10px;
+        border-radius: 6px;
+    }
+
+.comment-replies {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.comment-highlight {
+    animation: highlight-comment 3s ease-out;
+}
+
+@keyframes highlight-comment {
+    0% {
+        background-color: rgba(255, 236, 179, 1);
+        box-shadow: 0 0 8px rgba(255, 193, 7, 0.8);
+    }
+
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+/* =====================
+    AVATAR STYLES
+===================== */
+.avatar-circle,
+.avatar-circle-sm {
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+}
+
+.avatar-circle-sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+}
+
+/* =====================
+    CHAPTER LIST STYLING
+===================== */
+#chap_list {
+    list-style-type: none;
+    padding-left: 0;
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+    #chap_list li {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+    }
+
+        #chap_list li.current {
+            background-color: #f1f1f1;
+        }
+
+.sub-chap_list {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+    .sub-chap_list li {
+        padding: 5px;
+    }
+
+#chap_list li a {
+    color: #333;
+    text-decoration: none;
+}
+
+    #chap_list li a:hover {
+        color: #007bff;
+    }

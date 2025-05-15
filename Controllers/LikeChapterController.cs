@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Models;
-using PBL3.Service;
+using PBL3.Service.Like;
 
 namespace PBL3.Controllers
 {
@@ -16,24 +16,28 @@ namespace PBL3.Controllers
             _context = context;
             _likeChapterService = likeChapterService;
         }
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
 
-        // POST: LikeChapter/LikeChapter
+        // POST: LikeChapter/LikeChapter/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> LikeChapter(int chapterId)
         {
-            string userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userIdStr))
-                return Unauthorized();
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-            int userId = int.Parse(userIdStr);
-            (bool liked, int likeCount) = await _likeChapterService.LikeChapterAsync(chapterId, userId);
+            bool isLiked = await _likeChapterService.LikeChapterAsync(chapterId, currentUserId);
 
-            return Json(new { success = true, liked, likeCount });
+            if (isLiked)
+            {
+                TempData["Success"] = "Bạn đã thích chương này.";
+            }
+            else
+            {
+                TempData["Error"] = "Bạn đã bỏ thích chương này.";
+            }
+            return RedirectToAction("ReadChapter", "Chapter", new
+            {
+                id = chapterId
+            });
         }
     }
 }

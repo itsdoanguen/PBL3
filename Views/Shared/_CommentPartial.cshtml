@@ -1,0 +1,48 @@
+﻿@model PBL3.ViewModels.Chapter.CommentTreeViewModel
+@functions {
+    string GetTimeAgo(DateTime? date)
+    {
+        var span = DateTime.Now - date;
+        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
+        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
+        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+        return "Vừa xong";
+    }
+}
+<div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
+    <div class="comment-content">
+        <div class="comment-header">
+            <div class="comment-meta">
+                <img src="@(Model.Comment.UserAvatar != null ? Model.Comment.UserAvatar : Url.Content("~/image/default-avatar.png"))"
+                     class="avatar-circle" alt="Avatar">
+                <span class="comment-user">@Model.Comment.UserName</span>
+            </div>
+            <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
+        {
+            <div class="reply-to">
+                Trả lời <strong>@Model.Comment.ParentUserName</strong>
+            </div>
+        }
+        <div class="comment-text">
+            @Model.Comment.Content
+        </div>
+        <div class="comment-actions">
+            <button type="button" class="btn btn-sm btn-outline-primary reply-btn" 
+                    data-comment-id="@Model.Comment.CommentID" 
+                    data-user-name="@Model.Comment.UserName">
+                Trả lời
+            </button>
+        </div>
+        @if (Model.Replies.Any())
+        {
+            <div class="comment-replies">
+                @foreach (var reply in Model.Replies)
+                {
+                    @Html.Partial("_CommentPartial", reply)
+                }
+            </div>
+        }
+    </div>
+</div>

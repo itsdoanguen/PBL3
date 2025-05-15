@@ -1,16 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Comment;
+using PBL3.Service.Like;
+using PBL3.Service.Style;
 using PBL3.ViewModels.Chapter;
 
-namespace PBL3.Service
+namespace PBL3.Service.Chapter
 {
     public class ChapterService : IChapterService
     {
         private readonly ApplicationDbContext _context;
-        public ChapterService(ApplicationDbContext context)
+        private readonly ILikeChapterService _likeChapterService;
+        private readonly IStyleService _styleService;
+        private readonly ICommentService _commentService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService)
         {
             _context = context;
+            _likeChapterService = likeChapterService;
+            _styleService = styleService;
+            _commentService = commentService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -45,12 +54,27 @@ namespace PBL3.Service
 
                 var options = new CookieOptions
                 {
-                    Expires = DateTimeOffset.UtcNow.AddMinutes(1),
+                    Expires = DateTimeOffset.Now.AddMinutes(10),
                     HttpOnly = true,
                     IsEssential = true
                 };
                 setCookie(cookieName, "true", options);
             }
+
+            var userStyle = await _context.Styles
+                .FirstOrDefaultAsync(s => s.UserID == int.Parse(currentUserId));
+            if (userStyle == null)
+            {
+                userStyle = await _styleService.InitStyleForUserAsync(int.Parse(currentUserId));
+            }
+            var StyleViewModel = new StyleViewModel
+            {
+                StyleID = userStyle.StyleID,
+                UserID = userStyle.UserID,
+                FontFamily = userStyle.FontFamily,
+                FontSize = userStyle.FontSize,
+                BackgroundColor = userStyle.BackgroundColor
+            };
 
             return new ChapterDetailViewModel
             {
@@ -58,13 +82,19 @@ namespace PBL3.Service
                 Title = chapter.Title,
                 Content = chapter.Content,
                 CreatedAt = chapter.CreatedAt,
+                UpdatedAt = chapter.UpdatedAt,
                 ViewCount = chapter.ViewCount,
+                TotalWord = CountWordsInChapter(chapter.Content),
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
-                Comments = chapter.Comments.OrderByDescending(c => c.CreatedAt).ToList(),
+
+                Comments = await _commentService.GetCommentsAsync("chapter", chapter.ChapterID),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
-                ChapterList = await GetChapterList(chapter.StoryID)
+                ChapterList = await GetChapterList(chapter.StoryID),
+                IsLikedByCurrentUser = await _likeChapterService.IsLikedByCurrentUserAsync(chapter.ChapterID, int.Parse(currentUserId)),
+                LikeCount = await _likeChapterService.GetLikeCountAsync(chapter.ChapterID),
+                Style = StyleViewModel
             };
         }
 
@@ -162,7 +192,14 @@ namespace PBL3.Service
 
             chapter.Title = model.Title;
             chapter.Content = model.Content;
-            chapter.UpdatedAt = DateTime.UtcNow;
+            chapter.UpdatedAt = DateTime.Now;
+
+            var story = await _context.Stories.FirstOrDefaultAsync(s => s.StoryID == model.StoryID);
+            if (story != null)
+            {
+                story.UpdatedAt = DateTime.Now;
+            }
+
 
             await _context.SaveChangesAsync();
             return true;
@@ -202,7 +239,7 @@ namespace PBL3.Service
             }
 
             chapter.Status = parsedStatus;
-            chapter.UpdatedAt = DateTime.UtcNow;
+            chapter.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);

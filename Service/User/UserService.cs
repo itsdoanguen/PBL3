@@ -1,20 +1,21 @@
-﻿using PBL3.Data;
-using PBL3.ViewModels;
-using PBL3.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
+using PBL3.Service.Discovery;
+using PBL3.ViewModels.User;
 using PBL3.ViewModels.UserProfile;
 
-namespace PBL3.Service
+namespace PBL3.Service.User
 {
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
-        public UserService(ApplicationDbContext context, BlobService blobService)
+        private readonly IStoryRankingService _storyRankingService;
+        public UserService(ApplicationDbContext context, BlobService blobService, IStoryRankingService storyRankingService)
         {
             _context = context;
             _blobService = blobService;
+            _storyRankingService = storyRankingService;
         }
         public async Task<List<UserStoryCardViewModel>> GetUserStoryCard(int userId)
         {
@@ -30,6 +31,12 @@ namespace PBL3.Service
                     TotalChapters = _context.Chapters.Count(c => c.StoryID == s.StoryID)
                 })
                 .ToListAsync();
+
+            //Lấy URL của ảnh bìa từ blob
+            foreach (var story in stories)
+            {
+                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+            }
             return stories;
         }
 
@@ -37,20 +44,15 @@ namespace PBL3.Service
         public async Task<UserProfileViewModel> GetUserProfile(int userId)
         {
             var userInfo = await _context.Users.FindAsync(userId);
-            if(userInfo == null)
+            if (userInfo == null)
             {
                 return null;
             }
 
             var stories = await GetUserStoryCard(userId);
 
-            //Tách Url của avatar và banner
-            string avatarBlobName = ExtractBlobName(userInfo.Avatar);
-            string bannerBlobName = ExtractBlobName(userInfo.Banner);
-
-            //Kiểm tra nếu có avatar hoặc banner thì lấy URL của blob, còn không thì trả về null
-            var avatarUrl = string.IsNullOrEmpty(avatarBlobName) ? null : await _blobService.GetBlobSasUrlAsync(avatarBlobName);
-            var bannerUrl = string.IsNullOrEmpty(bannerBlobName) ? null : await _blobService.GetBlobSasUrlAsync(bannerBlobName);
+            var avatarUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Avatar);
+            var bannerUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Banner);
 
             var profile = new UserProfileViewModel
             {
@@ -75,23 +77,20 @@ namespace PBL3.Service
 
         }
 
-        //Hàm tách tên blob từ URL
-        private string ExtractBlobName(string url)
+
+        public async Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId)
         {
-            if (string.IsNullOrEmpty(url)) return null;
+            var userIndexViewModel = new UserIndexViewModel();
 
-            //Vì URL có định dạng là "https://<storageName>.blob.core.windows.net/<containerName>/<blobName>" 
-            //Dùng hàm IndexOf để tìm vị trí của tên container
-            //Sau đó lấy phần còn lại của URL từ vị trí của container đến hết
-            string containerName = "pbl3container/";
-            int index = url.IndexOf(containerName);
+            var topStory = await _storyRankingService.GetTopStoriesOfWeekAsync(10);
 
-            if (index != -1)
+            if (topStory != null)
             {
-                return url.Substring(index + containerName.Length);
+                userIndexViewModel.TopStoryInWeek = topStory;
             }
 
-            return url;
+            return userIndexViewModel;
         }
+
     }
 }

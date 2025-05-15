@@ -14,8 +14,10 @@ namespace PBL3.Models
         public int? ChapterID { get; set; }
         [ForeignKey("Story")]
         public int? StoryID { get; set; }
-        [Required, StringLength(255)]
+        public int? ParentCommentID { get; set; } = null;
+        [Required]
         public string Content { get; set; }
+        public bool isDeleted { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;

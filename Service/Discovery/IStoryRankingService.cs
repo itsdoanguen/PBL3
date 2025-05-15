@@ -1,0 +1,9 @@
+﻿using PBL3.ViewModels.UserProfile;
+
+namespace PBL3.Service.Discovery
+{
+    public interface IStoryRankingService
+    {
+        Task<List<UserStoryCardViewModel>> GetTopStoriesOfWeekAsync(int topCount = 10);
+    }
+}

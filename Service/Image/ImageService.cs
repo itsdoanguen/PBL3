@@ -1,5 +1,4 @@
-﻿
-namespace PBL3.Service
+﻿namespace PBL3.Service.Image
 {
     public class ImageService : IImageService
     {
@@ -15,17 +14,15 @@ namespace PBL3.Service
             {
                 return (false, "Size ảnh phải nhỏ hơn 1MB", null);
             }
+
             var fileExtension = Path.GetExtension(imageFile.FileName);
             if (fileExtension != ".jpg" && fileExtension != ".jpeg" && fileExtension != ".png")
             {
                 return (false, "Ảnh phải thuộc định dạng jpg, jpeg hoặc png", null);
             }
             var fileName = $"{folerName}/{Guid.NewGuid()}_image{fileExtension}";
-            using (var stream = imageFile.OpenReadStream())
-            {
-                var result = await _blobService.UploadFileAsync(stream, fileName);
-                return (true, null, result);
-            }
+            var result = await _blobService.UploadFileAsync(imageFile.OpenReadStream(), fileName);
+            return (true, null, result);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using PBL3.ViewModels.Story;
 
 
-namespace PBL3.Service
+namespace PBL3.Service.Story
 {
     public interface IStoryService
     {

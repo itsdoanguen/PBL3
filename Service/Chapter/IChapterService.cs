@@ -2,7 +2,7 @@
 using PBL3.Models;
 using PBL3.ViewModels.Chapter;
 
-namespace PBL3.Service
+namespace PBL3.Service.Chapter
 {
     public interface IChapterService
     {

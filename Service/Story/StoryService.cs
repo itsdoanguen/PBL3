@@ -1,9 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Chapter;
+using PBL3.Service.Comment;
+using PBL3.Service.Image;
 using PBL3.ViewModels.Story;
 
-namespace PBL3.Service
+namespace PBL3.Service.Story
 {
     public class StoryService : IStoryService
     {
@@ -11,13 +15,15 @@ namespace PBL3.Service
         private readonly BlobService _blobService;
         private readonly IChapterService _chapterService;
         private readonly IImageService _imageService;
+        private readonly ICommentService _commentService;
 
-        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService)
+        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService, ICommentService commentService)
         {
             _context = context;
             _blobService = blobService;
             _chapterService = chapterService;
             _imageService = imageService;
+            _commentService = commentService;
         }
 
         public async Task<(bool isSuccess, string errorMessage, int? storyID)> CreateStoryAsync(StoryCreateViewModel model, int authorID)
@@ -139,7 +145,7 @@ namespace PBL3.Service
                 StoryID = story.StoryID,
                 Title = story.Title,
                 Description = story.Description,
-                CoverImage = story.CoverImage,
+                CoverImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 TotalLike = totalLike,
                 TotalBookmark = totalBookmark,
                 TotalComment = totalComment,
@@ -176,11 +182,12 @@ namespace PBL3.Service
             {
                 return (false, "Thể loại là bắt buộc, hãy chọn ít nhất 1");
             }
+
             string coverImagePath = story.CoverImage;
             if (model.UploadCover != null)
             {
                 var (uploadSuccess, errorMessage, uploadedUrl) = await _imageService.UploadValidateImageAsync(model.UploadCover, "covers");
-                if (!uploadSuccess)
+                if (!uploadSuccess || string.IsNullOrEmpty(uploadedUrl))
                 {
                     return (false, errorMessage);
                 }
@@ -190,7 +197,7 @@ namespace PBL3.Service
             story.Title = model.Title;
             story.Description = model.Description;
             story.CoverImage = coverImagePath;
-            story.UpdatedAt = DateTime.UtcNow;
+            story.UpdatedAt = DateTime.Now;
 
             _context.Stories.Update(story);
             await _context.SaveChangesAsync();
@@ -236,7 +243,7 @@ namespace PBL3.Service
             }
 
             story.Status = parsedStatus;
-            story.UpdatedAt = DateTime.UtcNow;
+            story.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
             return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
@@ -259,13 +266,14 @@ namespace PBL3.Service
                     UserAvatar = u.Avatar
                 })
                 .FirstOrDefaultAsync();
+            author.UserAvatar = await _blobService.GetSafeImageUrlAsync(author.UserAvatar);
 
             var viewModel = new StoryDetailViewModel
             {
                 StoryID = story.StoryID,
                 StoryName = story.Title,
-                StoryDescription = story.Description,
-                StoryImage = story.CoverImage,
+                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n","<br/>"),
+                StoryImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 LastUpdated = story.UpdatedAt,
                 StoryStatus = story.Status,
                 Author = author,
@@ -276,36 +284,14 @@ namespace PBL3.Service
                 TotalFollow = await _context.FollowStories.CountAsync(f => f.StoryID == storyID),
                 TotalWord = await GetTotalStoryWordAsync(storyID),
                 TotalBookmark = await _context.Bookmarks.CountAsync(b => b.Chapter.StoryID == storyID),
-                Comments = GetCommentForStory(storyID),
+                Comments = await _commentService.GetCommentsAsync("story", storyID),
                 Chapters = GetChapterForStory(storyID),
                 IsFollowed = await _context.FollowStories
                     .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
-                Rating = await GetTotalStoryWordAsync(storyID)
+                Rating = await RatingStoryAsync(storyID)
             };
 
             return viewModel;
-        }
-
-
-        private List<CommentInfo> GetCommentForStory(int storyID)
-        {
-            var comments = _context.Comments
-                .Where(c => c.StoryID == storyID)
-                .Select(c => new CommentInfo
-                {
-                    CommentID = c.CommentID,
-                    Content = c.Content,
-                    CreatedAt = c.CreatedAt,
-                    User = new UserInfo
-                    {
-                        UserID = c.User.UserID,
-                        UserName = c.User.DisplayName,
-                        UserAvatar = c.User.Avatar
-                    }
-                })
-                .ToList();
-
-            return comments;
         }
         private List<GerneVM> GetGerneForStory(int storyID)
         {
@@ -357,21 +343,30 @@ namespace PBL3.Service
             int totalChapter = chapters.Count;
             if (totalChapter == 0) return 0;
 
-            int totalLike = 0;
-            foreach (var c in chapters)
-            {
-                totalLike += await _context.LikeChapters.CountAsync(l => l.ChapterID == c.ChapterID);
-            }
+            // Tính tổng số lượt thích trực tiếp trong một truy vấn duy nhất
+            int totalLike = await _context.LikeChapters
+                .Where(l => chapters.Select(c => c.ChapterID).Contains(l.ChapterID))
+                .CountAsync();
 
+            // Tính tổng lượt xem
             int totalView = chapters.Sum(c => c.ViewCount);
+
+            // Lấy tổng số từ trong truyện
             int totalWord = await GetTotalStoryWordAsync(storyID);
 
+            // Tính các giá trị trung bình
             double averageLike = (double)totalLike / totalChapter;
             double averageView = (double)totalView / totalChapter;
             double averageWord = (double)totalWord / totalChapter;
 
-            double rating = (averageLike * 0.5) + (averageView * 0.2) + (averageWord * 0.3);
+            // Điều chỉnh lại trọng số cho hợp lý, nếu cần
+            double rating = averageLike * 0.5 + averageView * 0.2 + averageWord * 0.3;
+
+            // Đảm bảo rating không vượt quá 10 hoặc dưới 0
+            rating = Math.Max(0, Math.Min(rating, 10)); // Giới hạn rating từ 0 đến 10
+
             return rating;
         }
+
     }
 }
