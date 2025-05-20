@@ -8,5 +8,6 @@ namespace PBL3.Service.Comment
         Task<(bool isSuccess, string message, int? commentId)> PostCommentAsync(CommentPostViewModel model, string type);
         Task<(bool isSuccess, string message)> CommentValidateAsync(CommentPostViewModel model, string type);
         Task<List<CommentTreeViewModel>> GetCommentsAsync(string type, int id);
+        Task<(bool isSuccess, string message)> DeleteCommentAsync(int commentId, int userId);
     }
 }

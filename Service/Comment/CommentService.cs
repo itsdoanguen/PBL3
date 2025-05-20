@@ -166,5 +166,22 @@ namespace PBL3.Service.Comment
             return comments;
         }
 
+        public async Task<(bool isSuccess, string message)> DeleteCommentAsync(int commentId, int userId)
+        {
+            var comment = await _context.Comments.FindAsync(commentId);
+            if (comment == null || comment.isDeleted)
+            {
+                return (false, "Không tìm thấy bình luận hoặc đã bị xóa");
+            }
+            if (comment.UserID != userId)
+            {
+                return (false, "Bạn không có quyền xóa bình luận này");
+            }
+            comment.isDeleted = true;
+            comment.UpdatedAt = DateTime.Now;
+            await _context.SaveChangesAsync();
+            return (true, "Xóa bình luận thành công");
+        }
+
     }
 }

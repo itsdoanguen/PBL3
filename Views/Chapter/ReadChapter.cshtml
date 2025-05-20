@@ -1,7 +1,9 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
-	ViewData["Title"] = Model.Title;
-	Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+    ViewBag.CurrentUserID = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 }
 
 @functions {
@@ -185,7 +187,7 @@
 				<div class="comment-box" id="commentList">
 					@foreach (var comment in Model.Comments)
 					{
-						@Html.Partial("_CommentPartial", comment)
+						<partial name="_CommentPartial" model="@comment" />
 					}
 				</div>
 				<div id="paginationControls" class="mt-3 text-center"></div>

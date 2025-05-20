@@ -2,10 +2,11 @@
 @functions {
     string GetTimeAgo(DateTime? date)
     {
-        var span = DateTime.Now - date;
-        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
+        if (date == null) return "Không rõ";
+        var span = DateTime.Now - date.Value;
+        if (span.TotalDays >= 1) return $"{(int)span.TotalDays} ngày";
+        if (span.TotalHours >= 1) return $"{(int)span.TotalHours} giờ";
+        if (span.TotalMinutes >= 1) return $"{(int)span.TotalMinutes} phút";
         return "Vừa xong";
     }
 }
@@ -26,7 +27,14 @@
             </div>
         }
         <div class="comment-text">
-            @Model.Comment.Content
+            @if (Model.Comment.isDeleted)
+            {
+                <span class="text-muted fst-italic">Bình luận này đã bị xóa</span>
+            }
+            else
+            {
+                @Model.Comment.Content
+            }
         </div>
         <div class="comment-actions">
             <button type="button" class="btn btn-sm btn-outline-primary reply-btn" 
@@ -34,13 +42,25 @@
                     data-user-name="@Model.Comment.UserName">
                 Trả lời
             </button>
+            @if (ViewBag.CurrentUserID != null && (int)ViewBag.CurrentUserID == Model.Comment.UserID && !Model.Comment.isDeleted)
+            {
+                <form asp-action="Delete" asp-controller="Comment" method="post" class="d-inline ms-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="commentId" value="@Model.Comment.CommentID" />
+                    <input type="hidden" name="storyId" value="@Model.Comment.StoryID" />
+                    <input type="hidden" name="chapterId" value="@Model.Comment.ChapterID" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa bình luận" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?');">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </form>
+            }
         </div>
         @if (Model.Replies.Any())
         {
             <div class="comment-replies">
                 @foreach (var reply in Model.Replies)
                 {
-                    @Html.Partial("_CommentPartial", reply)
+                    <partial name="_CommentPartial" model="@reply" />
                 }
             </div>
         }
