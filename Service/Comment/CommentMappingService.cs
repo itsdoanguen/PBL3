@@ -84,19 +84,27 @@ namespace PBL3.Service.Comment
         public async Task<List<CommentTreeViewModel>> GetCommentTreeAsync(string type, int id)
         {
             var flatComments = await GetFlatCommentsAsync(type, id);
-            var lookup = flatComments.ToLookup(c => c.ParentCommentID);
 
-            List<CommentTreeViewModel> BuildTree(int? parentId)
+            var dict = flatComments.ToDictionary(
+                c => c.CommentID,
+                c => new CommentTreeViewModel { Comment = c, Replies = new List<CommentTreeViewModel>() }
+            );
+
+            var roots = new List<CommentTreeViewModel>();
+
+            foreach (var vm in dict.Values)
             {
-                return lookup[parentId]
-                    .Select(c => new CommentTreeViewModel
-                    {
-                        Comment = c,
-                        Replies = BuildTree(c.CommentID)
-                    }).ToList();
+                if (vm.Comment.ParentCommentID != null && dict.TryGetValue(vm.Comment.ParentCommentID.Value, out var parent))
+                {
+                    parent.Replies.Add(vm);
+                }
+                else
+                {
+                    roots.Add(vm);
+                }
             }
 
-            return BuildTree(null); 
+            return roots;
         }
 
     }
