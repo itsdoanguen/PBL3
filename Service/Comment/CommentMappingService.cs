@@ -15,36 +15,56 @@ namespace PBL3.Service.Comment
             _context = context;
             _blobService = blobService;
         }
-        public async Task<List<CommentPostViewModel>> GetFlatCommentsAsync(string type, int id)
+        // Lấy comment gốc và reply trực tiếp (2 tầng đầu)
+        public async Task<List<CommentTreeViewModel>> GetRootAndFirstLevelRepliesAsync(string type, int id)
         {
             var comments = await GetCommentsByTypeAsync(type, id);
             var users = await GetUserDictionaryAsync();
             var commentDict = comments.ToDictionary(c => c.CommentID, c => c);
-
-            var result = new List<CommentPostViewModel>();
-
-            foreach (var comment in comments)
+            var rootComments = comments.Where(c => c.ParentCommentID == null).ToList();
+            var rootIds = rootComments.Select(c => c.CommentID).ToList();
+            var replies = comments.Where(c => c.ParentCommentID != null && rootIds.Contains(c.ParentCommentID.Value)).ToList();
+            var dict = rootComments.ToDictionary(
+                c => c.CommentID,
+                c => new CommentTreeViewModel { Comment = MapToFlatViewModelAsync(c, commentDict, users).Result, Replies = new List<CommentTreeViewModel>() }
+            );
+            foreach (var reply in replies)
             {
-                var viewModel = await MapToFlatViewModelAsync(comment, commentDict, users);
-                result.Add(viewModel);
+                if (reply.ParentCommentID != null && dict.TryGetValue(reply.ParentCommentID.Value, out var parent))
+                {
+                    parent.Replies.Add(new CommentTreeViewModel
+                    {
+                        Comment = MapToFlatViewModelAsync(reply, commentDict, users).Result,
+                        Replies = new List<CommentTreeViewModel>()
+                    });
+                }
             }
-
+            return dict.Values.ToList();
+        }
+        // Lấy replies theo parentId (lazy load)
+        public async Task<List<CommentTreeViewModel>> GetRepliesAsync(string type, int id, int parentCommentId)
+        {
+            var comments = await GetCommentsByTypeAsync(type, id);
+            var users = await GetUserDictionaryAsync();
+            var commentDict = comments.ToDictionary(c => c.CommentID, c => c);
+            var replies = comments.Where(c => c.ParentCommentID == parentCommentId).ToList();
+            var result = new List<CommentTreeViewModel>();
+            foreach (var reply in replies)
+            {
+                result.Add(new CommentTreeViewModel
+                {
+                    Comment = await MapToFlatViewModelAsync(reply, commentDict, users),
+                    Replies = new List<CommentTreeViewModel>()
+                });
+            }
             return result;
         }
         private async Task<List<CommentModel>> GetCommentsByTypeAsync(string type, int id)
         {
             return type switch
             {
-                "story" => await _context.Comments
-                              .Where(c => c.StoryID == id)
-                              .OrderByDescending(c => c.CreatedAt)
-                              .ToListAsync(),
-
-                "chapter" => await _context.Comments
-                                .Where(c => c.ChapterID == id)
-                                .OrderByDescending(c => c.CreatedAt)
-                                .ToListAsync(),
-
+                "story" => await _context.Comments.Where(c => c.StoryID == id).OrderByDescending(c => c.CreatedAt).ToListAsync(),
+                "chapter" => await _context.Comments.Where(c => c.ChapterID == id).OrderByDescending(c => c.CreatedAt).ToListAsync(),
                 _ => throw new ArgumentException("Loại comment không hợp lệ")
             };
         }
@@ -55,16 +75,12 @@ namespace PBL3.Service.Comment
         private async Task<CommentPostViewModel> MapToFlatViewModelAsync(CommentModel comment, Dictionary<int, CommentModel> commentDict, Dictionary<int, (string DisplayName, string Avatar)> userDict)
         {
             string? parentUserName = null;
-
-            if (comment.ParentCommentID.HasValue &&
-                commentDict.TryGetValue(comment.ParentCommentID.Value, out var parentComment) &&
-                userDict.TryGetValue(parentComment.UserID, out var parentUser))
+            if (comment.ParentCommentID.HasValue && commentDict.TryGetValue(comment.ParentCommentID.Value, out var parentComment) && userDict.TryGetValue(parentComment.UserID, out var parentUser))
             {
                 parentUserName = parentUser.DisplayName;
             }
-
             var user = userDict.GetValueOrDefault(comment.UserID);
-
+            int repliesCount = commentDict.Values.Count(c => c.ParentCommentID == comment.CommentID);
             return new CommentPostViewModel
             {
                 CommentID = comment.CommentID,
@@ -78,34 +94,9 @@ namespace PBL3.Service.Comment
                 Content = comment.Content,
                 isDeleted = comment.isDeleted,
                 CreatedAt = comment.CreatedAt,
-                UpdatedAt = comment.UpdatedAt
+                UpdatedAt = comment.UpdatedAt,
+                RepliesCount = repliesCount
             };
         }
-        public async Task<List<CommentTreeViewModel>> GetCommentTreeAsync(string type, int id)
-        {
-            var flatComments = await GetFlatCommentsAsync(type, id);
-
-            var dict = flatComments.ToDictionary(
-                c => c.CommentID,
-                c => new CommentTreeViewModel { Comment = c, Replies = new List<CommentTreeViewModel>() }
-            );
-
-            var roots = new List<CommentTreeViewModel>();
-
-            foreach (var vm in dict.Values)
-            {
-                if (vm.Comment.ParentCommentID != null && dict.TryGetValue(vm.Comment.ParentCommentID.Value, out var parent))
-                {
-                    parent.Replies.Add(vm);
-                }
-                else
-                {
-                    roots.Add(vm);
-                }
-            }
-
-            return roots;
-        }
-
     }
 }

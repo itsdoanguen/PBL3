@@ -1,4 +1,7 @@
 ﻿@model PBL3.ViewModels.Chapter.CommentTreeViewModel
+@{
+    int level = ViewBag.Level != null ? (int)ViewBag.Level : 1;
+}
 @functions {
     string GetTimeAgo(DateTime? date)
     {
@@ -55,12 +58,26 @@
                 </form>
             }
         </div>
-        @if (Model.Replies.Any())
+        @if ((Model.Replies.Any() || (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0))) && Model.Comment.RepliesCount > 0)
         {
             <div class="comment-replies">
-                @foreach (var reply in Model.Replies)
+                @if (level < 2)
                 {
-                    <partial name="_CommentPartial" model="@reply" />
+                    foreach (var reply in Model.Replies)
+                    {
+                        ViewBag.Level = level + 1;
+                        <partial name="_CommentPartial" model="reply" />
+                    }
+                    if (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0))
+                    {
+                        <button class="btn btn-link load-more-replies" data-parent-id="@Model.Comment.CommentID" data-chapter-id="@Model.Comment.ChapterID" data-story-id="@Model.Comment.StoryID">Xem thêm trả lời (@(Model.Comment.RepliesCount - (Model.Replies?.Count ?? 0)))</button>
+                        <div class="replies-container" id="replies-for-@Model.Comment.CommentID"></div>
+                    }
+                }
+                else
+                {
+                    <button class="btn btn-link load-more-replies" data-parent-id="@Model.Comment.CommentID" data-chapter-id="@Model.Comment.ChapterID" data-story-id="@Model.Comment.StoryID">Xem thêm trả lời (@Model.Comment.RepliesCount)</button>
+                    <div class="replies-container" id="replies-for-@Model.Comment.CommentID"></div>
                 }
             </div>
         }

@@ -88,6 +88,7 @@ namespace PBL3.Service.Chapter
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
 
+    
                 Comments = await _commentService.GetCommentsAsync("chapter", chapter.ChapterID),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),

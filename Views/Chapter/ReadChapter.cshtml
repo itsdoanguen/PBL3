@@ -7,27 +7,29 @@
 }
 
 @functions {
-	string GetTimeAgo(DateTime? date)
-	{
-		var span = DateTime.Now - date;
-		if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-		if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-		if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
-		return "Vừa xong";
-	}
-	int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
-	{
-		int total = 0;
-		foreach (var comment in comments)
-		{
-			total += 1;
-			if (comment.Replies != null && comment.Replies.Any())
-			{
-				total += CountAllComments(comment.Replies);
-			}
-		}
-		return total;
-	}
+    string GetTimeAgo(DateTime? date)
+    {
+        if (date == null) return "Không rõ";
+        var span = DateTime.Now - date.Value;
+        if (span.TotalDays >= 1) return $"{(int)span.TotalDays} ngày";
+        if (span.TotalHours >= 1) return $"{(int)span.TotalHours} giờ";
+        if (span.TotalMinutes >= 1) return $"{(int)span.TotalMinutes} phút";
+        return "Vừa xong";
+    }
+    int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
+    {
+        int total = 0;
+        foreach (var comment in comments)
+        {
+            if (!comment.Comment.isDeleted)
+                total += 1;
+            if (comment.Replies != null && comment.Replies.Any())
+            {
+                total += CountAllComments(comment.Replies);
+            }
+        }
+        return total;
+    }
 }
 
 @if (TempData["ScrollToComment"] != null)
@@ -171,18 +173,16 @@
 			<!-- Phần bình luận -->
 			<div class="chapter-comments center-cl">
 				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
-
 				<!-- Form bình luận -->
 				<div id="mainCommentForm">
 					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
-						{
-							ChapterID = Model.ChapterID,
-							UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
-							Type = "chapter",
-							FormId = "main"
-						})
+					{
+						ChapterID = Model.ChapterID,
+						UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+						Type = "chapter",
+						FormId = "main"
+					})
 				</div>
-
 				<!-- Danh sách bình luận -->
 				<div class="comment-box" id="commentList">
 					@foreach (var comment in Model.Comments)

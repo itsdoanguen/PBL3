@@ -160,10 +160,15 @@ namespace PBL3.Service.Comment
             return (true, "Comment valid");
         }
 
-        public async Task<List<CommentTreeViewModel>> GetCommentsAsync(string type, int id)
+        public async Task<List<CommentTreeViewModel>> GetRootAndFirstLevelRepliesAsync(string type, int id)
         {
-            var comments = await _commentMappingService.GetCommentTreeAsync(type, id);
-            return comments;
+            return await _commentMappingService.GetRootAndFirstLevelRepliesAsync(type, id);
+        }
+
+        // Lấy replies theo parentId 
+        public async Task<List<CommentTreeViewModel>> GetRepliesAsync(string type, int id, int parentCommentId)
+        {
+            return await _commentMappingService.GetRepliesAsync(type, id, parentCommentId);
         }
 
         public async Task<(bool isSuccess, string message)> DeleteCommentAsync(int commentId, int userId)
@@ -183,5 +188,9 @@ namespace PBL3.Service.Comment
             return (true, "Xóa bình luận thành công");
         }
 
+        public Task<List<CommentTreeViewModel>> GetCommentsAsync(string type, int id)
+        {
+            return GetRootAndFirstLevelRepliesAsync(type, id);
+        }
     }
 }
