@@ -8,11 +8,11 @@ namespace PBL3.Service.Follow
         Task<bool> IsFollowingStoryAsync(int userId, int storyId);
         Task<int> CountStoryFollowersAsync(int storyId);
 
-        // // User follow
-        // Task<(bool isSuccess, string Message)> FollowUserAsync(int followerId, int followingId);
-        // Task<(bool isSuccess, string Message)> UnfollowUserAsync(int followerId, int followingId);
-        // Task<bool> IsFollowingUserAsync(int followerId, int followingId);
-        // Task<int> CountUserFollowersAsync(int userId);
-        // Task<int> CountUserFollowingsAsync(int userId);
+        // User follow
+        Task<(bool isSuccess, string Message)> FollowUserAsync(int followerId, int followingId);
+        Task<(bool isSuccess, string Message)> UnfollowUserAsync(int followerId, int followingId);
+        Task<bool> IsFollowingUserAsync(int followerId, int followingId);
+        Task<int> CountUserFollowersAsync(int userId);
+        Task<int> CountUserFollowingsAsync(int userId);
     }
 }

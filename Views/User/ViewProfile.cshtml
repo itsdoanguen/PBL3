@@ -29,6 +29,30 @@
                     <li class="list-group-item"><strong>Ngày sinh:</strong> @(Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</li>
                     <li class="list-group-item"><strong>Giới tính:</strong> @(Model.Gender?.ToString() ?? "Không xác định")</li>
                 </ul>
+                @{
+                    var currentUserIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+                    int currentUserId = currentUserIdClaim != null ? int.Parse(currentUserIdClaim.Value) : 0;
+                    int viewedUserId = 0;
+                    if (this.ViewContext.RouteData.Values["id"] != null)
+                    {
+                        viewedUserId = Convert.ToInt32(this.ViewContext.RouteData.Values["id"]);
+                    }
+                    bool isMyProfile = currentUserId == viewedUserId;
+                    bool isFollowed = false;
+                    if (ViewBag.IsFollowed != null)
+                    {
+                        isFollowed = (bool)ViewBag.IsFollowed;
+                    }
+                }
+                @if (!isMyProfile && viewedUserId != 0)
+                {
+                    <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="mt-3">
+                        <input type="hidden" name="followingId" value="@viewedUserId" />
+                        <button type="submit" class="btn rounded-pill @(Model.IsFollowed ? "btn-success" : "btn-outline-success")">
+                            <i class="bi @(Model.IsFollowed ? "bi-person-check-fill" : "bi-person-plus")"></i> @(Model.IsFollowed ? "Unfollow" : "Follow")
+                        </button>
+                    </form>
+                }
             </div>
         </div>
 

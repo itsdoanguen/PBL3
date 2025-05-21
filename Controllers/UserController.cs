@@ -144,14 +144,24 @@ namespace PBL3.Controllers
         //GET: User/ViewProfile
         public async Task<IActionResult> ViewProfile(int id)
         {
-            UserProfileViewModel profile = new UserProfileViewModel();
+            int currentUserID = 0;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
+                currentUserID = int.Parse(userIdClaim.Value);
 
-            profile = await _userService.GetUserProfile(id);
+            var followService = HttpContext.RequestServices.GetService(typeof(PBL3.Service.Follow.IFollowService)) as PBL3.Service.Follow.IFollowService;
+            bool isFollowed = false;
+            if (currentUserID != 0 && currentUserID != id && followService != null)
+            {
+                isFollowed = await followService.IsFollowingUserAsync(currentUserID, id);
+            }
 
+            var profile = await _userService.GetUserProfile(id);
             if (profile == null)
             {
                 return NotFound();
             }
+            profile.IsFollowed = isFollowed;
             return View(profile);
         }
 

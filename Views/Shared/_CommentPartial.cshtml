@@ -17,8 +17,10 @@
     <div class="comment-content">
         <div class="comment-header">
             <div class="comment-meta">
-                <img src="@(Model.Comment.UserAvatar != null ? Model.Comment.UserAvatar : Url.Content("~/image/default-avatar.png"))"
-                     class="avatar-circle" alt="Avatar">
+                <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@Model.Comment.UserID">
+                    <img src="@(Model.Comment.UserAvatar != null ? Model.Comment.UserAvatar : Url.Content("~/image/default-avatar.png"))"
+                         class="avatar-circle" alt="Avatar">
+                </a>
                 <span class="comment-user">@Model.Comment.UserName</span>
             </div>
             <span class="comment-time">@GetTimeAgo(Model.Comment.CreatedAt)</span>

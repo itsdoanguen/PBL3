@@ -38,5 +38,34 @@ namespace PBL3.Controllers
             TempData["FollowMessage"] = result.message;
             return RedirectToAction("View", "Story", new { id = storyId });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleUserFollow(int followingId)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized();
+            int followerId = int.Parse(userIdClaim.Value);
+
+            if (followerId == followingId)
+            {
+                TempData["FollowMessage"] = "Bạn không thể theo dõi chính mình.";
+                return RedirectToAction("ViewProfile", "User", new { id = followingId });
+            }
+
+            bool isFollowing = await _followService.IsFollowingUserAsync(followerId, followingId);
+            (bool isSuccess, string message) result;
+            if (isFollowing)
+            {
+                result = await _followService.UnfollowUserAsync(followerId, followingId);
+            }
+            else
+            {
+                result = await _followService.FollowUserAsync(followerId, followingId);
+            }
+
+            TempData["FollowMessage"] = result.message;
+            return RedirectToAction("ViewProfile", "User", new { id = followingId });
+        }
     }
 }
