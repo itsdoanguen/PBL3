@@ -6,31 +6,32 @@ namespace PBL3.ViewModels.Chapter
     public class ChapterDetailViewModel
     {
         public int ChapterID { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
+        public string? Title { get; set; }
+        public string? Content { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public int ViewCount { get; set; }
         public int TotalWord { get; set; }
 
-        public string StoryTitle { get; set; }
+        public string? StoryTitle { get; set; }
         public int StoryID { get; set; }
 
         public bool IsLikedByCurrentUser { get; set; }
         public int LikeCount { get; set; }
-        public List<CommentTreeViewModel> Comments { get; set; }
+        public List<CommentTreeViewModel>? Comments { get; set; }
 
         public int NextChapterID { get; set; }
         public int PreviousChapterID { get; set; }
 
         public List<ChapterList> ChapterList = new List<ChapterList>();
         public StyleViewModel Style { get; set; } = new StyleViewModel();
+        public bool IsBookmarkedByCurrentUser { get; set; }
     }
 
     public class ChapterList
     {
         public int ChapterID { get; set; }
-        public string Title { get; set; }
+        public string? Title { get; set; }
     }
     public class StyleViewModel
     {
@@ -57,7 +58,7 @@ namespace PBL3.ViewModels.Chapter
     }
     public class CommentTreeViewModel
     {
-        public CommentPostViewModel Comment { get; set; } = null;
+        public CommentPostViewModel? Comment { get; set; } = null;
         public List<CommentTreeViewModel> Replies { get; set; } = new List<CommentTreeViewModel>();
     }
 }

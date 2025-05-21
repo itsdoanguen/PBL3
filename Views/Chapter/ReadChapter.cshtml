@@ -92,9 +92,13 @@
 	</form>
 
 	<!-- Bookmark -->
-	<button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
-		<i class="bi bi-bookmark"></i>
-	</button>
+	<form asp-action="Toggle" asp-controller="Bookmark" method="post" class="m-0 p-0 d-flex justify-content-center">
+		@Html.AntiForgeryToken()
+		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
+		<button type="submit" class="btn btn-sm @(Model.IsBookmarkedByCurrentUser ? "btn-primary" : "btn-outline-primary") w-100" title="@(Model.IsBookmarkedByCurrentUser ? "Bỏ bookmark chương này" : "Bookmark chương này")">
+			<i class="bi bi-bookmark@(Model.IsBookmarkedByCurrentUser ? "-fill" : "")"></i>
+		</button>
+	</form>
 
 	<!-- Danh sách chương -->
 	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
