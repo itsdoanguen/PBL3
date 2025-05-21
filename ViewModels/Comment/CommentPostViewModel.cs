@@ -8,12 +8,13 @@
         public int? StoryID { get; set; }
         public int? ParentCommentID { get; set; } = null;
         public string? ParentUserName { get; set; } = null;
-        public string Content { get; set; }
+        public string? Content { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? UpdatedAt { get; set; } = DateTime.Now;
         public bool isDeleted { get; set; } = false;
 
         public string? UserName { get; set; }
-        public string? UserAvatar { get; set; }        
+        public string? UserAvatar { get; set; }  
+        public int RepliesCount { get; set; } = 0;
     }
 }

@@ -10,6 +10,8 @@ using PBL3.Service.Like;
 using PBL3.Service.Discovery;
 using PBL3.Service.Style;
 using PBL3.Service.Comment;
+using PBL3.Service.Follow;
+using PBL3.Service.Bookmark;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,8 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICommentMappingService, CommentMappingService>();
 builder.Services.AddScoped<IStoryRankingService, StoryRankingService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFollowService, FollowService>();
+builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

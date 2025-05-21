@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Style;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers
 {
+    [Authorize]
     public class StyleController : Controller
     {
         private readonly ApplicationDbContext _context;

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Chapter;
@@ -7,6 +8,7 @@ using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers
 {
+    [Authorize]
     public class ChapterController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -158,6 +160,39 @@ namespace PBL3.Controllers
         {
             var comments = await _commentService.GetCommentsAsync(type, id);
             return Json(comments);
+        }
+
+        // Lấy 2 tầng đầu 
+        [HttpGet]
+        public async Task<IActionResult> GetRootAndFirstLevelReplies(string type, int id)
+        {
+            var comments = await _commentService.GetRootAndFirstLevelRepliesAsync(type, id);
+            return Json(comments);
+        }
+
+        // Lấy replies theo parentId
+        [HttpGet]
+        public async Task<IActionResult> GetReplies(int parentCommentId, int? chapterId, int? storyId)
+        {
+            string type;
+            int id;
+            if (chapterId.HasValue)
+            {
+                type = "chapter";
+                id = chapterId.Value;
+            }
+            else if (storyId.HasValue)
+            {
+                type = "story";
+                id = storyId.Value;
+            }
+            else
+            {
+                return BadRequest("Missing chapterId or storyId");
+            }
+
+            var replies = await _commentService.GetRepliesAsync(type, id, parentCommentId);
+            return PartialView("_RepliesPartial", replies);
         }
     }
 }

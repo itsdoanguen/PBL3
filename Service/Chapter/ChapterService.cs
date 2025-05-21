@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Bookmark;
 using PBL3.Service.Comment;
 using PBL3.Service.Like;
 using PBL3.Service.Style;
@@ -14,12 +15,14 @@ namespace PBL3.Service.Chapter
         private readonly ILikeChapterService _likeChapterService;
         private readonly IStyleService _styleService;
         private readonly ICommentService _commentService;
-        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService)
+        private readonly IBookmarkService _bookmarkService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService, IBookmarkService bookmarkService)
         {
             _context = context;
             _likeChapterService = likeChapterService;
             _styleService = styleService;
             _commentService = commentService;
+            _bookmarkService = bookmarkService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -76,7 +79,11 @@ namespace PBL3.Service.Chapter
                 BackgroundColor = userStyle.BackgroundColor
             };
 
-            return new ChapterDetailViewModel
+            int parsedUserId = 0;
+            if (!string.IsNullOrEmpty(currentUserId))
+                int.TryParse(currentUserId, out parsedUserId);
+
+            var viewModel = new ChapterDetailViewModel
             {
                 ChapterID = chapter.ChapterID,
                 Title = chapter.Title,
@@ -88,14 +95,18 @@ namespace PBL3.Service.Chapter
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
 
+    
                 Comments = await _commentService.GetCommentsAsync("chapter", chapter.ChapterID),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),
                 ChapterList = await GetChapterList(chapter.StoryID),
-                IsLikedByCurrentUser = await _likeChapterService.IsLikedByCurrentUserAsync(chapter.ChapterID, int.Parse(currentUserId)),
+                IsLikedByCurrentUser = parsedUserId > 0 ? await _likeChapterService.IsLikedByCurrentUserAsync(chapter.ChapterID, parsedUserId) : false,
                 LikeCount = await _likeChapterService.GetLikeCountAsync(chapter.ChapterID),
-                Style = StyleViewModel
+                Style = StyleViewModel,
+                IsBookmarkedByCurrentUser = parsedUserId > 0 ? await _bookmarkService.IsBookmarkedAsync(parsedUserId, chapter.ChapterID) : false
             };
+
+            return viewModel;
         }
 
         //Tạo chapter mới
@@ -160,7 +171,7 @@ namespace PBL3.Service.Chapter
 
             if (authorId != currentUserId)
             {
-                return null; // User không có quyền
+                return new ChapterEditViewModel();
             }
 
             var chapter = await _context.Chapters
@@ -168,7 +179,7 @@ namespace PBL3.Service.Chapter
 
             if (chapter == null)
             {
-                return null; // Không tìm thấy
+                return new ChapterEditViewModel();
             }
 
             return new ChapterEditViewModel
@@ -190,8 +201,8 @@ namespace PBL3.Service.Chapter
                 return false;
             }
 
-            chapter.Title = model.Title;
-            chapter.Content = model.Content;
+            chapter.Title = model.Title ?? chapter.Title;
+            chapter.Content = model.Content ?? chapter.Content;
             chapter.UpdatedAt = DateTime.Now;
 
             var story = await _context.Stories.FirstOrDefaultAsync(s => s.StoryID == model.StoryID);

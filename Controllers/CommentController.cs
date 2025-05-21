@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Comment;
 using PBL3.ViewModels.Comment;
 
 namespace PBL3.Controllers
 {
+    [Authorize]
     public class CommentController : Controller
     {
         private readonly ICommentService _commentService;
@@ -62,6 +64,39 @@ namespace PBL3.Controllers
             };
 
             return PartialView("_CommentFormPartial", viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int commentId, int storyId, int? chapterId)
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+            {
+                TempData["ErrorMessage"] = "Không xác định được người dùng.";
+                if (chapterId != null)
+                    return RedirectToAction("ReadChapter", "Chapter", new { id = chapterId });
+                else
+                    return RedirectToAction("View", "Story", new { id = storyId });
+            }
+            int userId = int.Parse(userIdClaim.Value);
+            var (isSuccess, message) = await _commentService.DeleteCommentAsync(commentId, userId);
+            if (isSuccess)
+            {
+                TempData["SuccessMessage"] = message;
+            }
+            else
+            {
+                TempData["ErrorMessage"] = message;
+            }
+            if (chapterId != null)
+            {
+                return RedirectToAction("ReadChapter", "Chapter", new { id = chapterId });
+            }
+            else
+            {
+                return RedirectToAction("View", "Story", new { id = storyId });
+            }
         }
     }
 }

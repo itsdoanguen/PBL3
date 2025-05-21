@@ -228,4 +228,27 @@ document.addEventListener("DOMContentLoaded", function () {
     if (comments.length > commentsPerPage) {
         showPage(1);
     }
+
+    // Lazy load replies
+    document.querySelectorAll('.comment-box').forEach(function(box) {
+        box.addEventListener('click', function(e) {
+            if (e.target && e.target.classList.contains('load-more-replies')) {
+                const parentId = e.target.getAttribute('data-parent-id');
+                const chapterId = e.target.getAttribute('data-chapter-id');
+                const storyId = e.target.getAttribute('data-story-id');
+                const repliesContainer = document.getElementById('replies-for-' + parentId);
+                if (repliesContainer && repliesContainer.childElementCount === 0) {
+                    let url = `/Chapter/GetReplies?parentCommentId=${parentId}`;
+                    if (chapterId) url += `&chapterId=${chapterId}`;
+                    if (storyId) url += `&storyId=${storyId}`;
+                    fetch(url)
+                        .then(res => res.text())
+                        .then(html => {
+                            repliesContainer.innerHTML = html;
+                            e.target.style.display = 'none';
+                        });
+                }
+            }
+        });
+    });
 });

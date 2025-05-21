@@ -13,6 +13,7 @@ using PBL3.Service.Image;
 using PBL3.Service.User;
 using PBL3.ViewModels.UserProfile;
 using PBL3.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace PBL3.Controllers
 {
@@ -143,14 +144,24 @@ namespace PBL3.Controllers
         //GET: User/ViewProfile
         public async Task<IActionResult> ViewProfile(int id)
         {
-            UserProfileViewModel profile = new UserProfileViewModel();
+            int currentUserID = 0;
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim != null)
+                currentUserID = int.Parse(userIdClaim.Value);
 
-            profile = await _userService.GetUserProfile(id);
+            var followService = HttpContext.RequestServices.GetService(typeof(PBL3.Service.Follow.IFollowService)) as PBL3.Service.Follow.IFollowService;
+            bool isFollowed = false;
+            if (currentUserID != 0 && currentUserID != id && followService != null)
+            {
+                isFollowed = await followService.IsFollowingUserAsync(currentUserID, id);
+            }
 
+            var profile = await _userService.GetUserProfile(id);
             if (profile == null)
             {
                 return NotFound();
             }
+            profile.IsFollowed = isFollowed;
             return View(profile);
         }
 
@@ -213,7 +224,7 @@ namespace PBL3.Controllers
                     Id = s.StoryID,
                     Title = s.Title,
                     CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    IsHot = true, // Assuming all stories from this query are "hot"
+                    IsHot = true, 
                     IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
                     IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
                     ChapterCount = s.Chapters.Count
@@ -238,7 +249,7 @@ namespace PBL3.Controllers
                     Id = s.StoryID,
                     Title = s.Title,
                     CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    IsHot = true, // Assuming all stories from this query are "hot"
+                    IsHot = true, 
                     IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
                     IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
                     ChapterCount = s.Chapters.Count

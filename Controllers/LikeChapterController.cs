@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Like;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PBL3.Controllers
 {
+    [Authorize]
     public class LikeChapterController : Controller
     {
         private readonly ApplicationDbContext _context;

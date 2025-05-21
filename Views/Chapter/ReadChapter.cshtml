@@ -1,31 +1,35 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
-	ViewData["Title"] = Model.Title;
-	Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = Model.Title;
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+    ViewBag.CurrentUserID = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 }
 
 @functions {
-	string GetTimeAgo(DateTime? date)
-	{
-		var span = DateTime.Now - date;
-		if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-		if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-		if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
-		return "Vừa xong";
-	}
-	int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
-	{
-		int total = 0;
-		foreach (var comment in comments)
-		{
-			total += 1;
-			if (comment.Replies != null && comment.Replies.Any())
-			{
-				total += CountAllComments(comment.Replies);
-			}
-		}
-		return total;
-	}
+    string GetTimeAgo(DateTime? date)
+    {
+        if (date == null) return "Không rõ";
+        var span = DateTime.Now - date.Value;
+        if (span.TotalDays >= 1) return $"{(int)span.TotalDays} ngày";
+        if (span.TotalHours >= 1) return $"{(int)span.TotalHours} giờ";
+        if (span.TotalMinutes >= 1) return $"{(int)span.TotalMinutes} phút";
+        return "Vừa xong";
+    }
+    int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
+    {
+        int total = 0;
+        foreach (var comment in comments)
+        {
+            if (!comment.Comment.isDeleted)
+                total += 1;
+            if (comment.Replies != null && comment.Replies.Any())
+            {
+                total += CountAllComments(comment.Replies);
+            }
+        }
+        return total;
+    }
 }
 
 @if (TempData["ScrollToComment"] != null)
@@ -88,9 +92,13 @@
 	</form>
 
 	<!-- Bookmark -->
-	<button class="btn btn-outline-primary btn-sm" title="Bookmark chương này">
-		<i class="bi bi-bookmark"></i>
-	</button>
+	<form asp-action="Toggle" asp-controller="Bookmark" method="post" class="m-0 p-0 d-flex justify-content-center">
+		@Html.AntiForgeryToken()
+		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
+		<button type="submit" class="btn btn-sm @(Model.IsBookmarkedByCurrentUser ? "btn-primary" : "btn-outline-primary") w-100" title="@(Model.IsBookmarkedByCurrentUser ? "Bỏ bookmark chương này" : "Bookmark chương này")">
+			<i class="bi bi-bookmark@(Model.IsBookmarkedByCurrentUser ? "-fill" : "")"></i>
+		</button>
+	</form>
 
 	<!-- Danh sách chương -->
 	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
@@ -169,23 +177,21 @@
 			<!-- Phần bình luận -->
 			<div class="chapter-comments center-cl">
 				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
-
 				<!-- Form bình luận -->
 				<div id="mainCommentForm">
 					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
-						{
-							ChapterID = Model.ChapterID,
-							UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
-							Type = "chapter",
-							FormId = "main"
-						})
+					{
+						ChapterID = Model.ChapterID,
+						UserID = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value,
+						Type = "chapter",
+						FormId = "main"
+					})
 				</div>
-
 				<!-- Danh sách bình luận -->
 				<div class="comment-box" id="commentList">
 					@foreach (var comment in Model.Comments)
 					{
-						@Html.Partial("_CommentPartial", comment)
+						<partial name="_CommentPartial" model="@comment" />
 					}
 				</div>
 				<div id="paginationControls" class="mt-3 text-center"></div>

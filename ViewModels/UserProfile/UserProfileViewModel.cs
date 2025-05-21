@@ -18,6 +18,7 @@ namespace PBL3.ViewModels.UserProfile
         public int TotalFollowers { get; set; }
         public int TotalFollowings { get; set; }
         public int TotalComments { get; set; }
+        public bool IsFollowed { get; set; } = false;
 
         public ICollection<UserStoryCardViewModel> Stories { get; set; } = new List<UserStoryCardViewModel>();
     }
