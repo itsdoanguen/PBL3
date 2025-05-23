@@ -1,0 +1,24 @@
+using System.Threading.Tasks;
+using PBL3.Models;
+using System.Collections.Generic;
+
+namespace PBL3.Service.Notification
+{
+    public interface INotificationService
+    {
+        // Tạo noti khi có chapter mới cho story mà user follow
+        Task InitNewChapterNotificationAsync(int storyId, int chapterId, int fromUserId);
+        // Tạo noti khi user mà mình follow đăng truyện mới
+        Task InitNewStoryNotificationAsync(int storyId, int fromUserId);
+        // Tạo noti khi có người reply comment của mình
+        Task InitNewReplyCommentNotificationAsync(int commentId, int fromUserId);
+        // Tạo noti khi có người comment trên truyện của mình
+        Task InitNewCommentNotificationAsync(int storyId, int commentId, int fromUserId);
+        // Tạo noti khi có người follow mình
+        Task InitNewFollowNotificationAsync(int followerId, int followingId);
+        // // Lấy danh sách noti của user
+        // Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId);
+        // // Đánh dấu đã đọc
+        // Task MarkAsReadAsync(int notificationId);
+    }
+}

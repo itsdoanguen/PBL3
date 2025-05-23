@@ -5,6 +5,7 @@ using PBL3.Models;
 using PBL3.Service.Chapter;
 using PBL3.Service.Comment;
 using PBL3.Service.Image;
+using PBL3.Service.Notification;
 using PBL3.ViewModels.Story;
 
 namespace PBL3.Service.Story
@@ -16,14 +17,16 @@ namespace PBL3.Service.Story
         private readonly IChapterService _chapterService;
         private readonly IImageService _imageService;
         private readonly ICommentService _commentService;
+        private readonly INotificationService _notificationService;
 
-        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService, ICommentService commentService)
+        public StoryService(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IImageService imageService, ICommentService commentService, INotificationService notificationService)
         {
             _context = context;
             _blobService = blobService;
             _chapterService = chapterService;
             _imageService = imageService;
             _commentService = commentService;
+            _notificationService = notificationService;
         }
 
         public async Task<(bool isSuccess, string errorMessage, int? storyID)> CreateStoryAsync(StoryCreateViewModel model, int authorID)
@@ -242,9 +245,15 @@ namespace PBL3.Service.Story
                 return (false, "Trạng thái không hợp lệ", 0);
             }
 
+            var oldStatus = story.Status;
             story.Status = parsedStatus;
             story.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
+
+            if (oldStatus == StoryModel.StoryStatus.Inactive && parsedStatus == StoryModel.StoryStatus.Active)
+            {
+                await _notificationService.InitNewStoryNotificationAsync(story.StoryID, authorID);
+            }
 
             return (true, "Cập nhật trạng thái truyện thành công", story.StoryID);
         }
