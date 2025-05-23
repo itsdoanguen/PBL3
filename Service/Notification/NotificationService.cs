@@ -121,6 +121,24 @@ namespace PBL3.Service.Notification
             await _context.SaveChangesAsync();
         }
 
-        // ...implement other methods from interface as needed...
+        // Lấy danh sách noti của user
+        public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
+        {
+            return await _context.Notifications
+                .Where(n => n.UserID == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+        }
+
+        // Đánh dấu đã đọc
+        public async Task MarkAsReadAsync(int notificationId)
+        {
+            var noti = await _context.Notifications.FindAsync(notificationId);
+            if (noti != null && !noti.IsRead)
+            {
+                noti.IsRead = true;
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

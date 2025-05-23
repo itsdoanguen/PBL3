@@ -16,9 +16,9 @@ namespace PBL3.Service.Notification
         Task InitNewCommentNotificationAsync(int storyId, int commentId, int fromUserId);
         // Tạo noti khi có người follow mình
         Task InitNewFollowNotificationAsync(int followerId, int followingId);
-        // // Lấy danh sách noti của user
-        // Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId);
-        // // Đánh dấu đã đọc
-        // Task MarkAsReadAsync(int notificationId);
+        // Lấy danh sách noti của user
+        Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId);
+        // Đánh dấu đã đọc
+        Task MarkAsReadAsync(int notificationId);
     }
 }

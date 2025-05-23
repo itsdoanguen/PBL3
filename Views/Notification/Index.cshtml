@@ -1,0 +1,59 @@
+@model List<PBL3.Models.NotificationModel>
+@{
+    ViewBag.Title = "Thông báo";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<div class="notifications-container">
+    <!-- Tabs -->
+    <div class="notifications-tabs">
+        <button class="tab-button active" data-type="all">
+            Tất cả
+            <span class="unread-count"></span>
+        </button>
+        <button class="tab-button" data-type="NewFollower">
+            Người theo dõi
+            <span class="unread-count"></span>
+        </button>
+        <button class="tab-button" data-type="NewStory">
+            Truyện mới
+            <span class="unread-count"></span>
+        </button>
+        <button class="tab-button" data-type="NewChapter">
+            Chương mới
+            <span class="unread-count"></span>
+        </button>
+        <button class="tab-button" data-type="NewComment">
+            Bình luận
+            <span class="unread-count"></span>
+        </button>
+    </div>
+
+    <!-- Notifications list -->
+    <div class="notifications-list">
+        @foreach (var notification in Model.OrderByDescending(n => n.CreatedAt))
+        {
+            <div class="notification-item @(notification.IsRead ? "read" : "unread")" data-type="@notification.Type" data-id="@notification.NotificationID">
+                <div class="notification-content">
+                    <div class="notification-message">@notification.Message</div>
+                    <div class="notification-time">@notification.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                @if (!notification.IsRead)
+                {
+                    <form asp-action="MarkAsRead" asp-controller="Notification" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="notificationId" value="@notification.NotificationID" />
+                        <button type="submit" class="mark-read-button">Đã đọc</button>
+                    </form>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/notification.css" />
+}
+
+@section Scripts {
+    <script src="~/js/notification.js"></script>
+}
