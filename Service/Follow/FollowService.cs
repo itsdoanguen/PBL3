@@ -1,15 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Notification;
 
 namespace PBL3.Service.Follow
 {
     public class FollowService : IFollowService
     {
         private readonly ApplicationDbContext _context;
-        public FollowService(ApplicationDbContext context)
+        private readonly INotificationService _notificationService;
+        public FollowService(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<(bool isSuccess, string Message)> FollowStoryAsync(int userId, int storyId)
@@ -54,6 +57,7 @@ namespace PBL3.Service.Follow
             var follow = new FollowUserModel { FollowerID = followerId, FollowingID = followingId };
             _context.FollowUsers.Add(follow);
             await _context.SaveChangesAsync();
+            await _notificationService.InitNewFollowNotificationAsync(followerId, followingId);
             return (true, "Theo dõi người dùng thành công.");
         }
 
