@@ -13,7 +13,7 @@
         return "Vừa xong";
     }
 }
-<div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
+<div class="comment-container @(Model.Comment != null && Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment?.CommentID">
     <div class="comment-content">
         <div class="comment-header">
             <div class="comment-meta">
@@ -60,15 +60,18 @@
                 </form>
             }
         </div>
-        @if ((Model.Replies.Any() || (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0))) && Model.Comment.RepliesCount > 0)
+        @if ((Model.Replies != null && Model.Replies.Any()) || (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0) && Model.Comment.RepliesCount > 0))
         {
             <div class="comment-replies">
                 @if (level < 2)
                 {
-                    foreach (var reply in Model.Replies)
+                    if (Model.Replies != null)
                     {
-                        ViewBag.Level = level + 1;
-                        <partial name="_CommentPartial" model="reply" />
+                        foreach (var reply in Model.Replies)
+                        {
+                            ViewBag.Level = level + 1;
+                            <partial name="_CommentPartial" model="@reply" />
+                        }
                     }
                     if (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0))
                     {

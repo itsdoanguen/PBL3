@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Chapter;
 using PBL3.Service.Comment;
+using PBL3.Service.Notification;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers
@@ -54,7 +55,6 @@ namespace PBL3.Controllers
             }
 
             var newChapter = await _chapterService.CreateChapterAsync(chapter);
-
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 return Json(new

@@ -5,6 +5,7 @@ using PBL3.Service.Bookmark;
 using PBL3.Service.Comment;
 using PBL3.Service.Like;
 using PBL3.Service.Style;
+using PBL3.Service.Notification;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Service.Chapter
@@ -16,13 +17,15 @@ namespace PBL3.Service.Chapter
         private readonly IStyleService _styleService;
         private readonly ICommentService _commentService;
         private readonly IBookmarkService _bookmarkService;
-        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService, IBookmarkService bookmarkService)
+        private readonly INotificationService _notificationService;
+        public ChapterService(ApplicationDbContext context, ILikeChapterService likeChapterService, IStyleService styleService, ICommentService commentService, IBookmarkService bookmarkService, INotificationService notificationService)
         {
             _context = context;
             _likeChapterService = likeChapterService;
             _styleService = styleService;
             _commentService = commentService;
             _bookmarkService = bookmarkService;
+            _notificationService = notificationService;
         }
         //Lấy thông tin chi tiết của chapter
         public async Task<ChapterDetailViewModel> GetChapterDetailAsync(int chapterId, string currentUserId, Func<string, bool> checkCookieExists, Action<string, string, CookieOptions> setCookie)
@@ -249,9 +252,16 @@ namespace PBL3.Service.Chapter
                 return (false, "Trạng thái không hợp lệ.", chapter.StoryID);
             }
 
+            var oldStatus = chapter.Status;
             chapter.Status = parsedStatus;
             chapter.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
+
+            // Gửi notification khi xuất bản chương (Inactive -> Active)
+            if (oldStatus == ChapterStatus.Inactive && parsedStatus == ChapterStatus.Active)
+            {
+                await _notificationService.InitNewChapterNotificationAsync(chapter.StoryID, chapter.ChapterID, authorId);
+            }
 
             return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);
         }

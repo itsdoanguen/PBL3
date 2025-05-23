@@ -21,7 +21,7 @@
         int total = 0;
         foreach (var comment in comments)
         {
-            if (!comment.Comment.isDeleted)
+            if (comment.Comment != null && !comment.Comment.isDeleted)
                 total += 1;
             if (comment.Replies != null && comment.Replies.Any())
             {
@@ -127,7 +127,7 @@
 				<h2 class="title-item text-xl fw-bold">@Model.StoryTitle</h2>
 				<h4 class="title-item fw-bold">@Model.Title</h4>
 				<h6 class="chapter-meta">
-					<a href="#chapter-comments" class="text-decoration-underline">@CountAllComments(Model.Comments) Bình luận</a> -
+					<a href="#chapter-comments" class="text-decoration-underline">@CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()) Bình luận</a> -
 					Độ dài: @Model.TotalWord từ -
 					Cập nhật:
 					<time title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
@@ -176,7 +176,7 @@
 
 			<!-- Phần bình luận -->
 			<div class="chapter-comments center-cl">
-				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
+				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()))</h5>
 				<!-- Form bình luận -->
 				<div id="mainCommentForm">
 					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
@@ -189,9 +189,12 @@
 				</div>
 				<!-- Danh sách bình luận -->
 				<div class="comment-box" id="commentList">
-					@foreach (var comment in Model.Comments)
+					@if (Model.Comments != null)
 					{
-						<partial name="_CommentPartial" model="@comment" />
+						foreach (var comment in Model.Comments)
+						{
+							<partial name="_CommentPartial" model="@comment" />
+						}
 					}
 				</div>
 				<div id="paginationControls" class="mt-3 text-center"></div>

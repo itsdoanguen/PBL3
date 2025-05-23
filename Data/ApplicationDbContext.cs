@@ -82,6 +82,36 @@ namespace PBL3.Data
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<StoryGenreModel>().HasKey(sg => new { sg.StoryID, sg.GenreID });
 
+            // NotificationModel relations
+            modelBuilder.Entity<NotificationModel>()
+                .HasOne(n => n.User)
+                .WithMany()
+                .HasForeignKey(n => n.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<NotificationModel>()
+                .HasOne(n => n.FromUser)
+                .WithMany()
+                .HasForeignKey(n => n.FromUserID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<NotificationModel>()
+                .HasOne(n => n.Story)
+                .WithMany()
+                .HasForeignKey(n => n.StoryID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<NotificationModel>()
+                .HasOne(n => n.Chapter)
+                .WithMany()
+                .HasForeignKey(n => n.ChapterID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<NotificationModel>()
+                .HasOne(n => n.Comment)
+                .WithMany()
+                .HasForeignKey(n => n.CommentID)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
