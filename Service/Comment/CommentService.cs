@@ -2,6 +2,7 @@
 using PBL3.Models;
 using PBL3.ViewModels.Chapter;
 using PBL3.ViewModels.Comment;
+using PBL3.Service.Notification;
 
 namespace PBL3.Service.Comment
 {
@@ -10,11 +11,13 @@ namespace PBL3.Service.Comment
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
         private readonly ICommentMappingService _commentMappingService;
-        public CommentService(ApplicationDbContext context, BlobService blobService, ICommentMappingService commentMappingService)
+        private readonly INotificationService _notificationService;
+        public CommentService(ApplicationDbContext context, BlobService blobService, ICommentMappingService commentMappingService, INotificationService notificationService)
         {
             _context = context;
             _blobService = blobService;
             _commentMappingService = commentMappingService;
+            _notificationService = notificationService;
         }
         public async Task<(bool isSuccess, string message, int? commentId)> PostCommentAsync(CommentPostViewModel model, string type)
         {
@@ -34,6 +37,10 @@ namespace PBL3.Service.Comment
                         return (false, postChapterMessage, null);
                     }
                     newCommentId = postChapterCommentId;
+                    if (newCommentId.HasValue)
+                    {
+                        await _notificationService.InitNewCommentNotificationAsync(model.StoryID ?? 0, newCommentId.Value, model.UserID);
+                    }
                     break;
                 case "story":
                     var (postStorySucess, postStoryMessage, postStoryCommentId) = await PostCommentOnStoryAsync(model);
@@ -42,6 +49,10 @@ namespace PBL3.Service.Comment
                         return (false, postStoryMessage, null);
                     }
                     newCommentId = postStoryCommentId;
+                    if (newCommentId.HasValue)
+                    {
+                        await _notificationService.InitNewCommentNotificationAsync(model.StoryID ?? 0, newCommentId.Value, model.UserID);
+                    }
                     break;
                 case "reply":
                     var (postReplySucess, postReplyMessage, postReplyCommentId) = await PostReplyAsync(model);
@@ -50,6 +61,10 @@ namespace PBL3.Service.Comment
                         return (false, postReplyMessage, null);
                     }
                     newCommentId = postReplyCommentId;
+                    if (newCommentId.HasValue)
+                    {
+                        await _notificationService.InitNewReplyCommentNotificationAsync(newCommentId.Value, model.UserID);
+                    }
                     break;
                 default:
                     return (false, "Loại bình luận không hợp lệ", null);

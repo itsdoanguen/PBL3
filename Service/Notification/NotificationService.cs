@@ -65,6 +65,62 @@ namespace PBL3.Service.Notification
             await _context.SaveChangesAsync();
         }
 
+        // Tạo noti khi có người reply comment của mình
+        public async Task InitNewReplyCommentNotificationAsync(int commentId, int fromUserId)
+        {
+            var comment = await _context.Comments.FindAsync(commentId);
+            if (comment == null || comment.ParentCommentID == null)
+                return;
+            var parentComment = await _context.Comments.FindAsync(comment.ParentCommentID);
+            if (parentComment == null || parentComment.UserID == fromUserId)
+                return;
+            var noti = new NotificationModel
+            {
+                UserID = parentComment.UserID,
+                Type = NotificationModel.NotificationType.NewReplyComment,
+                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Ai đó"} đã trả lời bình luận của bạn.",
+                CommentID = commentId,
+                FromUserID = fromUserId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
+        }
+
+        // Tạo noti khi có người comment trên truyện của mình
+        public async Task InitNewCommentNotificationAsync(int storyId, int commentId, int fromUserId)
+        {
+            var story = await _context.Stories.FindAsync(storyId);
+            if (story == null || story.AuthorID == fromUserId)
+                return;
+            var noti = new NotificationModel
+            {
+                UserID = story.AuthorID,
+                Type = NotificationModel.NotificationType.NewComment,
+                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Ai đó"} đã bình luận trên truyện của bạn.",
+                StoryID = storyId,
+                CommentID = commentId,
+                FromUserID = fromUserId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
+        }
+
+        // Tạo noti khi có người follow mình
+        public async Task InitNewFollowNotificationAsync(int followerId, int followingId)
+        {
+            if (followerId == followingId) return;
+            var follower = await _context.Users.FindAsync(followerId);
+            var noti = new NotificationModel
+            {
+                UserID = followingId,
+                Type = NotificationModel.NotificationType.NewFollower,
+                Message = $"{follower?.DisplayName ?? "Ai đó"} đã theo dõi bạn.",
+                FromUserID = followerId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
+        }
+
         // ...implement other methods from interface as needed...
     }
 }
