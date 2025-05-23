@@ -1,0 +1,23 @@
+@using PBL3.Service.Notification
+@inject INotificationService NotificationService
+@{
+    int unreadCount = 0;
+    var user = User;
+    var identity = user?.Identity;
+    if (identity != null && identity.IsAuthenticated)
+    {
+        var claim = user?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+        if (claim != null && int.TryParse(claim.Value, out int userId))
+        {
+            var notifications = await NotificationService.GetNotificationsForUserAsync(userId);
+            unreadCount = notifications.Count(n => !n.IsRead);
+        }
+    }
+}
+@if (unreadCount > 0)
+{
+    <span id="noti-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+          style="min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-top:10px;font-size:0.7rem;">
+        @unreadCount
+    </span>
+}

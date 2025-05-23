@@ -67,7 +67,7 @@
                         <li class="nav-item">
                             <a class="nav-link position-relative" asp-controller="Notification" asp-action="Index">
                                 <i class="bi bi-bell" style="font-size: 1.3rem;"></i>
-                                <span id="noti-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem; display: none;">0</span>
+                                @await Html.PartialAsync("_NotificationBadgePartial", false)
                                 <span class="d-none d-lg-inline ms-1">Thông báo</span>
                             </a>
                         </li>
