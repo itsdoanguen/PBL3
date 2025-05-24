@@ -29,5 +29,14 @@ namespace PBL3.Controllers
             await _notificationService.MarkAsReadAsync(notificationId);
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteNotification(int notificationId)
+        {
+            var (isSuccess, message) = await _notificationService.DeleteNotificationAsync(notificationId);
+            TempData[isSuccess ? "SuccessMessage" : "ErrorMessage"] = message;
+            return RedirectToAction("Index");
+        }
     }
 }

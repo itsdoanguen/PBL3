@@ -140,5 +140,17 @@ namespace PBL3.Service.Notification
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<(bool isSuccess, string message)> DeleteNotificationAsync(int notificationId)
+        {
+            var noti = await _context.Notifications.FindAsync(notificationId);
+            if (noti != null)
+            {
+                _context.Notifications.Remove(noti);
+                await _context.SaveChangesAsync();
+                return (true, "Xóa thông báo thành công!");
+            }
+            return (false, "Không tìm thấy thông báo để xóa!");
+        }
     }
 }
