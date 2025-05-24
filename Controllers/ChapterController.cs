@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Chapter;
 using PBL3.Service.Comment;
+using PBL3.Service.History;
 using PBL3.Service.Notification;
 using PBL3.ViewModels.Chapter;
 
@@ -15,11 +16,13 @@ namespace PBL3.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IChapterService _chapterService;
         private readonly ICommentService _commentService;
-        public ChapterController(ApplicationDbContext context, IChapterService chapterService, ICommentService commentService)
+        private readonly IHistoryService _historyService;
+        public ChapterController(ApplicationDbContext context, IChapterService chapterService, ICommentService commentService, IHistoryService historyService)
         {
             _context = context;
             _chapterService = chapterService;
             _commentService = commentService;
+            _historyService = historyService;
         }
         public IActionResult Index()
         {
@@ -40,6 +43,10 @@ namespace PBL3.Controllers
             if (viewModel == null)
                 return NotFound();
 
+            if (int.TryParse(currentUserId, out int userId))
+            {
+                await _historyService.UpdateHistoryAsync(userId, viewModel.StoryID, id);
+            }
             return View(viewModel);
         }
 
