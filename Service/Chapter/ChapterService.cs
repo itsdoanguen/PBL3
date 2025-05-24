@@ -148,18 +148,27 @@ namespace PBL3.Service.Chapter
                 return;
             }
 
-            var relatedComments = _context.Comments
-                .Where(c => c.ChapterID == chapterId);
+            // Xóa comment liên quan
+            var relatedComments = _context.Comments.Where(c => c.ChapterID == chapterId);
             _context.Comments.RemoveRange(relatedComments);
 
-            var chapterToUpdate = await _context.Chapters
-            .Where(c => c.ChapterOrder > chapter.ChapterOrder && c.StoryID == storyId)
-            .ToListAsync();
+            // Xóa history liên quan
+            var relatedHistories = _context.Set<HistoryModel>().Where(h => h.ChapterID == chapterId);
+            _context.Set<HistoryModel>().RemoveRange(relatedHistories);
 
+            // Xóa notification liên quan
+            var relatedNotifications = _context.Notifications.Where(n => n.ChapterID == chapterId);
+            _context.Notifications.RemoveRange(relatedNotifications);
+
+            // Cập nhật lại ChapterOrder cho các chương sau
+            var chapterToUpdate = await _context.Chapters
+                .Where(c => c.ChapterOrder > chapter.ChapterOrder && c.StoryID == storyId)
+                .ToListAsync();
             foreach (var c in chapterToUpdate)
             {
                 c.ChapterOrder--;
             }
+
             _context.Chapters.Remove(chapter);
             await _context.SaveChangesAsync();
         }
