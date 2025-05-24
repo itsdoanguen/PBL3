@@ -20,5 +20,7 @@ namespace PBL3.Service.Notification
         Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId);
         // Đánh dấu đã đọc
         Task MarkAsReadAsync(int notificationId);
+        // Xóa thông báo, trả về trạng thái và message
+        Task<(bool isSuccess, string message)> DeleteNotificationAsync(int notificationId);
     }
 }

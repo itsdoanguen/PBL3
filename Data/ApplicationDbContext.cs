@@ -112,6 +112,25 @@ namespace PBL3.Data
                 .WithMany()
                 .HasForeignKey(n => n.CommentID)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            // HistoryModel relations
+            modelBuilder.Entity<HistoryModel>()
+                .HasOne(h => h.User)
+                .WithMany()
+                .HasForeignKey(h => h.UserID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<HistoryModel>()
+                .HasOne(h => h.Story)
+                .WithMany()
+                .HasForeignKey(h => h.StoryID)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<HistoryModel>()
+                .HasOne(h => h.Chapter)
+                .WithMany()
+                .HasForeignKey(h => h.ChapterID)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

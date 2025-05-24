@@ -94,21 +94,30 @@ namespace PBL3.Service.Story
                 return (false, "AccessDenied");
             }
 
-            var relatedCommentsStory = await _context.Comments
-                .Where(c => c.StoryID == storyID)
-                .ToListAsync();
-            _context.Comments.RemoveRange(relatedCommentsStory);
-
-            // Xóa chapter từ IChapterSevice
-            var chapters = await _context.Chapters
-                .Where(c => c.StoryID == storyID)
-                .ToListAsync();
+            // Xóa chapter (và các liên kết liên quan) qua IChapterService
+            var chapters = await _context.Chapters.Where(c => c.StoryID == storyID).ToListAsync();
             foreach (var chapter in chapters)
             {
                 await _chapterService.DeleteChapterAsync(chapter.ChapterID, storyID);
             }
-            // Xóa Story
-            _context.Stories.RemoveRange(story);
+
+            // Xóa comment liên quan đến story
+            var relatedComments = _context.Comments.Where(c => c.StoryID == storyID);
+            _context.Comments.RemoveRange(relatedComments);
+
+            // Xóa notification liên quan
+            var relatedNotifications = _context.Notifications.Where(n => n.StoryID == storyID);
+            _context.Notifications.RemoveRange(relatedNotifications);
+
+            // Xóa history liên quan
+            var relatedHistories = _context.Set<HistoryModel>().Where(h => h.StoryID == storyID);
+            _context.Set<HistoryModel>().RemoveRange(relatedHistories);
+
+            // Xóa genre liên quan
+            var relatedGenres = _context.StoryGenres.Where(g => g.StoryID == storyID);
+            _context.StoryGenres.RemoveRange(relatedGenres);
+
+            _context.Stories.Remove(story);
             await _context.SaveChangesAsync();
 
             return (true, "Xóa truyện thành công");
