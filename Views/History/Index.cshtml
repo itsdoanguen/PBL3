@@ -6,11 +6,11 @@
 }
 
 <div class="container py-4">
-    <h2 class="mb-4"><span class="text-success" style="font-size:1.5rem;">●</span> Truyện đã đọc</h2>
+    <h2 class="mb-4"><span class="text-success" style="font-size:1.5rem;"></span> Truyện đã đọc</h2>
 
     @if (TempData["Message"] != null)
     {
-        <div class="alert alert-info">@TempData["Message"]</div>
+        <div class="alert alert-info container" style="max-width:600px">@TempData["Message"]</div>
     }
     else if (Model != null && Model.Any())
     {
