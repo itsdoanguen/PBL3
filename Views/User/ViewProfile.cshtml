@@ -46,12 +46,50 @@
                 }
                 @if (!isMyProfile && viewedUserId != 0)
                 {
-                    <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="mt-3">
-                        <input type="hidden" name="followingId" value="@viewedUserId" />
-                        <button type="submit" class="btn rounded-pill @(Model.IsFollowed ? "btn-success" : "btn-outline-success")">
-                            <i class="bi @(Model.IsFollowed ? "bi-person-check-fill" : "bi-person-plus")"></i> @(Model.IsFollowed ? "Unfollow" : "Follow")
+                    <div class="mt-3 d-flex justify-content-center gap-2">
+                        <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post">
+                            <input type="hidden" name="followingId" value="@viewedUserId" />
+                            <button type="submit" class="btn rounded-pill @(Model.IsFollowed ? "btn-success" : "btn-outline-success")">
+                                <i class="bi @(Model.IsFollowed ? "bi-person-check-fill" : "bi-person-plus")"></i> @(Model.IsFollowed ? "Unfollow" : "Follow")
+                            </button>
+                        </form>
+
+                        <!-- Report Button -->
+                        <button type="button" class="btn btn-outline-danger rounded-pill" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#reportUserModal">
+                            <i class="bi bi-flag-fill"></i> Báo cáo
                         </button>
-                    </form>
+
+                        <!-- Report Modal -->
+                        <div class="modal fade" id="reportUserModal" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Báo cáo người dùng</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form asp-controller="Report" asp-action="ReportUser" method="post" class="report-form">
+                                        @Html.AntiForgeryToken()
+                                        <div class="modal-body">
+                                            <input type="hidden" name="reportedUserId" value="@viewedUserId" />
+                                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                            <div class="mb-3">
+                                                <label for="message" class="form-label">Lý do báo cáo:</label>
+                                                <textarea class="form-control" id="message" name="message" 
+                                                          rows="3" required 
+                                                          placeholder="Vui lòng mô tả chi tiết lý do báo cáo..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                            <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 }
             </div>
         </div>
@@ -108,3 +146,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="~/js/report.js"></script>
+}

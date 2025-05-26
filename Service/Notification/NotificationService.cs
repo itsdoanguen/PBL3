@@ -119,42 +119,24 @@ namespace PBL3.Service.Notification
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
-        }
-
-        // Tạo noti khi có report user
-        public async Task InitReportUserNotificationAsync(int reportedUserId, int fromUserId, string message)
+        }        private async Task InitReportNotificationAsync(NotificationModel.NotificationType type, int fromUserId, string message, int? storyId = null, int? chapterId = null, int? commentId = null)
         {
-            // Gửi noti cho tất cả moderator
-            var moderators = await _context.Users.Where(u => u.Role == UserModel.UserRole.Moderator).ToListAsync();
+            // Lấy tất cả moderator và admin, ngoại trừ người gửi report
+            var moderators = await _context.Users
+                .Where(u => (u.Role == UserModel.UserRole.Moderator || u.Role == UserModel.UserRole.Admin) 
+                           && u.UserID != fromUserId)
+                .ToListAsync();
+
             foreach (var mod in moderators)
             {
                 var noti = new NotificationModel
                 {
                     UserID = mod.UserID,
-                    Type = NotificationModel.NotificationType.ReportUser,
+                    Type = type,
                     Message = message,
                     FromUserID = fromUserId,
-                    CommentID = null,
-                    StoryID = null,
-                    ChapterID = null
-                };
-                _context.Notifications.Add(noti);
-            }
-            await _context.SaveChangesAsync();
-        }
-
-        // Tạo noti khi có report comment
-        public async Task InitReportCommentNotificationAsync(int commentId, int fromUserId, string message)
-        {
-            var moderators = await _context.Users.Where(u => u.Role == UserModel.UserRole.Moderator).ToListAsync();
-            foreach (var mod in moderators)
-            {
-                var noti = new NotificationModel
-                {
-                    UserID = mod.UserID,
-                    Type = NotificationModel.NotificationType.ReportComment,
-                    Message = message,
-                    FromUserID = fromUserId,
+                    StoryID = storyId,
+                    ChapterID = chapterId,
                     CommentID = commentId
                 };
                 _context.Notifications.Add(noti);
@@ -162,42 +144,28 @@ namespace PBL3.Service.Notification
             await _context.SaveChangesAsync();
         }
 
+        // Tạo noti khi có report user
+        public async Task InitReportUserNotificationAsync(int reportedUserId, int fromUserId, string message)
+        {
+            await InitReportNotificationAsync(NotificationModel.NotificationType.ReportUser, fromUserId, message);
+        }
+
+        // Tạo noti khi có report comment
+        public async Task InitReportCommentNotificationAsync(int commentId, int fromUserId, string message)
+        {
+            await InitReportNotificationAsync(NotificationModel.NotificationType.ReportComment, fromUserId, message, commentId: commentId);
+        }
+
         // Tạo noti khi có report chapter
         public async Task InitReportChapterNotificationAsync(int chapterId, int fromUserId, string message)
         {
-            var moderators = await _context.Users.Where(u => u.Role == UserModel.UserRole.Moderator).ToListAsync();
-            foreach (var mod in moderators)
-            {
-                var noti = new NotificationModel
-                {
-                    UserID = mod.UserID,
-                    Type = NotificationModel.NotificationType.ReportChapter,
-                    Message = message,
-                    FromUserID = fromUserId,
-                    ChapterID = chapterId
-                };
-                _context.Notifications.Add(noti);
-            }
-            await _context.SaveChangesAsync();
+            await InitReportNotificationAsync(NotificationModel.NotificationType.ReportChapter, fromUserId, message, chapterId: chapterId);
         }
 
         // Tạo noti khi có report story
         public async Task InitReportStoryNotificationAsync(int storyId, int fromUserId, string message)
         {
-            var moderators = await _context.Users.Where(u => u.Role == UserModel.UserRole.Moderator).ToListAsync();
-            foreach (var mod in moderators)
-            {
-                var noti = new NotificationModel
-                {
-                    UserID = mod.UserID,
-                    Type = NotificationModel.NotificationType.ReportStory,
-                    Message = message,
-                    FromUserID = fromUserId,
-                    StoryID = storyId
-                };
-                _context.Notifications.Add(noti);
-            }
-            await _context.SaveChangesAsync();
+            await InitReportNotificationAsync(NotificationModel.NotificationType.ReportStory, fromUserId, message, storyId: storyId);
         }
 
         // Lấy danh sách noti của user
