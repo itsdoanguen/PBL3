@@ -36,7 +36,11 @@ namespace PBL3.Models
             NewFollower,
             NewChapter,
             NewStory,
-            NewReplyComment
+            NewReplyComment,
+            ReportUser,
+            ReportComment,
+            ReportChapter,
+            ReportStory
         }
     }
 }

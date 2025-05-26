@@ -22,5 +22,13 @@ namespace PBL3.Service.Notification
         Task MarkAsReadAsync(int notificationId);
         // Xóa thông báo, trả về trạng thái và message
         Task<(bool isSuccess, string message)> DeleteNotificationAsync(int notificationId);
+        // Tạo noti khi có report user
+        Task InitReportUserNotificationAsync(int reportedUserId, int fromUserId, string message);
+        // Tạo noti khi có report comment
+        Task InitReportCommentNotificationAsync(int commentId, int fromUserId, string message);
+        // Tạo noti khi có report chapter
+        Task InitReportChapterNotificationAsync(int chapterId, int fromUserId, string message);
+        // Tạo noti khi có report story
+        Task InitReportStoryNotificationAsync(int storyId, int fromUserId, string message);
     }
 }

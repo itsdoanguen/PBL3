@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Service.Discovery;
+using PBL3.Service.Image;
 using PBL3.ViewModels.User;
 using PBL3.ViewModels.UserProfile;
 
@@ -11,11 +12,13 @@ namespace PBL3.Service.User
         private readonly ApplicationDbContext _context;
         private readonly BlobService _blobService;
         private readonly IStoryRankingService _storyRankingService;
-        public UserService(ApplicationDbContext context, BlobService blobService, IStoryRankingService storyRankingService)
+        private readonly IImageService _imageService;
+        public UserService(ApplicationDbContext context, BlobService blobService, IStoryRankingService storyRankingService, IImageService imageService)
         {
             _context = context;
             _blobService = blobService;
             _storyRankingService = storyRankingService;
+            _imageService = imageService;
         }
         public async Task<List<UserStoryCardViewModel>> GetUserStoryCard(int userId)
         {
@@ -35,7 +38,7 @@ namespace PBL3.Service.User
             //Lấy URL của ảnh bìa từ blob
             foreach (var story in stories)
             {
-                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover ?? string.Empty);
             }
             return stories;
         }
@@ -51,8 +54,8 @@ namespace PBL3.Service.User
 
             var stories = await GetUserStoryCard(userId);
 
-            var avatarUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Avatar);
-            var bannerUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Banner);
+            var avatarUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Avatar ?? string.Empty);
+            var bannerUrl = await _blobService.GetSafeImageUrlAsync(userInfo.Banner ?? string.Empty);
 
             var profile = new UserProfileViewModel
             {
@@ -90,6 +93,58 @@ namespace PBL3.Service.User
             }
 
             return userIndexViewModel;
+        }
+
+        public async Task<(bool isSuccess, string errorMessage, UserProfileViewModel? updatedProfile)> UpdateUserProfileAsync(int userId, UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload)
+        {
+            var userInfo = await _context.Users.FindAsync(userId);
+            if (userInfo == null)
+            {
+                return (false, "Không tìm thấy người dùng.", null);
+            }
+
+            // Upload avatar
+            if (avatarUpload != null)
+            {
+                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(avatarUpload, "avatars");
+                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
+                {
+                    var currentProfile = await GetUserProfile(userId);
+                    return (false, errorMessage ?? string.Empty, currentProfile);
+                }
+                userInfo.Avatar = imageUrl;
+            }
+            else
+            {
+                userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
+            }
+
+            // Upload banner
+            if (bannerUpload != null)
+            {
+                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(bannerUpload, "banners");
+                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
+                {
+                    var currentProfile = await GetUserProfile(userId);
+                    return (false, errorMessage ?? string.Empty, currentProfile);
+                }
+                userInfo.Banner = imageUrl;
+            }
+            else
+            {
+                userInfo.Banner = profile.Banner ?? "/image/default-banner.png";
+            }
+
+            userInfo.DisplayName = profile.DisplayName;
+            userInfo.Bio = profile.Bio;
+            userInfo.DateOfBirth = profile.DateOfBirth;
+            userInfo.Gender = profile.Gender;
+
+            _context.Users.Update(userInfo);
+            await _context.SaveChangesAsync();
+
+            var updatedProfile = await GetUserProfile(userId);
+            return (true, string.Empty, updatedProfile);
         }
 
     }
