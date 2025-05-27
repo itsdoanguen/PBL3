@@ -56,5 +56,16 @@ namespace PBL3.Controllers
             }
             return View(viewModel);
         }
+        //GET: Moderator/ViewStory/{id}
+        [HttpGet]
+        public async Task<IActionResult> ViewStory(int id)
+        {
+            var viewModel = await _moderatorService.GetViewStoryViewModelAsync(id);
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+            return View(viewModel);
+        }
     }
 }

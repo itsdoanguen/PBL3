@@ -15,12 +15,12 @@
                 {
                     <div class="col-md-4 mb-3">
                         <div class="story-card card h-100">
-                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                            <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">
                                 <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                    <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">@story.Title</a>
                                 </h5>
                                 <p>Số chương: @story.TotalChapters</p>
                                 <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
@@ -45,12 +45,12 @@
                 {
                     <div class="col-md-4 mb-3">
                         <div class="story-card card h-100 border-danger">
-                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                            <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">
                                 <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                    <a href="@Url.Action("ViewStory", "ViewStory", new { id = story.StoryID })" target="_blank">@story.Title</a>
                                 </h5>
                                 <p>Số chương: @story.TotalChapters</p>
                                 <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
@@ -75,12 +75,12 @@
                 {
                     <div class="col-md-4 mb-3">
                         <div class="story-card card h-100 border-warning">
-                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                            <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">
                                 <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                    <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">@story.Title</a>
                                 </h5>
                                 <p>Số chương: @story.TotalChapters</p>
                                 <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>

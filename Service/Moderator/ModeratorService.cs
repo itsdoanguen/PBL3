@@ -28,6 +28,34 @@ namespace PBL3.Service.Moderator
                 ReportsReceived = await GetReportsReceivedByUserAsync(userId)
             };
         }
+        public async Task<ViewStoryViewModel> GetViewStoryViewModelAsync(int storyId)
+        {
+            var story = await _context.Stories.Include(s => s.Author)
+                .FirstOrDefaultAsync(s => s.StoryID == storyId);
+            if (story == null) return null;
+
+            var author = await GetUserProfileAsync(story.AuthorID);
+            var chapters = await GetChaptersForStoryAsync(storyId);
+
+            var storyVm = new M_StoryViewModel
+            {
+                StoryID = story.StoryID,
+                Title = story.Title,
+                CoverImage = story.CoverImage,
+                Description = story.Description,
+                Status = story.Status,
+                CreatedAt = story.CreatedAt,
+                UpdatedAt = story.UpdatedAt,
+                isReported = await IsStoryReportedAsync(storyId)
+            };
+
+            return new ViewStoryViewModel
+            {
+                Author = author,
+                StoryDetails = storyVm,
+                Chapters = chapters
+            };
+        }
         public async Task<List<ViewModels.Moderator.UserProfileViewModel>> GetListUserForModeratorAsync()
         {
             var users = await _context.Users.Where(u => u.Role == PBL3.Models.UserModel.UserRole.User)
@@ -53,7 +81,7 @@ namespace PBL3.Service.Moderator
         }
         public async Task<List<UserStoryCardViewModel>> GetListStoriesForModeratorAsync()
         {
-            var userStories = await _context.Stories
+            var stories = await _context.Stories.Include(s => s.Author)
                 .Where(s => s.Status != PBL3.Models.StoryModel.StoryStatus.Inactive)
                 .Select(s => new UserStoryCardViewModel
                 {
@@ -65,11 +93,38 @@ namespace PBL3.Service.Moderator
                     Status = s.Status
                 })
                 .ToListAsync();
-            foreach (var story in userStories)
+            foreach (var story in stories)
             {
-                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+                if (!string.IsNullOrEmpty(story.Cover))
+                    story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
             }
-            return userStories;
+            return stories;
+        }
+
+        // --- PRIVATE HELPERS ---
+        private async Task<List<M_ChapterViewModel>> GetChaptersForStoryAsync(int storyId)
+        {
+            var chapters = await _context.Chapters
+                .Where(c => c.StoryID == storyId)
+                .OrderBy(c => c.ChapterOrder)
+                .Select(c => new M_ChapterViewModel
+                {
+                    ChapterID = c.ChapterID,
+                    Title = c.Title,
+                    ChapterOrder = c.ChapterOrder,
+                    CreatedAt = c.CreatedAt,
+                    UpdatedAt = c.UpdatedAt,
+                    Status = c.Status,
+                    ViewCount = c.ViewCount,
+                    isReported = _context.Notifications.Any(n => n.ChapterID == c.ChapterID && (n.Type == PBL3.Models.NotificationModel.NotificationType.ReportChapter))
+                })
+                .ToListAsync();
+            return chapters;
+        }
+
+        private async Task<bool> IsStoryReportedAsync(int storyId)
+        {
+            return await _context.Notifications.AnyAsync(n => n.StoryID == storyId && (n.Type == PBL3.Models.NotificationModel.NotificationType.ReportStory));
         }
 
         private async Task<ViewModels.Moderator.UserProfileViewModel> GetUserProfileAsync(int userId)
