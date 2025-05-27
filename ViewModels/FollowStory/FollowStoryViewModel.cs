@@ -5,8 +5,6 @@
         public int StoryID { get; set; }
         public string StoryTitle { get; set; }
         public string StoryCoverImageUrl { get; set; } // nếu có ảnh bìa
-        public int ChapterID { get; set; }
-        public string ChapterTitle { get; set; }
     }
 
     public class FollowStoryViewModel

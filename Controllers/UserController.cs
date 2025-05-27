@@ -27,7 +27,7 @@ namespace PBL3.Controllers
         private readonly IUserService _userService;
         private readonly BlobService _blobService;
         private readonly IImageService _imageService;
-        
+
         public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
         {
             _context = context;
@@ -75,7 +75,7 @@ namespace PBL3.Controllers
         //POST: User/EditProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) 
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload)
         {
             if (!ModelState.IsValid)
             {
@@ -128,5 +128,28 @@ namespace PBL3.Controllers
             return View(stories);
         }
 
+        //GET: User/Bookmarks
+        public async Task<IActionResult> Bookmarks()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            return View();
+        }
+
+        //GET: User/FollowStories
+        public async Task<IActionResult> FollowStories()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var followService = HttpContext.RequestServices.GetService(typeof(PBL3.Service.Follow.IFollowService)) as PBL3.Service.Follow.IFollowService;
+            if (followService == null)
+            {
+                return NotFound("Follow service not found.");
+            }
+            var followedStories = await _context.FollowStories
+                .Where(f => f.UserID == currentUserID)
+                .Select(f => f.Story)
+                .ToListAsync();
+            return View(followedStories);
+        }
     }
 }
