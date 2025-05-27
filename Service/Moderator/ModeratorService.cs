@@ -28,6 +28,49 @@ namespace PBL3.Service.Moderator
                 ReportsReceived = await GetReportsReceivedByUserAsync(userId)
             };
         }
+        public async Task<List<ViewModels.Moderator.UserProfileViewModel>> GetListUserForModeratorAsync()
+        {
+            var users = await _context.Users.Where(u => u.Role == PBL3.Models.UserModel.UserRole.User)
+                .Select(u => new ViewModels.Moderator.UserProfileViewModel
+                {
+                    UserID = u.UserID,
+                    DisplayName = u.DisplayName,
+                    Email = u.Email,
+                    Avatar = u.Avatar,
+                    Role = u.Role,
+                    CreatedAt = u.CreatedAt,
+                    Status = u.Status
+                })
+                .ToListAsync();
+            foreach (var user in users)
+            {
+                if (!string.IsNullOrEmpty(user.Avatar))
+                {
+                    user.Avatar = await _blobService.GetSafeImageUrlAsync(user.Avatar);
+                }
+            }
+            return users;
+        }
+        public async Task<List<UserStoryCardViewModel>> GetListStoriesForModeratorAsync()
+        {
+            var userStories = await _context.Stories
+                .Where(s => s.Status != PBL3.Models.StoryModel.StoryStatus.Inactive)
+                .Select(s => new UserStoryCardViewModel
+                {
+                    StoryID = s.StoryID,
+                    Title = s.Title,
+                    Cover = s.CoverImage,
+                    TotalChapters = s.Chapters.Count,
+                    LastUpdated = s.UpdatedAt,
+                    Status = s.Status
+                })
+                .ToListAsync();
+            foreach (var story in userStories)
+            {
+                story.Cover = await _blobService.GetSafeImageUrlAsync(story.Cover);
+            }
+            return userStories;
+        }
 
         private async Task<ViewModels.Moderator.UserProfileViewModel> GetUserProfileAsync(int userId)
         {
@@ -115,7 +158,7 @@ namespace PBL3.Service.Moderator
         private async Task<List<UserStoryCardViewModel>> GetUserStoriesAsync(int userId)
         {
             var userStories = await _context.Stories
-                .Where(s => s.AuthorID == userId)
+                .Where(s => s.AuthorID == userId && s.Status != PBL3.Models.StoryModel.StoryStatus.Inactive)
                 .Select(s => new UserStoryCardViewModel
                 {
                     StoryID = s.StoryID,

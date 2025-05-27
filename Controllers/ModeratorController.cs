@@ -17,6 +17,34 @@ namespace PBL3.Controllers
         {
             return View();
         }
+        //GET: Moderator/ReportsManagement
+        [HttpGet]
+        public IActionResult ReportsManagement()
+        {
+            return RedirectToAction("Index", "Report");
+        }
+        //GET: Moderator/UsersManagement
+        [HttpGet]
+        public async Task<IActionResult> UsersManagement()
+        {
+            var viewModel = await _moderatorService.GetListUserForModeratorAsync();
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+            return View(viewModel);
+        }
+        //GET: Moderator/StoryManagement
+        [HttpGet]
+        public async Task<IActionResult> StoryManagement()
+        {
+            var viewModel = await _moderatorService.GetListStoriesForModeratorAsync();
+            if (viewModel == null)
+            {
+                return NotFound();
+            }
+            return View(viewModel);
+        }
         //GET: Moderator/ViewUser/{id}
         [HttpGet]
         public async Task<IActionResult> ViewUser(int id)

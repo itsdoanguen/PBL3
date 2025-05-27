@@ -30,9 +30,13 @@
                     {
                         <div class="col-md-4 mb-3">
                             <div class="story-card card h-100">
-                                <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                                <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                                    <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                                </a>
                                 <div class="card-body">
-                                    <h5 class="card-title">@story.Title</h5>
+                                    <h5 class="card-title">
+                                        <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                    </h5>
                                     <p>Số chương: @story.TotalChapters</p>
                                     <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
                                     <span class="badge bg-secondary">@story.Status</span>
@@ -61,6 +65,7 @@
                             <th>Truyện/Chương</th>
                             <th>Ngày tạo</th>
                             <th>Trạng thái</th>
+                            <th>Hành động</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -71,6 +76,16 @@
                                 <td>@(c.StoryID != null ? $"Truyện #{c.StoryID}" : (c.ChapterID != null ? $"Chương #{c.ChapterID}" : ""))</td>
                                 <td>@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>@(c.IsDeleted ? "Đã xóa" : "Hoạt động")</td>
+                                <td>
+                                    <a href="@(c.ChapterID != null 
+                                        ? Url.Action("ReadChapter", "Chapter", new { id = c.ChapterID }) + "#comment-" + c.CommentID 
+                                        : c.StoryID != null 
+                                            ? Url.Action("View", "Story", new { id = c.StoryID }) + "#comment-" + c.CommentID 
+                                            : "#")" 
+                                        class="btn btn-outline-primary btn-sm" target="_blank">
+                                        Đến vị trí bình luận
+                                    </a>
+                                </td>
                             </tr>
                         }
                     </tbody>
@@ -84,7 +99,12 @@
     </section>
     <!-- Section 4: Reports Created -->
     <section class="reports-created-section card mb-4">
-        <div class="card-header"><h4>Report đã tạo</h4></div>
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Report đã tạo</h4>
+            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="Quản lý báo cáo">
+                <i class="bi bi-gear-fill" style="font-size:1.3rem;"></i>
+            </a>
+        </div>
         <div class="card-body">
             @if (Model.ReportsCreated.Any())
             {
@@ -120,7 +140,12 @@
     </section>
     <!-- Section 5: Reports Received -->
     <section class="reports-received-section card mb-4">
-        <div class="card-header"><h4>Report bị nhận</h4></div>
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Report bị nhận</h4>
+            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="Quản lý báo cáo">
+                <i class="bi bi-gear-fill" style="font-size:1.3rem;"></i>
+            </a>
+        </div>
         <div class="card-body">
             @if (Model.ReportsReceived.Any())
             {

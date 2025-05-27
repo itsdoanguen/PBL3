@@ -32,7 +32,9 @@ namespace PBL3.Models
         {
             Active,
             Inactive,
-            Completed
+            Completed,
+            Locked,
+            ReviewPending
         }
     }
 }

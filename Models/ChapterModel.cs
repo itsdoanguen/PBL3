@@ -31,6 +31,7 @@ namespace PBL3.Models
     public enum ChapterStatus
     {
         Active,
-        Inactive
+        Inactive,
+        Locked
     }
 }

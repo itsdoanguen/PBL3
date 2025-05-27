@@ -84,7 +84,7 @@
                                     @switch (type)
                                     {
                                         case NotificationModel.NotificationType.ReportUser:
-                                            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("ViewProfile", "User", new { id = r.UserID })" target="_blank">Tới người dùng</a>
+                                            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("ViewUser", "Moderator", new { id = r.UserID })" target="_blank">Tới người dùng</a>
                                             break;
                                         case NotificationModel.NotificationType.ReportComment:
                                             if (r.ChapterID != null && r.CommentID != null)

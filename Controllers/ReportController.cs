@@ -122,6 +122,7 @@ namespace PBL3.Controllers
         //POST: /Report/MarkAsRead
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> MarkAsRead(int notificationId)
         {
             await _notificationService.MarkAsReadAsync(notificationId);
@@ -130,6 +131,7 @@ namespace PBL3.Controllers
         //POST: /Report/DeleteNotification  
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Moderator,Admin")]
         public async Task<IActionResult> DeleteNotification(int notificationId)
         {
             var noti = await _notificationService.GetNotificationByIdAsync(notificationId);

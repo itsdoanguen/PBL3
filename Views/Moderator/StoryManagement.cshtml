@@ -1,0 +1,105 @@
+@model List<PBL3.ViewModels.UserProfile.UserStoryCardViewModel>
+@{
+    ViewData["Title"] = "Quản lý truyện";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/ViewUser.css" />
+<div class="container py-4">
+    <h2 class="mb-4">Quản lý truyện</h2>
+    <!-- Section 1: Truyện đang hoạt động -->
+    <section class="card mb-4">
+        <div class="card-header bg-success text-white"><h5 class="mb-0">Truyện đang hoạt động</h5></div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var story in Model.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active || s.Status == PBL3.Models.StoryModel.StoryStatus.Completed))
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="story-card card h-100">
+                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                                <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                </h5>
+                                <p>Số chương: @story.TotalChapters</p>
+                                <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
+                                <span class="badge bg-success">@story.Status</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!Model.Any(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active || s.Status == PBL3.Models.StoryModel.StoryStatus.Completed))
+            {
+                <p class="text-muted">Không có truyện hoạt động.</p>
+            }
+        </div>
+    </section>
+    <!-- Section 2: Truyện bị khóa -->
+    <section class="card mb-4">
+        <div class="card-header bg-danger text-white"><h5 class="mb-0">Truyện bị khóa</h5></div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var story in Model.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Locked))
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="story-card card h-100 border-danger">
+                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                                <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                </h5>
+                                <p>Số chương: @story.TotalChapters</p>
+                                <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
+                                <span class="badge bg-danger">@story.Status</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!Model.Any(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Locked))
+            {
+                <p class="text-muted">Không có truyện bị khóa.</p>
+            }
+        </div>
+    </section>
+    <!-- Section 3: Truyện chờ kiểm duyệt lại -->
+    <section class="card mb-4">
+        <div class="card-header bg-warning text-dark"><h5 class="mb-0">Truyện chờ kiểm duyệt lại</h5></div>
+        <div class="card-body">
+            <div class="row">
+                @foreach (var story in Model.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending))
+                {
+                    <div class="col-md-4 mb-3">
+                        <div class="story-card card h-100 border-warning">
+                            <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
+                                <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                            </a>
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                </h5>
+                                <p>Số chương: @story.TotalChapters</p>
+                                <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
+                                <span class="badge bg-warning text-dark">@story.Status</span>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (!Model.Any(s => s.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending))
+            {
+                <p class="text-muted">Không có truyện chờ kiểm duyệt lại.</p>
+            }
+        </div>
+    </section>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/StoryManagement.css" />
+}
+@section Scripts {
+    <script src="~/js/StoryManagement.js"></script>
+}
