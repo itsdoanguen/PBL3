@@ -146,7 +146,9 @@ namespace PBL3.Service.Notification
                 Type = NotificationModel.NotificationType.ReportComment,
                 Message = message,
                 FromUserID = fromUserId,
-                CommentID = commentId
+                CommentID = commentId,
+                ChapterID = comment.ChapterID, // Lưu luôn chapterId nếu có
+                StoryID = comment.StoryID      // Lưu luôn storyId nếu có
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
@@ -188,11 +190,28 @@ namespace PBL3.Service.Notification
             await _context.SaveChangesAsync();
         }
 
-        // Lấy danh sách noti của user
+        // Lấy danh sách noti của user 
         public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserID == userId)
+                .Where(n => n.UserID == userId &&
+                    n.Type != NotificationModel.NotificationType.ReportUser &&
+                    n.Type != NotificationModel.NotificationType.ReportComment &&
+                    n.Type != NotificationModel.NotificationType.ReportChapter &&
+                    n.Type != NotificationModel.NotificationType.ReportStory)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
+        }
+
+        // Lấy danh sách noti report cho moderator
+        public async Task<List<NotificationModel>> GetReportNotificationsAsync()
+        {
+            return await _context.Notifications
+                .Where(n =>
+                    n.Type == NotificationModel.NotificationType.ReportUser ||
+                    n.Type == NotificationModel.NotificationType.ReportComment ||
+                    n.Type == NotificationModel.NotificationType.ReportChapter ||
+                    n.Type == NotificationModel.NotificationType.ReportStory)
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }
@@ -218,6 +237,12 @@ namespace PBL3.Service.Notification
                 return (true, "Xóa thông báo thành công!");
             }
             return (false, "Không tìm thấy thông báo để xóa!");
+        }
+
+        // Lấy noti theo ID
+        public async Task<NotificationModel?> GetNotificationByIdAsync(int notificationId)
+        {
+            return await _context.Notifications.FindAsync(notificationId);
         }
     }
 }

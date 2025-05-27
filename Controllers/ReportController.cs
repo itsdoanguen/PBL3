@@ -14,17 +14,18 @@ namespace PBL3.Controllers
         public ReportController(INotificationService notificationService)
         {
             _notificationService = notificationService;
-        }        private async Task<IActionResult> HandleReportAsync(
-            int targetId, 
-            string message, 
+        }
+        private async Task<IActionResult> HandleReportAsync(
+            int targetId,
+            string message,
             NotificationModel.NotificationType reportType,
             string? returnUrl = null,
             bool checkSelfReport = false)
         {
-            try 
+            try
             {
                 var fromUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "0");
-                
+
                 if (targetId <= 0 || string.IsNullOrWhiteSpace(message))
                 {
                     TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
@@ -63,7 +64,7 @@ namespace PBL3.Controllers
                 }
 
                 TempData["SuccessMessage"] = "Đã gửi báo cáo thành công.";
-                
+
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
                     return Redirect(returnUrl);
@@ -108,6 +109,43 @@ namespace PBL3.Controllers
         public async Task<IActionResult> ReportStory(int storyId, string message, string? returnUrl = null)
         {
             return await HandleReportAsync(storyId, message, NotificationModel.NotificationType.ReportStory, returnUrl);
+        }
+
+        // GET: /Report/Index
+        [Authorize(Roles = "Moderator,Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var reports = await _notificationService.GetReportNotificationsAsync();
+            return View(reports);
+        }
+        //POST: /Report/MarkAsRead
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MarkAsRead(int notificationId)
+        {
+            await _notificationService.MarkAsReadAsync(notificationId);
+            return RedirectToAction("Index");
+        }
+        //POST: /Report/DeleteNotification  
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteNotification(int notificationId)
+        {
+            var noti = await _notificationService.GetNotificationByIdAsync(notificationId);
+            if (noti == null)
+            {
+                TempData["ErrorMessage"] = "Không tìm thấy báo cáo để xóa!";
+                return RedirectToAction("Index");
+            }
+            if (!noti.IsRead)
+            {
+                TempData["ErrorMessage"] = "Chỉ được xóa báo cáo đã xử lý!";
+                return RedirectToAction("Index");
+            }
+            var (isSuccess, message) = await _notificationService.DeleteNotificationAsync(notificationId);
+            TempData[isSuccess ? "SuccessMessage" : "ErrorMessage"] = message;
+            return RedirectToAction("Index");
         }
     }
 }

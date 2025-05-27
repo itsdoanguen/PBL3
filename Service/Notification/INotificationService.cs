@@ -30,5 +30,9 @@ namespace PBL3.Service.Notification
         Task InitReportChapterNotificationAsync(int chapterId, int fromUserId, string message);
         // Tạo noti khi có report story
         Task InitReportStoryNotificationAsync(int storyId, int fromUserId, string message);
+        // Lấy danh sách noti report cho moderator
+        Task<List<NotificationModel>> GetReportNotificationsAsync();
+        // Lấy noti theo ID
+        Task<NotificationModel?> GetNotificationByIdAsync(int notificationId);
     }
 }
