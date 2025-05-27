@@ -47,6 +47,10 @@ namespace PBL3.Controllers
             {
                 await _historyService.UpdateHistoryAsync(userId, viewModel.StoryID, id);
             }
+            ViewBag.AuthorID = _context.Stories
+                .Where(s => s.StoryID == viewModel.StoryID)
+                .Select(s => s.AuthorID)
+                .FirstOrDefault();
             return View(viewModel);
         }
 
