@@ -14,6 +14,7 @@ using PBL3.Service.Follow;
 using PBL3.Service.Bookmark;
 using PBL3.Service.Notification;
 using PBL3.Service.History;
+using PBL3.Service.Moderator;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,7 @@ builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
+builder.Services.AddScoped<IModeratorService, ModeratorService>();
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
