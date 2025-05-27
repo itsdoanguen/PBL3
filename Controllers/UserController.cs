@@ -14,6 +14,8 @@ using PBL3.Service.User;
 using PBL3.ViewModels.UserProfile;
 using PBL3.Service;
 using Microsoft.EntityFrameworkCore;
+using PBL3.Service.Bookmark;
+using PBL3.Service.Follow;
 
 namespace PBL3.Controllers
 {
@@ -27,13 +29,17 @@ namespace PBL3.Controllers
         private readonly IUserService _userService;
         private readonly BlobService _blobService;
         private readonly IImageService _imageService;
+        private readonly IBookmarkService _bookmarkService;
+        private readonly IFollowService _followService;
 
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService)
         {
             _context = context;
             _blobService = blobService;
             _userService = userService;
             _imageService = imageService;
+            _bookmarkService = bookmarkService;
+            _followService = followService;
         }
         //GET: User/Index
         [HttpGet]
@@ -132,24 +138,16 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Bookmarks()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            return View();
+            var bookmarks = await _bookmarkService.GetBookmarkListAsync(currentUserID);
+            return View(bookmarks);
         }
 
         //GET: User/FollowStories
         public async Task<IActionResult> FollowStories()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var followService = HttpContext.RequestServices.GetService(typeof(PBL3.Service.Follow.IFollowService)) as PBL3.Service.Follow.IFollowService;
-            if (followService == null)
-            {
-                return NotFound("Follow service not found.");
-            }
-            var followedStories = await _context.FollowStories
-                .Where(f => f.UserID == currentUserID)
-                .Select(f => f.Story)
-                .ToListAsync();
-            return View(followedStories);
+            var followService = await _followService.GetFollowStoryList(currentUserID);
+            return View(followService);
         }
     }
 }
