@@ -15,6 +15,7 @@ using PBL3.Service.Bookmark;
 using PBL3.Service.Notification;
 using PBL3.Service.History;
 using PBL3.Service.Moderator;
+using PBL3.Service.Report;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,7 @@ builder.Services.AddControllersWithViews();
 //Add IchapterService vao builder
 builder.Services.AddScoped<IChapterService, ChapterService>();
 builder.Services.AddScoped<IStoryService, StoryService>();
+builder.Services.AddScoped<IStoryQueryService, StoryQueryService>();
 builder.Services.AddScoped<BlobService>();
 builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddScoped<ILikeChapterService, LikeChapterService>();
@@ -36,9 +38,12 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICommentMappingService, CommentMappingService>();
 builder.Services.AddScoped<IStoryRankingService, StoryRankingService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserQueryService, UserQueryService>();
 builder.Services.AddScoped<IFollowService, FollowService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IModeratorService, ModeratorService>();
 

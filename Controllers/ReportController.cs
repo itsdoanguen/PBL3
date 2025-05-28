@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Notification;
+using PBL3.Service.Report;
 using System.Threading.Tasks;
 using PBL3.Models;
 using System.Security.Claims;
@@ -10,9 +11,11 @@ namespace PBL3.Controllers
     [Authorize]
     public class ReportController : Controller
     {
+        private readonly IReportService _reportService;
         private readonly INotificationService _notificationService;
-        public ReportController(INotificationService notificationService)
+        public ReportController(IReportService reportService, INotificationService notificationService)
         {
+            _reportService = reportService;
             _notificationService = notificationService;
         }
         private async Task<IActionResult> HandleReportAsync(
@@ -47,16 +50,16 @@ namespace PBL3.Controllers
                 switch (reportType)
                 {
                     case NotificationModel.NotificationType.ReportUser:
-                        await _notificationService.InitReportUserNotificationAsync(targetId, fromUserId, message);
+                        await _reportService.InitReportUserNotificationAsync(targetId, fromUserId, message);
                         break;
                     case NotificationModel.NotificationType.ReportComment:
-                        await _notificationService.InitReportCommentNotificationAsync(targetId, fromUserId, message);
+                        await _reportService.InitReportCommentNotificationAsync(targetId, fromUserId, message);
                         break;
                     case NotificationModel.NotificationType.ReportChapter:
-                        await _notificationService.InitReportChapterNotificationAsync(targetId, fromUserId, message);
+                        await _reportService.InitReportChapterNotificationAsync(targetId, fromUserId, message);
                         break;
                     case NotificationModel.NotificationType.ReportStory:
-                        await _notificationService.InitReportStoryNotificationAsync(targetId, fromUserId, message);
+                        await _reportService.InitReportStoryNotificationAsync(targetId, fromUserId, message);
                         break;
                     default:
                         TempData["ErrorMessage"] = "Loại báo cáo không hợp lệ.";
@@ -72,7 +75,7 @@ namespace PBL3.Controllers
 
                 return RedirectToAction("Index", "User");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "Đã xảy ra lỗi khi xử lý báo cáo.";
                 return RedirectToAction("Error", "Error");
@@ -116,7 +119,7 @@ namespace PBL3.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var reports = await _notificationService.GetReportNotificationsAsync();
+            var reports = await _reportService.GetReportNotificationsAsync();
             return View(reports);
         }
         //POST: /Report/MarkAsRead

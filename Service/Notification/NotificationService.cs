@@ -121,102 +121,6 @@ namespace PBL3.Service.Notification
             await _context.SaveChangesAsync();
         }        
 
-        // Tạo noti khi có report user
-        public async Task InitReportUserNotificationAsync(int reportedUserId, int fromUserId, string message)
-        {
-            var noti = new NotificationModel
-            {
-                UserID = reportedUserId, // Lưu ID user bị report
-                Type = NotificationModel.NotificationType.ReportUser,
-                Message = message,
-                FromUserID = fromUserId
-            };
-            _context.Notifications.Add(noti);
-            await _context.SaveChangesAsync();
-        }
-
-        // Tạo noti khi có report comment
-        public async Task InitReportCommentNotificationAsync(int commentId, int fromUserId, string message)
-        {
-            var comment = await _context.Comments.FindAsync(commentId);
-            if (comment == null) return;
-            var noti = new NotificationModel
-            {
-                UserID = comment.UserID, // Lưu ID author của comment bị report
-                Type = NotificationModel.NotificationType.ReportComment,
-                Message = message,
-                FromUserID = fromUserId,
-                CommentID = commentId,
-                ChapterID = comment.ChapterID, // Lưu luôn chapterId nếu có
-                StoryID = comment.StoryID      // Lưu luôn storyId nếu có
-            };
-            _context.Notifications.Add(noti);
-            await _context.SaveChangesAsync();
-        }
-
-        // Tạo noti khi có report chapter
-        public async Task InitReportChapterNotificationAsync(int chapterId, int fromUserId, string message)
-        {
-            var chapter = await _context.Chapters.FindAsync(chapterId);
-            if (chapter == null) return;
-            var story = await _context.Stories.FindAsync(chapter.StoryID);
-            if (story == null) return;
-            var noti = new NotificationModel
-            {
-                UserID = story.AuthorID, // Lưu ID author của story chứa chapter bị report
-                Type = NotificationModel.NotificationType.ReportChapter,
-                Message = message,
-                FromUserID = fromUserId,
-                ChapterID = chapterId,
-                StoryID = story.StoryID
-            };
-            _context.Notifications.Add(noti);
-            await _context.SaveChangesAsync();
-        }
-
-        // Tạo noti khi có report story
-        public async Task InitReportStoryNotificationAsync(int storyId, int fromUserId, string message)
-        {
-            var story = await _context.Stories.FindAsync(storyId);
-            if (story == null) return;
-            var noti = new NotificationModel
-            {
-                UserID = story.AuthorID, // Lưu ID author của story bị report
-                Type = NotificationModel.NotificationType.ReportStory,
-                Message = message,
-                FromUserID = fromUserId,
-                StoryID = storyId
-            };
-            _context.Notifications.Add(noti);
-            await _context.SaveChangesAsync();
-        }
-
-        // Lấy danh sách noti của user 
-        public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
-        {
-            return await _context.Notifications
-                .Where(n => n.UserID == userId &&
-                    n.Type != NotificationModel.NotificationType.ReportUser &&
-                    n.Type != NotificationModel.NotificationType.ReportComment &&
-                    n.Type != NotificationModel.NotificationType.ReportChapter &&
-                    n.Type != NotificationModel.NotificationType.ReportStory)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
-        }
-
-        // Lấy danh sách noti report cho moderator
-        public async Task<List<NotificationModel>> GetReportNotificationsAsync()
-        {
-            return await _context.Notifications
-                .Where(n =>
-                    n.Type == NotificationModel.NotificationType.ReportUser ||
-                    n.Type == NotificationModel.NotificationType.ReportComment ||
-                    n.Type == NotificationModel.NotificationType.ReportChapter ||
-                    n.Type == NotificationModel.NotificationType.ReportStory)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
-        }
-
         // Đánh dấu đã đọc
         public async Task MarkAsReadAsync(int notificationId)
         {
@@ -244,6 +148,15 @@ namespace PBL3.Service.Notification
         public async Task<NotificationModel?> GetNotificationByIdAsync(int notificationId)
         {
             return await _context.Notifications.FindAsync(notificationId);
+        }
+
+        // Lấy danh sách thông báo cho user
+        public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
+        {
+            return await _context.Notifications
+                .Where(n => n.UserID == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
         }
     }
 }
