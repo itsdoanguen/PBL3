@@ -2,7 +2,44 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["Title"] = "Trang quản trị Moderator";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
-<div>
-    This is the Moderator index page
+<div class="container py-4">
+    <h2 class="mb-4">Bảng điều khiển Moderator</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h4 class="card-title">Quản lý báo cáo</h4>
+                    <p class="card-text">Xem, xử lý các báo cáo vi phạm từ người dùng.</p>
+                    <a href="@Url.Action("ReportsManagement", "Moderator")" class="btn btn-primary mt-auto">Đi tới quản lý báo cáo</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h4 class="card-title">Quản lý người dùng</h4>
+                    <p class="card-text">Xem danh sách, kiểm tra hoạt động và chi tiết từng người dùng.</p>
+                    <a href="@Url.Action("UsersManagement", "Moderator")" class="btn btn-primary mt-auto">Đi tới quản lý người dùng</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column justify-content-between">
+                    <h4 class="card-title">Quản lý truyện</h4>
+                    <p class="card-text">Kiểm duyệt, khóa/mở truyện, duyệt lại truyện vi phạm.</p>
+                    <a href="@Url.Action("StoryManagement", "Moderator")" class="btn btn-primary mt-auto">Đi tới quản lý truyện</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@section Styles {
+    <style>
+        .card-title { font-size: 1.25rem; font-weight: 600; }
+        .card { border-radius: 14px; }
+    </style>
+}

@@ -43,7 +43,7 @@ namespace PBL3.Service.Chapter
                 .Select(s => s.Status)
                 .FirstOrDefaultAsync();
 
-            if (storyStatus == StoryModel.StoryStatus.Inactive)
+            if (storyStatus == StoryModel.StoryStatus.Inactive || storyStatus == StoryModel.StoryStatus.Locked || storyStatus == StoryModel.StoryStatus.ReviewPending)
                 return null;
 
             if (chapter.Status == ChapterStatus.Inactive)
@@ -255,6 +255,14 @@ namespace PBL3.Service.Chapter
             {
                 return (false, "Truyện chưa được xuất bản, không thể xuất bản chương!", chapter.StoryID);
             }
+            if (storyStatus == StoryModel.StoryStatus.ReviewPending)
+            {
+                return (false, "Truyện đang chờ duyệt, không thể xuất bản chương!", chapter.StoryID);
+            }
+            if (storyStatus == StoryModel.StoryStatus.Locked)
+            {
+                return (false, "Truyện đã bị khóa, không thể xuất bản chương!", chapter.StoryID);
+            }
 
             if (!Enum.TryParse<ChapterStatus>(newStatus, out var parsedStatus))
             {
@@ -266,7 +274,7 @@ namespace PBL3.Service.Chapter
             chapter.UpdatedAt = DateTime.Now;
             await _context.SaveChangesAsync();
 
-            // Gửi notification khi xuất bản chương (Inactive -> Active)
+            // Gửi notification khi xuất bản chương
             if (oldStatus == ChapterStatus.Inactive && parsedStatus == ChapterStatus.Active)
             {
                 await _notificationService.InitNewChapterNotificationAsync(chapter.StoryID, chapter.ChapterID, authorId);

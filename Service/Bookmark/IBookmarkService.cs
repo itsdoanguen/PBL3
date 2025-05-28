@@ -1,4 +1,5 @@
 using PBL3.Models;
+using PBL3.ViewModels.Bookmark;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -12,5 +13,6 @@ namespace PBL3.Service.Bookmark
         Task<List<BookmarkModel>> GetBookmarksByUserAsync(int userId);
         Task<List<BookmarkModel>> GetBookmarksByChapterAsync(int chapterId);
         Task<bool> RemoveBookmarkAsync(int userId, int chapterId);
+        Task<BookmarkViewModel> GetBookmarkListAsync(int userID);
     }
 }

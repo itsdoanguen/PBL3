@@ -104,11 +104,22 @@
 	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
 		<i class="bi bi-list"></i>
 	</button>
-
 	<!-- Cài đặt đọc -->
 	<button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc" data-bs-toggle="modal" data-bs-target="#styleModal">
 		<i class="bi bi-gear"></i>
 	</button>
+
+	@if ((ViewBag.CurrentUserID != null && ViewBag.AuthorID != null) && (ViewBag.CurrentUserID != ViewBag.AuthorID) && (ViewBag.CurrentUserID != 0))
+	{
+		<!-- Report Button -->
+		<button type="button" 
+				class="btn btn-outline-danger btn-sm" 
+				title="Báo cáo chương này"
+				data-bs-toggle="modal" 
+				data-bs-target="#reportChapterModal">
+			<i class="bi bi-flag-fill"></i>
+		</button>
+	}
 
 	<!-- Chương sau -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
@@ -274,8 +285,38 @@
 	</div>
 </div>
 
+<!-- Modal Report Chapter -->
+<div class="modal fade" id="reportChapterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Báo cáo chương truyện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-controller="Report" asp-action="ReportChapter" method="post" class="report-form">
+                @Html.AntiForgeryToken()
+                <div class="modal-body">
+                    <input type="hidden" name="chapterId" value="@Model.ChapterID" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Lý do báo cáo:</label>
+                        <textarea class="form-control" id="message" name="message" 
+                                  rows="3" required 
+                                  placeholder="Vui lòng mô tả chi tiết lý do báo cáo chương truyện này..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 	<script src="~/js/user-readchapter.js"></script>
+	<script src="~/js/report.js"></script>
 }
 
 

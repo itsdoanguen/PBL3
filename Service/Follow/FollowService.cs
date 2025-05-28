@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Notification;
+using PBL3.ViewModels.FollowStory;
 
 namespace PBL3.Service.Follow
 {
@@ -45,6 +46,26 @@ namespace PBL3.Service.Follow
         {
             return await _context.FollowStories.CountAsync(f => f.StoryID == storyId);
         }
+
+        public async Task<FollowStoryViewModel> GetFollowStoryList(int userid)
+        {
+            var items = await (from f in _context.FollowStories
+                               join s in _context.Stories on f.StoryID equals s.StoryID
+                               where f.UserID == userid
+                               select new FollowStoryItemsViewModel
+                               {
+                                   StoryID = s.StoryID,
+                                   StoryTitle = s.Title,
+                                   StoryCoverImageUrl = s.CoverImage
+                               }).ToListAsync();
+
+            return new FollowStoryViewModel
+            {
+                UserID = userid,
+                FollowedStories = items
+            };
+        }
+
 
         // USER FOLLOW
         public async Task<(bool isSuccess, string Message)> FollowUserAsync(int followerId, int followingId)

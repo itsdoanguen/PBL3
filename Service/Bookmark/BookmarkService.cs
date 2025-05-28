@@ -2,6 +2,7 @@ using PBL3.Models;
 using PBL3.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PBL3.ViewModels.Bookmark;
 
 namespace PBL3.Service.Bookmark
 {
@@ -62,5 +63,29 @@ namespace PBL3.Service.Bookmark
             }
             return false;
         }
+
+        public async Task<BookmarkViewModel> GetBookmarkListAsync(int userId)
+        {
+            var items = await (from b in _context.Bookmarks
+                               join c in _context.Chapters on b.ChapterID equals c.ChapterID
+                               join s in _context.Stories on c.StoryID equals s.StoryID
+                               where b.UserID == userId
+                               select new BookmarkItemViewModel
+                               {
+                                   StoryID = s.StoryID,
+                                   StoryTitle = s.Title,
+                                   StoryCoverImageUrl = s.CoverImage,
+                                   ChapterID = c.ChapterID,
+                                   ChapterTitle = c.Title
+
+                               }).ToListAsync();
+
+            return new BookmarkViewModel
+            {
+                UserID = userId,
+                BookmarkedStories = items
+            };
+        }
+
     }
 }

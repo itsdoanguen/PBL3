@@ -21,14 +21,8 @@ namespace PBL3.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index", "Admin");
-                else if (User.IsInRole("Moderator"))
-                    return RedirectToAction("Index", "Moderator");
-                else if (User.IsInRole("User"))
-                    return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "User");
             }
-
             return View();
         }
         //GET: Authentication/AccessDenied
@@ -43,14 +37,8 @@ namespace PBL3.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index", "Admin");
-                else if (User.IsInRole("Moderator"))
-                    return RedirectToAction("Index", "Moderator");
-                else if (User.IsInRole("User"))
-                    return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "User");
             }
-
             return View();
         }
         //POST: Authentication/Register
@@ -86,14 +74,8 @@ namespace PBL3.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                if (User.IsInRole("Admin"))
-                    return RedirectToAction("Index", "Admin");
-                else if (User.IsInRole("Moderator"))
-                    return RedirectToAction("Index", "Moderator");
-                else if (User.IsInRole("User"))
-                    return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "User");
             }
-
             return View();
         }
         //POST: Authentication/Login
@@ -114,18 +96,7 @@ namespace PBL3.Controllers
 
                 await SignIn(user);
                 TempData["SuccessMessage"] = "Đăng nhập thành công!";
-                if (user.Role == UserModel.UserRole.Admin)
-                {
-                    return RedirectToAction("Index", "Admin");
-                }
-                else if (user.Role == UserModel.UserRole.Moderator)
-                {
-                    return RedirectToAction("Index", "Moderator");
-                }
-                else if (user.Role == UserModel.UserRole.User)
-                {
-                    return RedirectToAction("Index", "User");
-                }
+                return RedirectToAction("Index", "User");
             }
             return View(model);
         }

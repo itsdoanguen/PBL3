@@ -119,15 +119,19 @@ namespace PBL3.Service.Notification
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
-        }
-
-        // Lấy danh sách noti của user
-        public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
+        } 
+        //Tạo noti khi có feedback từ moderator
+        public async Task InitNewMessageFromModeratorAsync(int userId, string message, int moderatorId)
         {
-            return await _context.Notifications
-                .Where(n => n.UserID == userId)
-                .OrderByDescending(n => n.CreatedAt)
-                .ToListAsync();
+            var noti = new NotificationModel
+            {
+                UserID = userId,
+                Type = NotificationModel.NotificationType.NewStory,
+                Message = message,
+                FromUserID = moderatorId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
         }
 
         // Đánh dấu đã đọc
@@ -151,6 +155,24 @@ namespace PBL3.Service.Notification
                 return (true, "Xóa thông báo thành công!");
             }
             return (false, "Không tìm thấy thông báo để xóa!");
+        }
+
+        // Lấy noti theo ID
+        public async Task<NotificationModel?> GetNotificationByIdAsync(int notificationId)
+        {
+            return await _context.Notifications.FindAsync(notificationId);
+        }
+
+        // Lấy danh sách thông báo cho user
+        public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
+        {
+            return await _context.Notifications
+                .Where(n => n.UserID == userId && (n.Type == NotificationModel.NotificationType.NewStory || n.Type == NotificationModel.NotificationType.NewChapter 
+                    || n.Type == NotificationModel.NotificationType.NewComment 
+                    || n.Type == NotificationModel.NotificationType.NewReplyComment 
+                    || n.Type == NotificationModel.NotificationType.NewFollower))
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
         }
     }
 }

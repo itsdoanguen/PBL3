@@ -71,6 +71,16 @@
                                 <span class="d-none d-lg-inline ms-1">Thông báo</span>
                             </a>
                         </li>
+                        <!-- Nút chuyển đến trang Moderator (chỉ hiện nếu user là Moderator hoặc Admin) -->
+                        @if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-warning fw-bold" asp-controller="Moderator" asp-action="Index">
+                                    <i class="bi bi-shield-lock" style="font-size:1.2rem;"></i>
+                                    <span class="d-none d-lg-inline ms-1">Quản trị</span>
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                 <img src="~/image/default-avatar.png" alt="User Avatar" class="rounded-circle" width="32" height="32">

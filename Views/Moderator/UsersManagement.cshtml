@@ -1,0 +1,46 @@
+@model List<PBL3.ViewModels.Moderator.UserProfileViewModel>
+@{
+    ViewData["Title"] = "Quản lý người dùng";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<div class="container py-4">
+    <h2 class="mb-4">Quản lý người dùng</h2>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle" id="user-table">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Tên hiển thị</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Vai trò</th>
+                    <th scope="col">Ngày tạo</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
+                        <td>@user.UserID</td>
+                        <td>
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            @user.DisplayName
+                        </td>
+                        <td>@user.Email</td>
+                        <td><span class="badge bg-primary">@user.Role</span></td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-@(user.Status == PBL3.Models.UserModel.UserStatus.Active ? "success" : "secondary")">@user.Status</span></td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Styles {
+    <style>
+        #user-table th, #user-table td { vertical-align: middle; }
+        .user-row:hover { background: #f1f3f6; }
+    </style>
+}

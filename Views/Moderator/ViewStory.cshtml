@@ -1,0 +1,146 @@
+@model PBL3.ViewModels.Moderator.ViewStoryViewModel
+@{
+    ViewData["Title"] = "Chi tiết truyện";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/ViewStory.css" />
+<div class="view-story-container">
+    <!-- Section 1: Thông tin truyện -->
+    <section class="section-card story-header-section mb-4">
+        <img src="@(Model.StoryDetails.CoverImage ?? Url.Content("~/image/default-cover.png"))" class="story-cover-img" alt="Cover" />
+        <div class="story-info-block">
+            <div class="story-title">@Model.StoryDetails.Title</div>
+            <div class="story-badges mb-2">
+                <span class="badge bg-@GetStatusColor(Model.StoryDetails.Status)">@Model.StoryDetails.Status</span>
+                @if (Model.StoryDetails.isReported)
+                {
+                    <span class="badge bg-danger ms-2">Bị báo cáo</span>
+                }
+                @if (Model.StoryDetails.Status == PBL3.Models.StoryModel.StoryStatus.Active)
+                {
+                    <form asp-action="Lock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn khóa truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="message" value="Khóa truyện bởi quản trị viên." />
+                        <button type="submit" class="btn btn-sm btn-danger">🔒 Khóa truyện</button>
+                    </form>
+                }
+                else if (Model.StoryDetails.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
+                {
+                    <form asp-action="Unlock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn mở khóa và duyệt truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="isAccepted" value="true" />
+                        <input type="hidden" name="message" value="Truyện đã được duyệt và mở khóa." />
+                        <button type="submit" class="btn btn-sm btn-success">✔️ Duyệt &amp; Mở khóa</button>
+                    </form>
+                    <form asp-action="Unlock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn từ chối truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="isAccepted" value="false" />
+                        <input type="hidden" name="message" value="Yêu câu duyệt truyện đã bị từ chối." />
+                        <button type="submit" class="btn btn-sm btn-danger">❌ Từ chối</button>
+                    </form>
+                }
+            </div>
+            <div class="story-meta"><strong>Tác giả:</strong> <a href="@Url.Action("ViewUser", "Moderator", new { id = Model.Author.UserID })">@Model.Author.DisplayName</a> (ID: @Model.Author.UserID, Email: @Model.Author.Email)</div>
+            <div class="story-meta"><strong>Ngày tạo:</strong> @Model.StoryDetails.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+            <div class="story-meta"><strong>Cập nhật:</strong> @Model.StoryDetails.UpdatedAt?.ToString("dd/MM/yyyy HH:mm")</div>
+            <div class="story-description"><strong>Mô tả:</strong> <span class="text-muted">@Model.StoryDetails.Description</span></div>
+            <div class="story-meta"><strong>ID truyện:</strong> @Model.StoryDetails.StoryID</div>
+            <div class="story-meta"><strong>Số chương:</strong> @Model.Chapters.Count</div>
+            <div class="story-meta"><strong>Trạng thái tác giả:</strong> <span class="badge bg-@(Model.Author.Status == PBL3.Models.UserModel.UserStatus.Active ? "success" : "secondary")">@Model.Author.Status</span></div>
+        </div>
+    </section>
+    <!-- Section 2: Danh sách chương -->
+    <section class="section-card mb-4">
+        <div class="card-header"><h5 class="mb-0">Danh sách chương</h5></div>
+        <div class="card-body p-0">
+            @if (Model.Chapters.Any())
+            {
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tiêu đề</th>
+                            <th>Ngày tạo</th>
+                            <th>Lượt xem</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.Chapters)
+                        {
+                            <tr>
+                                <td>@c.ChapterOrder</td>
+                                <td>@c.Title</td>
+                                <td>@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                                <td>@c.ViewCount</td>
+                                <td>
+                                    <span class="badge bg-@GetChapterStatusColor(c.Status)">@c.Status</span>
+                                    @if (c.isReported)
+                                    {
+                                        <span class="badge bg-danger ms-1">Bị báo cáo</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("ReadChapter", "Chapter", new { id = c.ChapterID })" class="btn btn-outline-primary btn-sm" target="_blank">Xem</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="text-muted p-3">Chưa có chương nào.</div>
+            }
+        </div>
+    </section>
+    <!-- Section 3: Thông tin tác giả -->
+    <section class="section-card mb-4">
+        <div class="card-header d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">Thông tin tác giả</h5>
+            <a href="@Url.Action("ViewUser", "Moderator", new { id = Model.Author.UserID })" class="text-secondary ms-2" title="Xem chi tiết người dùng">
+                <i class="bi bi-gear-fill" style="font-size:1.3rem;"></i>
+            </a>
+        </div>
+        <div class="card-body d-flex align-items-center">
+            <img src="@(Model.Author.Avatar ?? Url.Content("~/image/default-avatar.png"))" class="rounded-circle me-4" style="width:80px;height:80px;object-fit:cover;border:2px solid #e3e8ee;box-shadow:0 2px 8px rgba(0,0,0,0.07);" alt="Avatar" />
+            <div>
+                <div class="mb-1"><strong>ID:</strong> <span class="text-primary">@Model.Author.UserID</span></div>
+                <div class="mb-1"><strong>Tên hiển thị:</strong> @Model.Author.DisplayName</div>
+                <div class="mb-1"><strong>Email:</strong> <span class="text-muted">@Model.Author.Email</span></div>
+                <div class="mb-1"><strong>Vai trò:</strong> <span class="badge bg-primary">@Model.Author.Role</span></div>
+                <div class="mb-1"><strong>Ngày tạo:</strong> @Model.Author.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>
+                <div class="mb-1"><strong>Trạng thái:</strong> <span class="badge bg-@(Model.Author.Status == PBL3.Models.UserModel.UserStatus.Active ? "success" : "secondary")">@Model.Author.Status</span></div>
+            </div>
+        </div>
+    </section>
+</div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/ViewStory.css" />
+}
+@section Scripts {
+    <script src="~/js/ViewStory.js"></script>
+}
+@functions {
+    private string GetStatusColor(PBL3.Models.StoryModel.StoryStatus status)
+    {
+        return status switch
+        {
+            PBL3.Models.StoryModel.StoryStatus.Active => "success",
+            PBL3.Models.StoryModel.StoryStatus.Completed => "primary",
+            PBL3.Models.StoryModel.StoryStatus.Locked => "danger",
+            PBL3.Models.StoryModel.StoryStatus.ReviewPending => "warning text-dark",
+            _ => "secondary"
+        };
+    }
+    private string GetChapterStatusColor(PBL3.Models.ChapterStatus status)
+    {
+        return status switch
+        {
+            PBL3.Models.ChapterStatus.Active => "success",
+            PBL3.Models.ChapterStatus.Locked => "danger",
+            _ => "secondary"
+        };
+    }
+}

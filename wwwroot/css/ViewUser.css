@@ -1,0 +1,12 @@
+/* ViewUser.css */
+.view-user-container { max-width: 1200px; margin: 0 auto; }
+.user-profile-section .user-avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #eee; }
+.card { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.story-card .story-cover { height: 180px; object-fit: cover; border-radius: 8px 8px 0 0; }
+.card-header { background: #f8f9fa; font-weight: 600; }
+.table th, .table td { vertical-align: middle; }
+@media (max-width: 768px) {
+  .user-profile-section .card-body { flex-direction: column; align-items: flex-start; }
+  .user-profile-section .user-avatar { margin-bottom: 1rem; }
+  .story-card .story-cover { height: 120px; }
+}

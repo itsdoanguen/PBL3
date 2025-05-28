@@ -261,3 +261,12 @@
     #chap_list li a:hover {
         color: #007bff;
     }
+
+.report-comment-btn {
+    padding: 0 0.25rem;
+    font-size: 0.875rem;
+}
+
+    .report-comment-btn:hover {
+        opacity: 0.8;
+    }

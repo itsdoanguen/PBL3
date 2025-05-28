@@ -14,28 +14,35 @@ using PBL3.Service.User;
 using PBL3.ViewModels.UserProfile;
 using PBL3.Service;
 using Microsoft.EntityFrameworkCore;
+using PBL3.Service.Bookmark;
+using PBL3.Service.Follow;
 
 namespace PBL3.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize]
     public class UserController : Controller
     {
         private const string DefaultAvatar = "/image/default-avatar.png";
         private const string DefaultBanner = "/image/default-banner.png";
 
         private readonly ApplicationDbContext _context;
-        private readonly BlobService _blobService;
         private readonly IUserService _userService;
+        private readonly BlobService _blobService;
         private readonly IImageService _imageService;
-        
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService)
+        private readonly IBookmarkService _bookmarkService;
+        private readonly IFollowService _followService;
+
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService)
         {
             _context = context;
             _blobService = blobService;
             _userService = userService;
             _imageService = imageService;
+            _bookmarkService = bookmarkService;
+            _followService = followService;
         }
         //GET: User/Index
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -45,6 +52,7 @@ namespace PBL3.Controllers
             return View(viewModel);
         }
         //GET: User/MyProfile
+        [HttpGet]
         public async Task<IActionResult> MyProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -58,16 +66,12 @@ namespace PBL3.Controllers
             return View(profile);
         }
 
-        //Đổi Mật Khẩu
-        // GET: User/ChangePassword
-
-        //
-
         //GET: User/EditProfile
+        [HttpGet]
         public async Task<IActionResult> EditProfile()
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            UserProfileViewModel profile = await _userService.GetUserProfile(currentUserID);
+            var profile = await _userService.GetUserProfile(currentUserID);
             if (profile == null)
             {
                 return NotFound();
@@ -77,7 +81,7 @@ namespace PBL3.Controllers
         //POST: User/EditProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload) 
+        public async Task<IActionResult> EditProfile(UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload)
         {
             if (!ModelState.IsValid)
             {
@@ -85,59 +89,15 @@ namespace PBL3.Controllers
             }
 
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var userInfo = await _context.Users.FindAsync(currentUserID);
-            if (userInfo == null)
+            var (isSuccess, errorMessage, updatedProfile) = await _userService.UpdateUserProfileAsync(currentUserID, profile, avatarUpload, bannerUpload);
+            if (!isSuccess)
             {
-                return NotFound();
-            }
-
-
-            //Upload avatar
-            if (avatarUpload != null)
-            {
-                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(avatarUpload, "avatars");
-
-                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
+                if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    profile.Avatar = userInfo.Avatar;
-                    profile.Banner = userInfo.Banner;
-                    ModelState.AddModelError("Avatar", errorMessage);
-                    return View(profile);
+                    ModelState.AddModelError(string.Empty, errorMessage);
                 }
-
-                userInfo.Avatar = imageUrl;
+                return View(updatedProfile ?? profile);
             }
-            else
-            {
-                userInfo.Avatar = profile.Avatar ?? DefaultAvatar;
-            }
-
-            //Upload banner
-            if (bannerUpload != null)
-            {
-                var (isSuccess, errorMessage, imageUrl) = await _imageService.UploadValidateImageAsync(bannerUpload, "banners");
-                if (!isSuccess || string.IsNullOrEmpty(imageUrl))
-                {
-                    profile.Avatar = userInfo.Avatar;
-                    profile.Banner = userInfo.Banner;
-                    ModelState.AddModelError("Banner", errorMessage);
-                    return View(profile);
-                }
-                userInfo.Banner = imageUrl;
-            }
-            else
-            {
-                userInfo.Banner = profile.Banner ?? DefaultBanner;
-            }
-
-            userInfo.DisplayName = profile.DisplayName;
-            userInfo.Bio = profile.Bio;
-            userInfo.DateOfBirth = profile.DateOfBirth;
-            userInfo.Gender = profile.Gender;
-
-            _context.Users.Update(userInfo);
-            await _context.SaveChangesAsync();
-
             return RedirectToAction("MyProfile", "User");
         }
 
@@ -174,149 +134,20 @@ namespace PBL3.Controllers
             return View(stories);
         }
 
-        // GET: User/Intro
-        [AllowAnonymous]
-        public async Task<IActionResult> Intro()
+        //GET: User/Bookmarks
+        public async Task<IActionResult> Bookmarks()
         {
-            // Create a view model for the Intro page
-            var viewModel = new IntroViewModel
-            {
-                HeaderMessage = "KHÁM PHÁ THẾ GIỚI TRUYỆN TIỂU THUYẾT CÙNG CHÚNG TÔI!",
-                
-                // Get hot stories from database
-                HotStories = await GetHotStoriesAsync(),
-                
-                // Get new stories from database
-                NewStories = await GetNewStoriesAsync(),
-                
-                // Get completed stories from database
-                CompletedStories = await GetCompletedStoriesAsync(),
-                
-                // Get all categories for sidebar
-                AllCategories = await GetAllCategoriesAsync(),
-                
-                // Create select list for category dropdown
-                CategorySelectList = new SelectList(await GetAllCategoriesAsync(), "Id", "Name")
-            };
-
-            return View(viewModel);
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var bookmarks = await _bookmarkService.GetBookmarkListAsync(currentUserID);
+            return View(bookmarks);
         }
 
-        // GET: User/GetHotStoriesByCategory
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetHotStoriesByCategory(int categoryId)
+        //GET: User/FollowStories
+        public async Task<IActionResult> FollowStories()
         {
-            var stories = await GetHotStoriesByCategoryAsync(categoryId);
-            return PartialView("_HotStoriesPartial", stories);
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var followService = await _followService.GetFollowStoryList(currentUserID);
+            return View(followService);
         }
-
-        #region Helper Methods
-
-        private async Task<List<StoryViewModel>> GetHotStoriesAsync()
-        {
-            return await _context.Stories
-                .Where(s => s.Status == StoryModel.StoryStatus.Active)
-                .OrderByDescending(s => s.CreatedAt)
-                .Take(16)
-                .Select(s => new StoryViewModel
-                {
-                    Id = s.StoryID,
-                    Title = s.Title,
-                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    IsHot = true, 
-                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
-                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
-                    ChapterCount = s.Chapters.Count
-                })
-                .ToListAsync();
-        }
-
-        private async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId)
-        {
-            if (categoryId == 0)
-            {
-                return await GetHotStoriesAsync();
-            }
-
-            return await _context.Stories
-                .Where(s => s.Status == StoryModel.StoryStatus.Active && 
-                       s.Genres.Any(sg => sg.GenreID == categoryId))
-                .OrderByDescending(s => s.CreatedAt)
-                .Take(16)
-                .Select(s => new StoryViewModel
-                {
-                    Id = s.StoryID,
-                    Title = s.Title,
-                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    IsHot = true, 
-                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
-                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
-                    ChapterCount = s.Chapters.Count
-                })
-                .ToListAsync();
-        }
-
-        private async Task<List<StoryViewModel>> GetNewStoriesAsync()
-        {
-            return await _context.Stories
-                .OrderByDescending(s => s.CreatedAt)
-                .Take(15)
-                .Select(s => new StoryViewModel
-                {
-                    Id = s.StoryID,
-                    Title = s.Title,
-                    IsHot = true, // For demo purposes
-                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
-                    IsCompleted = s.Status == StoryModel.StoryStatus.Completed,
-                    Categories = s.Genres
-                        .Select(sg => new CategoryViewModel
-                        {
-                            Id = sg.GenreID,
-                            Name = sg.Genre.Name
-                        })
-                        .ToList(),
-                    LatestChapter = s.Chapters
-                        .OrderByDescending(c => c.ChapterOrder)
-                        .Select(c => new ChapterViewModel
-                        {
-                            Id = c.ChapterID,
-                            ChapterNumber = c.ChapterOrder,
-                            Title = c.Title
-                        })
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
-        }
-
-        private async Task<List<StoryViewModel>> GetCompletedStoriesAsync()
-        {
-            return await _context.Stories
-                .Where(s => s.Status == StoryModel.StoryStatus.Completed)
-                .OrderByDescending(s => s.CreatedAt)
-                .Take(15)
-                .Select(s => new StoryViewModel
-                {
-                    Id = s.StoryID,
-                    Title = s.Title,
-                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    ChapterCount = s.Chapters.Count
-                })
-                .ToListAsync();
-        }
-
-        private async Task<List<CategoryViewModel>> GetAllCategoriesAsync()
-        {
-            return await _context.Genres
-                .OrderBy(g => g.Name)
-                .Select(g => new CategoryViewModel
-                {
-                    Id = g.GenreID,
-                    Name = g.Name
-                })
-                .ToListAsync();
-        }
-
-        #endregion
     }
 }

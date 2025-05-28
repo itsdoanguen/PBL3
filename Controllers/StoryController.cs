@@ -15,12 +15,14 @@ namespace PBL3.Controllers
         private readonly BlobService _blobService;
         private readonly IChapterService _chapterService;
         private readonly IStoryService _storyService;
-        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IStoryService storyService)
+        private readonly IStoryQueryService _storyQueryService;
+        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IStoryService storyService, IStoryQueryService storyQueryService)
         {
             _context = context;
             _blobService = blobService;
             _chapterService = chapterService;
             _storyService = storyService;
+            _storyQueryService = storyQueryService;
         }
 
         // GET: Story/View/{id}
@@ -28,7 +30,7 @@ namespace PBL3.Controllers
         {
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var storyDetail = await _storyService.GetStoryDetailAsync(id, currentUserID);
+            var storyDetail = await _storyQueryService.GetStoryDetailAsync(id, currentUserID);
             if (storyDetail == null)
             {
                 return NotFound();
@@ -36,9 +38,6 @@ namespace PBL3.Controllers
 
             return View(storyDetail);
         }
-
-
-
         // GET: Story/Create
         public IActionResult Create()
         {
@@ -115,7 +114,7 @@ namespace PBL3.Controllers
         {
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            var viewModel = await _storyService.GetStoryDetailForEditAsync(id, currentAuthorID);
+            var viewModel = await _storyQueryService.GetStoryDetailForEditAsync(id, currentAuthorID);
 
             if (viewModel == null)
             {
@@ -129,7 +128,7 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var viewModel = await _storyService.GetStoryDetailForEditAsync(id, currentAuthorID);
+            var viewModel = await _storyQueryService.GetStoryDetailForEditAsync(id, currentAuthorID);
             if (viewModel == null)
             {
                 return NotFound();
@@ -157,7 +156,59 @@ namespace PBL3.Controllers
             TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
             return RedirectToAction("MyStories", "User");
         }
+        //POST: Story/PendingReview
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PendingReview(int storyId)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ";
+                return RedirectToAction("EditDetail", new { id = storyId });
+            }
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.PendingReviewAsync(storyId, currentUserID);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("EditDetail", new { id = storyId });
+            }
+            TempData["SuccessMessage"] = "Đã gửi truyện chờ duyệt thành công!";
+            return RedirectToAction("MyStories", "User");
+        }
+            //POST: Story/Lock
+            [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<IActionResult> Lock(int storyID, string message)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.LockStoryAsync(storyID, message, currentUserID);
 
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
+            }
+            TempData["SuccessMessage"] = "Khóa truyện thành công!";
+            return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
+        }
+        //POST: Story/Unlock
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Moderator")]
+        public async Task<IActionResult> Unlock(int storyID, string message, bool isAccepted)
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _storyService.UnlockStoryAsync(storyID, isAccepted, message, currentUserID);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
+            }
+            TempData["SuccessMessage"] = "Mở khóa truyện thành công!";
+            return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
+        }
         //METHOD
         private List<GerneVM> GetAvailbleGenres()
         {

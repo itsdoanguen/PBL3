@@ -3,6 +3,13 @@
  * Handles comments and interaction functionality for story detail page
  */
 
+// ====== GLOBAL PAGINATION VARS ======
+let commentsPerPage = 5;
+let commentList = null;
+let comments = [];
+let totalPages = 1;
+let paginationControls = null;
+
 document.addEventListener("DOMContentLoaded", function () {
     // Attach event listeners to reply buttons
     document.querySelectorAll('.reply-btn').forEach(button => {
@@ -16,8 +23,42 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initialize comment scrolling if needed
     initializeCommentScrolling();
 
-    // Initialize comment pagination
-    initializeCommentPagination();
+    // ====== PAGINATION INIT ======
+    commentList = document.getElementById("commentList");
+    comments = Array.from(commentList.children);
+    totalPages = Math.ceil(comments.length / commentsPerPage);
+    paginationControls = document.getElementById("paginationControls");
+    if (comments.length > commentsPerPage) {
+        showPage(1);
+    }
+    // ====== AUTO SCROLL TO COMMENT FROM URL ======
+    let hash = window.location.hash;
+    let commentId = null;
+    if (hash && (hash.startsWith("#comment-") || hash.match(/^#\\d+$/))) {
+        commentId = hash.replace("#", "");
+    }
+    if (commentId) {
+        setTimeout(function () {
+            let idx = comments.findIndex(c => c.id === commentId || c.id === "comment-" + commentId);
+            if (idx !== -1) {
+                let page = Math.floor(idx / commentsPerPage) + 1;
+                showPage(page);
+                setTimeout(function () {
+                    let el = document.getElementById(commentId) || document.getElementById("comment-" + commentId);
+                    if (el) {
+                        el.scrollIntoView({ behavior: "smooth", block: "center" });
+                        el.classList.add("comment-highlight");
+                        el.style.animation = "pulse-highlight 2s";
+                        el.style.boxShadow = "0 0 15px 5px rgba(255, 153, 0, 0.7)";
+                        setTimeout(() => {
+                            el.style.boxShadow = "none";
+                            el.style.animation = "";
+                        }, 3000);
+                    }
+                }, 400);
+            }
+        }, 800);
+    }
 });
 
 /**
@@ -190,76 +231,25 @@ function initializeCommentScrolling() {
  * Initialize pagination for comments
  * Shows a limited number of comments per page
  */
-function initializeCommentPagination() {
-    const commentsPerPage = 5;
-    const commentList = document.getElementById("commentList");
+function showPage(page) {
+    const start = (page - 1) * commentsPerPage;
+    const end = start + commentsPerPage;
+    comments.forEach((comment, index) => {
+        comment.style.display = (index >= start && index < end) ? "block" : "none";
+    });
+    renderPagination(page);
+}
 
-    if (!commentList) return;
-
-    const comments = Array.from(commentList.children);
-    const totalPages = Math.ceil(comments.length / commentsPerPage);
-    const paginationControls = document.getElementById("paginationControls");
-
-    if (!paginationControls || comments.length <= commentsPerPage) return;
-
-    function showPage(page) {
-        const start = (page - 1) * commentsPerPage;
-        const end = start + commentsPerPage;
-
-        comments.forEach((comment, index) => {
-            comment.style.display = (index >= start && index < end) ? "block" : "none";
-        });
-
-        renderPagination(page);
+function renderPagination(currentPage) {
+    paginationControls.innerHTML = "";
+    for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        btn.className = "btn btn-sm " + (i === currentPage ? "btn-primary" : "btn-outline-primary");
+        btn.style.margin = "0 5px";
+        btn.onclick = () => showPage(i);
+        paginationControls.appendChild(btn);
     }
-
-    function renderPagination(currentPage) {
-        paginationControls.innerHTML = "";
-
-        // Add previous button if not on first page
-        if (currentPage > 1) {
-            const prevBtn = document.createElement("button");
-            prevBtn.innerHTML = "&laquo;";
-            prevBtn.className = "btn btn-sm btn-outline-primary";
-            prevBtn.style.margin = "0 5px";
-            prevBtn.onclick = () => showPage(currentPage - 1);
-            paginationControls.appendChild(prevBtn);
-        }
-
-        // Add page buttons
-        for (let i = 1; i <= totalPages; i++) {
-            // Only show a few pages around current page if there are many
-            if (totalPages > 7 && (i < currentPage - 2 || i > currentPage + 2) && i !== 1 && i !== totalPages) {
-                if (i === currentPage - 3 || i === currentPage + 3) {
-                    const ellipsis = document.createElement("span");
-                    ellipsis.innerText = "...";
-                    ellipsis.style.margin = "0 5px";
-                    paginationControls.appendChild(ellipsis);
-                }
-                continue;
-            }
-
-            const btn = document.createElement("button");
-            btn.innerText = i;
-            btn.className = "btn btn-sm " + (i === currentPage ? "btn-primary" : "btn-outline-primary");
-            btn.style.margin = "0 5px";
-            btn.onclick = () => showPage(i);
-            paginationControls.appendChild(btn);
-        }
-
-        // Add next button if not on last page
-        if (currentPage < totalPages) {
-            const nextBtn = document.createElement("button");
-            nextBtn.innerHTML = "&raquo;";
-            nextBtn.className = "btn btn-sm btn-outline-primary";
-            nextBtn.style.margin = "0 5px";
-            nextBtn.onclick = () => showPage(currentPage + 1);
-            paginationControls.appendChild(nextBtn);
-        }
-    }
-
-    // Initialize first page
-    showPage(1);
 }
 
 /**

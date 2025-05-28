@@ -3,6 +3,8 @@
 @{
     ViewData["Title"] = Model.StoryName ?? "Chi tiết truyện";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+    ViewBag.CurrentUserID = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 }
 
 @functions {
@@ -31,6 +33,21 @@
 
 @section Styles {
     <link href="~/css/story-view.css" rel="stylesheet" />
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show container" style="max-width:600px" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+ else if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show container" style="max-width:600px" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 @if (TempData["ScrollToComment"] != null)
@@ -87,6 +104,47 @@
                                         <i class="bi @(Model.IsFollowed ? "bi-bookmark-fill text-success" : "bi-bookmark")" style="font-size:1.3rem;"></i>
                                     </button>
                                 </form>
+                                
+                                @if (ViewBag.CurrentUserID != Model.Author?.UserID)
+                                {
+                                    <!-- Report Button -->
+                                    <button type="button" class="btn btn-outline-danger rounded-circle ms-2" 
+                                            title="Báo cáo truyện"
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#reportStoryModal"
+                                            style="width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;">
+                                        <i class="bi bi-flag-fill"></i>
+                                    </button>
+
+                                    <!-- Report Modal -->
+                                    <div class="modal fade" id="reportStoryModal" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Báo cáo truyện</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form asp-controller="Report" asp-action="ReportStory" method="post" class="report-form">
+                                                    @Html.AntiForgeryToken()
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="storyId" value="@Model.StoryID" />
+                                                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                                                        <div class="mb-3">
+                                                            <label for="message" class="form-label">Lý do báo cáo:</label>
+                                                            <textarea class="form-control" id="message" name="message" 
+                                                                      rows="3" required 
+                                                                      placeholder="Vui lòng mô tả chi tiết lý do báo cáo truyện này..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                                                        <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         </div>
 
@@ -184,6 +242,6 @@
 </div>
 
 @section Scripts {
-
     <script src="~/js/story-view.js"></script>
+    <script src="~/js/report.js"></script>
 }
