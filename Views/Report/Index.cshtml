@@ -101,7 +101,7 @@
                                             }
                                             break;
                                         case NotificationModel.NotificationType.ReportChapter:
-                                            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("ReadChapter", "Chapter", new { id = r.ChapterID ?? 0 })" target="_blank">Tới chương</a>
+                                            <a class="btn btn-sm btn-outline-primary" href="@Url.Action("ViewStory", "Moderator", new { id = r.StoryID ?? 0 })" target="_blank">Tới chương</a>
                                             break;
                                         case NotificationModel.NotificationType.ReportStory:
                                             <a class="btn btn-sm btn-outline-primary" href="@Url.Action("ViewStory", "Moderator", new { id = r.StoryID ?? 0 })" target="_blank">Tới truyện</a>

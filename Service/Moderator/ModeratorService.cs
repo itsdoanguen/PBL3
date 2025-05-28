@@ -48,7 +48,10 @@ namespace PBL3.Service.Moderator
                 UpdatedAt = story.UpdatedAt,
                 isReported = await IsStoryReportedAsync(storyId)
             };
-
+            if (!string.IsNullOrEmpty(storyVm.CoverImage))
+            {
+                storyVm.CoverImage = await _blobService.GetSafeImageUrlAsync(storyVm.CoverImage);
+            }
             return new ViewStoryViewModel
             {
                 Author = author,
@@ -116,7 +119,7 @@ namespace PBL3.Service.Moderator
                     UpdatedAt = c.UpdatedAt,
                     Status = c.Status,
                     ViewCount = c.ViewCount,
-                    isReported = _context.Notifications.Any(n => n.ChapterID == c.ChapterID && (n.Type == PBL3.Models.NotificationModel.NotificationType.ReportChapter))
+                    isReported = _context.Notifications.Any(n => n.ChapterID == c.ChapterID && (n.Type == PBL3.Models.NotificationModel.NotificationType.ReportChapter) && n.IsRead == false)
                 })
                 .ToListAsync();
             return chapters;
@@ -124,7 +127,9 @@ namespace PBL3.Service.Moderator
 
         private async Task<bool> IsStoryReportedAsync(int storyId)
         {
-            return await _context.Notifications.AnyAsync(n => n.StoryID == storyId && (n.Type == PBL3.Models.NotificationModel.NotificationType.ReportStory));
+            bool isReported = await _context.Notifications.AnyAsync(n => n.StoryID == storyId && n.IsRead == false && n.Type == PBL3.Models.NotificationModel.NotificationType.ReportStory);
+            bool chaptersReported = await _context.Notifications.AnyAsync(n => n.StoryID == storyId && n.IsRead == false && n.Type == PBL3.Models.NotificationModel.NotificationType.ReportChapter);
+            return isReported || chaptersReported;
         }
 
         private async Task<ViewModels.Moderator.UserProfileViewModel> GetUserProfileAsync(int userId)

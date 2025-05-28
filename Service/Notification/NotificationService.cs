@@ -167,7 +167,8 @@ namespace PBL3.Service.Notification
                 Type = NotificationModel.NotificationType.ReportChapter,
                 Message = message,
                 FromUserID = fromUserId,
-                ChapterID = chapterId
+                ChapterID = chapterId,
+                StoryID = story.StoryID
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
