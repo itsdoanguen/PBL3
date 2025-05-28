@@ -69,7 +69,7 @@ namespace PBL3.Service.User
                 Role = userInfo.Role,
                 Gender = userInfo.Gender,
                 Status = userInfo.Status,
-                TotalUploadedStories = stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active).Count(),
+                TotalUploadedStories = stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status ==  Models.StoryModel.StoryStatus.Completed).Count(),
                 Stories = stories,
                 TotalFollowers = _context.FollowUsers.Count(f => f.FollowingID == userId),
                 TotalFollowings = _context.FollowUsers.Count(f => f.FollowerID == userId),

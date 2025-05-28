@@ -2,7 +2,7 @@
 @model StoryEditViewModel
 
 @{
-    ViewData["Title"] = "Edit Story Details";
+    ViewData["Title"] = "Chỉnh sửa thông tin truyện";
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
 }
 
@@ -73,22 +73,30 @@
         <div class="col-md-9">
             <h2>@Model.Title</h2>
 
-            <!-- Status -->
+            <!-- Trạng thái -->
             <p class="mt-2">
-                <strong>Status:</strong>
+                <strong>Trạng thái:</strong>
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)
                 {
-                    <span class="badge bg-success">Published</span>
+                    <span class="badge bg-success">Đã xuất bản</span>
                 }
-                else
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
                 {
-                    <span class="badge bg-secondary">Draft</span>
+                    <span class="badge bg-secondary">Bản nháp</span>
+                }
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)
+                {
+                    <span class="badge bg-danger">Đã bị khóa</span>
+                }
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
+                {
+                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
                 }
             </p>
 
             <p>@Model.Description</p>
 
-            <!-- Genres -->
+            <!-- Thể loại -->
             @if (Model.AvailableGenres != null && Model.GenreIDs != null)
             {
                 <div class="mt-2">
@@ -99,38 +107,44 @@
                 </div>
             }
 
-            <!-- Stats -->
+            <!-- Thống kê -->
             <div class="d-flex flex-wrap gap-2 mt-3">
-                <span class="badge-modern">👍 Likes: @Model.TotalLike</span>
-                <span class="badge-modern">🔖 Bookmarks: @Model.TotalBookmark</span>
-                <span class="badge-modern">💬 Comments: @Model.TotalComment</span>
-                <span class="badge-modern">📖 Chapters: @Model.TotalChapter</span>
-                <span class="badge-modern">👁️ Views: @Model.TotalView</span>
+                <span class="badge-modern">👍 Lượt thích: @Model.TotalLike</span>
+                <span class="badge-modern">🔖 Đánh dấu: @Model.TotalBookmark</span>
+                <span class="badge-modern">💬 Bình luận: @Model.TotalComment</span>
+                <span class="badge-modern">📖 Chương: @Model.TotalChapter</span>
+                <span class="badge-modern">👁️ Lượt xem: @Model.TotalView</span>
             </div>
 
             <div class="mt-4 d-flex gap-3">
-                <a asp-controller="Story" asp-action="Edit" asp-route-id="@Model.StoryID" class="btn btn-outline-dark btn-modern">✏️ Edit Story</a>
-
+                <a asp-controller="Story" asp-action="Edit" asp-route-id="@Model.StoryID" class="btn btn-outline-dark btn-modern">✏️ Chỉnh sửa truyện</a>
 
                 <form asp-action="Delete" asp-controller="Story" method="post" style="display:inline;">
                     <input type="hidden" name="StoryID" value="@Model.StoryID" />
-                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Are you sure you want to delete this story?');">🗑️ Delete</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa truyện này không?');">🗑️ Xóa</button>
                 </form>
 
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Are you sure you want to set this story to draft?');">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về bản nháp?');">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Inactive" />
-                        <button type="submit" class="btn btn-warning btn-modern">📝 Set to Draft</button>
+                        <button type="submit" class="btn btn-warning btn-modern">📝 Chuyển về bản nháp</button>
                     </form>
                 }
-                else
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Are you sure you want to publish this story?');">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xuất bản truyện này?');">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Active" />
-                        <button type="submit" class="btn btn-success btn-modern">🚀 Publish</button>
+                        <button type="submit" class="btn btn-success btn-modern">🚀 Xuất bản</button>
+                    </form>
+                }
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)
+                {
+                    <form asp-action="PendingReview" asp-controller="Story" method="post" onsubmit="return confirm('Bạn muốn gửi yêu cầu duyệt truyện này?');">
+                        <input type="hidden" name="storyId" value="@Model.StoryID" />
+                        <button type="submit" class="btn btn-info btn-modern">🔄 Gửi yêu cầu duyệt lại</button>
                     </form>
                 }
             </div>
@@ -141,8 +155,8 @@
 
     <!-- Chapters -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>📚 Chapters</h3>
-        <button id="toggleAddChapter" type="button" class="btn btn-dark btn-modern">➕ Add Chapter</button>
+        <h3>📚 Các chương</h3>
+        <button id="toggleAddChapter" type="button" class="btn btn-dark btn-modern">➕ Thêm chương</button>
     </div>
 
     <div class="table-responsive">
@@ -150,12 +164,12 @@
             <thead>
                 <tr>
                     <th style="width: 80px;">#</th>
-                    <th>Title</th>
-                    <th style="width: 110px">Created</th>
-                    <th style="width: 110px">Updated</th>
-                    <th style="width: 110px">Views</th>
-                    <th style="width: 110px">Status</th>
-                    <th style="width: 170px">Actions</th>
+                    <th>Tiêu đề</th>
+                    <th style="width: 110px">Ngày tạo</th>
+                    <th style="width: 110px">Cập nhật</th>
+                    <th style="width: 110px">Lượt xem</th>
+                    <th style="width: 110px">Trạng thái</th>
+                    <th style="width: 170px">Hành động</th>
                 </tr>
             </thead>
             <tbody id="chapterTableBody">
@@ -165,14 +179,14 @@
                     <form id="createChapterForm" asp-controller="Chapter" asp-action="CreateChapter" method="post">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                     <td>-</td>
-                    <td><input type="text" name="Title" class="form-control" placeholder="Enter chapter title..." required /></td>
+                    <td><input type="text" name="Title" class="form-control" placeholder="Nhập tiêu đề chương..." required /></td>
                     <td>-</td>
                     <td>-</td>
                     <td>0</td>
                     <td>-</td>
                     <td>
-                        <button type="submit" class="btn btn-sm btn-dark btn-modern">Save</button>
-                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Cancel</button>
+                        <button type="submit" class="btn btn-sm btn-dark btn-modern">Lưu</button>
+                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Hủy</button>
                     </td>
                     </form>
                 </tr>
@@ -193,23 +207,23 @@
                             <td>
                                 @if (chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive)
                                 {
-                                    <span class="badge bg-secondary">Draft</span>
+                                    <span class="badge bg-secondary">Bản nháp</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success">Published</span>
+                                    <span class="badge bg-success">Đã xuất bản</span>
                                 }
                             </td>
                             <td>
                                 <a href="@Url.Action("EditChapter", "Chapter", new { chapterId = chapter.ChapterID, storyId = Model.StoryID })"
                                    class="btn btn-sm btn-outline-dark btn-modern">
-                                    ✏️ Edit
+                                    ✏️ Chỉnh sửa
                                 </a>
 
                                 <form asp-action="DeleteChapter" asp-controller="Chapter" method="post" style="display:inline;">
                                     <input type="hidden" name="chapterID" value="@chapter.ChapterID" />
                                     <input type="hidden" name="storyID" value="@Model.StoryID" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Are you sure you want to delete this chapter?');">🗑️</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa chương này không?');">🗑️</button>
                                 </form>
                             </td>
                         </tr>
@@ -219,7 +233,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted">No chapters available yet. Start by adding a new one!</td>
+                        <td colspan="7" class="text-center text-muted">Chưa có chương nào. Bắt đầu bằng cách thêm chương mới!</td>
                     </tr>
                 }
             </tbody>
@@ -263,11 +277,11 @@
                     if (response.ok) {
                         window.location.reload();
                     } else {
-                        alert("Something went wrong while creating the chapter!");
+                        alert("Đã xảy ra lỗi trong quá trình tạo chương!");
                     }
                 } catch (error) {
                     console.error("Fetch error:", error);
-                    alert("An error occurred while creating the chapter!");
+                    alert("Đã xảy ra lỗi trong quá trình tạo chương!");
                 }
             });
         });

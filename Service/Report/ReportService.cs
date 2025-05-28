@@ -70,7 +70,7 @@ namespace PBL3.Service.Report
             if (story == null) return;
             var noti = new NotificationModel
             {
-                UserID = story.AuthorID, // Lưu ID author của story bị report
+                UserID = story.AuthorID, 
                 Type = NotificationModel.NotificationType.ReportStory,
                 Message = message,
                 FromUserID = fromUserId,

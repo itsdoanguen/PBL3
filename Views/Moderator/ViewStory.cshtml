@@ -16,6 +16,29 @@
                 {
                     <span class="badge bg-danger ms-2">Bị báo cáo</span>
                 }
+                @if (Model.StoryDetails.Status == PBL3.Models.StoryModel.StoryStatus.Active)
+                {
+                    <form asp-action="Lock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn khóa truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="message" value="Khóa truyện bởi quản trị viên." />
+                        <button type="submit" class="btn btn-sm btn-danger">🔒 Khóa truyện</button>
+                    </form>
+                }
+                else if (Model.StoryDetails.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
+                {
+                    <form asp-action="Unlock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn mở khóa và duyệt truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="isAccepted" value="true" />
+                        <input type="hidden" name="message" value="Truyện đã được duyệt và mở khóa." />
+                        <button type="submit" class="btn btn-sm btn-success">✔️ Duyệt &amp; Mở khóa</button>
+                    </form>
+                    <form asp-action="Unlock" asp-controller="Story" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn từ chối truyện này?');">
+                        <input type="hidden" name="storyID" value="@Model.StoryDetails.StoryID" />
+                        <input type="hidden" name="isAccepted" value="false" />
+                        <input type="hidden" name="message" value="Yêu câu duyệt truyện đã bị từ chối." />
+                        <button type="submit" class="btn btn-sm btn-danger">❌ Từ chối</button>
+                    </form>
+                }
             </div>
             <div class="story-meta"><strong>Tác giả:</strong> <a href="@Url.Action("ViewUser", "Moderator", new { id = Model.Author.UserID })">@Model.Author.DisplayName</a> (ID: @Model.Author.UserID, Email: @Model.Author.Email)</div>
             <div class="story-meta"><strong>Ngày tạo:</strong> @Model.StoryDetails.CreatedAt.ToString("dd/MM/yyyy HH:mm")</div>

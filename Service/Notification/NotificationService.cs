@@ -119,7 +119,20 @@ namespace PBL3.Service.Notification
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
-        }        
+        } 
+        //Tạo noti khi có feedback từ moderator
+        public async Task InitNewMessageFromModeratorAsync(int userId, string message, int moderatorId)
+        {
+            var noti = new NotificationModel
+            {
+                UserID = userId,
+                Type = NotificationModel.NotificationType.NewStory,
+                Message = message,
+                FromUserID = moderatorId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
+        }
 
         // Đánh dấu đã đọc
         public async Task MarkAsReadAsync(int notificationId)
@@ -154,7 +167,10 @@ namespace PBL3.Service.Notification
         public async Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId)
         {
             return await _context.Notifications
-                .Where(n => n.UserID == userId)
+                .Where(n => n.UserID == userId && (n.Type == NotificationModel.NotificationType.NewStory || n.Type == NotificationModel.NotificationType.NewChapter 
+                    || n.Type == NotificationModel.NotificationType.NewComment 
+                    || n.Type == NotificationModel.NotificationType.NewReplyComment 
+                    || n.Type == NotificationModel.NotificationType.NewFollower))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }

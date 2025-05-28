@@ -19,7 +19,9 @@ namespace PBL3.Service.Discovery
             DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
 
             var stories = await _context.Stories
-                .Where(s => s.Chapters.Any(c => c.CreatedAt >= oneWeekAgo) && s.Status != Models.StoryModel.StoryStatus.Inactive)
+                .Where(s => s.Chapters.Any(c => c.CreatedAt >= oneWeekAgo)
+    && (s.Status == Models.StoryModel.StoryStatus.Active
+        || s.Status == Models.StoryModel.StoryStatus.Completed))
                 .Select(s => new
                 {
                     Story = s,

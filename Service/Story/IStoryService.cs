@@ -7,9 +7,10 @@ namespace PBL3.Service.Story
     {
         Task<(bool isSuccess, string errorMessage, int? storyID)> CreateStoryAsync(StoryCreateViewModel model, int authorID);
         Task<(bool isSuccess, string errorMessage)> DeleteStoryAsync(int storyID, int currentUserID);
-        Task<StoryEditViewModel> GetStoryDetailForEditAsync(int storyID, int currentAuthorID);
         Task<(bool isSuccess, string errorMessage, int storyID)> UpdateStoryStatusAsync(int storyID, int currentUserID, string newStatus);
         Task<(bool isSuccess, string errorMessage)> UpdateStoryAsync(StoryEditViewModel model, int currentUserID);
-        Task<StoryDetailViewModel> GetStoryDetailAsync(int storyID, int currentUserID);
+        Task<(bool isSuccess, string errorMessage)> LockStoryAsync(int storyID, string message, int moderatorId);
+        Task<(bool isSuccess, string errorMessage)> UnlockStoryAsync(int storyID, bool isAccepted, string message, int moderatorId);
+        Task<(bool isSuccess, string errorMessage)> PendingReviewAsync(int storyID, int currentUserId);
     }
 }
