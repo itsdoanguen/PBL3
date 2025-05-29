@@ -26,6 +26,7 @@ namespace PBL3.Models
         [Required]
         public UserStatus Status { get; set; } = UserStatus.Active;
         public UserGender? Gender { get; set; }
+        public int TotalWarning { get; set; } = 0;
 
         // Navigation properties
         public StyleModel? Style { get; set; }
