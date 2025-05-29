@@ -40,7 +40,8 @@ namespace PBL3.Models
             ReportUser,
             ReportComment,
             ReportChapter,
-            ReportStory
+            ReportStory,
+            WarningIssued
         }
     }
 }

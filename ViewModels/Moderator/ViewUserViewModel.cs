@@ -23,6 +23,7 @@ namespace PBL3.ViewModels.Moderator
         public UserRole Role { get; set; }
         public DateTime CreatedAt { get; set; }
         public UserStatus Status { get; set; }
+        public int TotalWarning { get; set; }
     }
     public class CommentViewModel
     {

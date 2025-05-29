@@ -9,5 +9,8 @@ namespace PBL3.Service.Moderator
         Task<ViewStoryViewModel> GetViewStoryViewModelAsync(int storyId);
         Task<List<ViewModels.Moderator.UserProfileViewModel>> GetListUserForModeratorAsync();
         Task<List<UserStoryCardViewModel>> GetListStoriesForModeratorAsync();
+        Task<(bool isSuccess, string errorMessage)> WarnUserAsync(int userId, string message, int moderatorId);
+        Task<(bool isSuccess, string errorMessage)> BanUserAsync(int userId, string message, int moderatorId);
+        Task<(bool isSuccess, string errorMessage)> UnbanUserAsync(int userId, string message, int moderatorId);
     }
 }

@@ -16,8 +16,45 @@
                 <p>Vai trò: @Model.userProfile.Role</p>
                 <p>Ngày tạo: @Model.userProfile.CreatedAt.ToString("dd/MM/yyyy")</p>
                 <p>Trạng thái: <span class="badge bg-info">@Model.userProfile.Status</span></p>
+                <p>Cảnh cáo: <span class="badge bg-warning">@Model.userProfile.TotalWarning</span></p>
             </div>
         </div>
+    </section>
+    <!-- Nút thao tác cho moderator -->
+    <section class="mb-4">
+        @if (Model.userProfile.Status == PBL3.Models.UserModel.UserStatus.Active)
+        {
+            if (Model.userProfile.TotalWarning < 2)
+            {
+                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#warnModal">⚠️ Cảnh cáo</button>
+                <!-- Modal cảnh cáo -->
+                <div class="modal fade" id="warnModal" tabindex="-1" aria-labelledby="warnModalLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <form asp-action="WarnUser" asp-controller="Moderator" method="post">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="warnModalLabel">Nhập lý do cảnh cáo</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <input type="hidden" name="id" value="@Model.userProfile.UserID" />
+                          <textarea name="message" class="form-control" placeholder="Nhập lý do cảnh cáo..." required rows="3"></textarea>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                          <button type="submit" class="btn btn-warning">Gửi cảnh cáo</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+            }
+            <form asp-action="BanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn khóa tài khoản người dùng này?');">
+                <input type="hidden" name="id" value="@Model.userProfile.UserID" />
+                <input type="hidden" name="message" value="Tài khoản của bạn đã bị khóa do vi phạm quy định." />
+                <button type="submit" class="btn btn-danger">🚫 Khóa tài khoản</button>
+            </form>
+        }
     </section>
     <!-- Section 2: User Stories -->
     <section class="user-stories-section card mb-4">
@@ -180,4 +217,7 @@
         </div>
     </section>
 </div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+}
 <script src="~/js/ViewUser.js"></script>
