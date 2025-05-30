@@ -2,24 +2,31 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
+
+    var normalUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 0).ToList();
+    var warning1Users = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 1).ToList();
+    var warning2Users = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 2).ToList();
+    var bannedUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Banned).ToList();
 }
 <div class="container py-4">
     <h2 class="mb-4">Quản lý người dùng</h2>
-    <div class="table-responsive">
-        <table class="table table-hover align-middle" id="user-table">
+    <h4 class="mt-4">Người dùng thông thường</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle" id="user-table-normal">
             <thead class="table-light">
                 <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Tên hiển thị</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Vai trò</th>
-                    <th scope="col">Ngày tạo</th>
-                    <th scope="col">Trạng thái</th>
-                    <th scope="col"></th>
+                    <th>ID</th>
+                    <th>Tên hiển thị</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Cảnh cáo</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Model)
+                @foreach (var user in normalUsers)
                 {
                     <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
                         <td>@user.UserID</td>
@@ -30,7 +37,113 @@
                         <td>@user.Email</td>
                         <td><span class="badge bg-primary">@user.Role</span></td>
                         <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                        <td><span class="badge bg-@(user.Status == PBL3.Models.UserModel.UserStatus.Active ? "success" : "secondary")">@user.Status</span></td>
+                        <td><span class="badge bg-success">@user.Status</span></td>
+                        <td>0</td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <h4 class="mt-4">Người dùng đã bị cảnh cáo 1 lần</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle" id="user-table-warning1">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên hiển thị</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Cảnh cáo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in warning1Users)
+                {
+                    <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
+                        <td>@user.UserID</td>
+                        <td>
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            @user.DisplayName
+                        </td>
+                        <td>@user.Email</td>
+                        <td><span class="badge bg-primary">@user.Role</span></td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-success">@user.Status</span></td>
+                        <td>1</td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <h4 class="mt-4">Người dùng đã bị cảnh cáo 2 lần</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle" id="user-table-warning2">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên hiển thị</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Cảnh cáo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in warning2Users)
+                {
+                    <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
+                        <td>@user.UserID</td>
+                        <td>
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            @user.DisplayName
+                        </td>
+                        <td>@user.Email</td>
+                        <td><span class="badge bg-primary">@user.Role</span></td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-success">@user.Status</span></td>
+                        <td>2</td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <h4 class="mt-4">Người dùng bị khóa</h4>
+    <div class="table-responsive mb-4">
+        <table class="table table-hover align-middle" id="user-table-banned">
+            <thead class="table-light">
+                <tr>
+                    <th>ID</th>
+                    <th>Tên hiển thị</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Ngày tạo</th>
+                    <th>Trạng thái</th>
+                    <th>Cảnh cáo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in bannedUsers)
+                {
+                    <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
+                        <td>@user.UserID</td>
+                        <td>
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            @user.DisplayName
+                        </td>
+                        <td>@user.Email</td>
+                        <td><span class="badge bg-primary">@user.Role</span></td>
+                        <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="badge bg-secondary">@user.Status</span></td>
+                        <td>@user.TotalWarning</td>
                         <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
                     </tr>
                 }
@@ -40,7 +153,10 @@
 </div>
 @section Styles {
     <style>
-        #user-table th, #user-table td { vertical-align: middle; }
+        #user-table-normal th, #user-table-normal td,
+        #user-table-warning1 th, #user-table-warning1 td,
+        #user-table-warning2 th, #user-table-warning2 td,
+        #user-table-banned th, #user-table-banned td { vertical-align: middle; }
         .user-row:hover { background: #f1f3f6; }
     </style>
 }

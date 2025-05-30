@@ -16,7 +16,7 @@ namespace PBL3.Service.User
             _context = context;
             _blobService = blobService;
         }
-        public async Task<PBL3.ViewModels.Moderator.UserProfileViewModel> GetUserProfileAsync(int userId)
+        public async Task<ViewModels.Moderator.UserProfileViewModel> GetUserProfileAsync(int userId)
         {
             var user = await _context.Users
                 .Where(u => u.UserID == userId)
@@ -28,7 +28,8 @@ namespace PBL3.Service.User
                     Avatar = u.Avatar,
                     Role = u.Role,
                     CreatedAt = u.CreatedAt,
-                    Status = u.Status
+                    Status = u.Status,
+                    TotalWarning = u.TotalWarning
                 })
                 .FirstOrDefaultAsync();
             if (user != null && !string.IsNullOrEmpty(user.Avatar))

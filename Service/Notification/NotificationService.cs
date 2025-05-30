@@ -133,6 +133,18 @@ namespace PBL3.Service.Notification
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
         }
+        public async Task InitNewWarningMessageAsync(int userId, string message, int moderatorId)
+        {
+            var noti = new NotificationModel
+            {
+                UserID = userId,
+                Type = NotificationModel.NotificationType.WarningIssued,
+                Message = "Thông báo: Bạn đã bị cảnh cáo vì hành vi của mình. \n Note: " + message,
+                FromUserID = moderatorId
+            };
+            _context.Notifications.Add(noti);
+            await _context.SaveChangesAsync();
+        }
 
         // Đánh dấu đã đọc
         public async Task MarkAsReadAsync(int notificationId)

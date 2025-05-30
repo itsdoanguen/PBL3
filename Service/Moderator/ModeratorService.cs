@@ -96,5 +96,46 @@ namespace PBL3.Service.Moderator
             }
             return stories;
         }
+
+        public async Task<(bool isSuccess, string errorMessage)> WarnUserAsync(int userId, string message, int moderatorId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return (false, "Không tìm thấy người dùng.");
+            }
+
+            user.TotalWarning += 1;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            await _notificationService.InitNewWarningMessageAsync(userId, message, moderatorId);
+
+            return (true, "Đã gửi cảnh báo đến User");
+        }
+        public async Task<(bool isSuccess, string errorMessage)> BanUserAsync(int userId, string message, int moderatorId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return (false, "Không tìm thấy người dùng.");
+            }
+            user.Status = Models.UserModel.UserStatus.Banned;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return (true, "Đã ban User thành công");
+        }
+        public async Task<(bool isSuccess, string errorMessage)> UnbanUserAsync(int userId, string message, int moderatorId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                return (false, "Không tìm thấy người dùng.");
+            }
+            user.Status = Models.UserModel.UserStatus.Active;
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return (true, "Đã bỏ ban User thành công");
+        }
     }
 }
