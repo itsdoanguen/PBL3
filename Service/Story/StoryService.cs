@@ -86,7 +86,11 @@ namespace PBL3.Service.Story
             {
                 return (false, "Truyện không tồn tại");
             }
-            if (story.AuthorID != currentUserID)
+            var authorRole = await _context.Users
+                .Where(u => u.UserID == currentUserID)
+                .Select(u => u.Role)
+                .FirstOrDefaultAsync();
+            if (story.AuthorID != currentUserID && authorRole != UserModel.UserRole.Admin)
             {
                 return (false, "AccessDenied");
             }
