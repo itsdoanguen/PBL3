@@ -1,0 +1,76 @@
+﻿@model List<PBL3.ViewModels.Search.SearchByTitleStory>
+
+@{
+    ViewData["Title"] = "Test SearchAdvancedAsync";
+    var filter = ViewBag.Filter as PBL3.ViewModels.Search.StoryFilterModel ?? new PBL3.ViewModels.Search.StoryFilterModel();
+    var genresList = ViewBag.GenresList as List<SelectListItem> ?? new List<SelectListItem>();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-action="AdvancedSearch" asp-controller="Util">
+    <div>
+        <label>Tên truyện:</label>
+        <input type="text" name="TenTruyen" value="@filter.TenTruyen" />
+    </div>
+
+    <div>
+        <label>Thể loại:</label>
+        <select name="GenreName" asp-items="genresList">
+            <option value="">--Chọn thể loại--</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Ngày phát hành từ:</label>
+        <input type="date" name="CreatedFrom" value="@(filter.CreatedFrom?.ToString("yyyy-MM-dd") ?? "")" />
+    </div>
+
+    <div>
+        <label>Ngày phát hành đến:</label>
+        <input type="date" name="CreatedTo" value="@(filter.CreatedTo?.ToString("yyyy-MM-dd") ?? "")" />
+    </div>
+
+    <div>
+        <label>Trạng thái:</label>
+        <select name="Status" asp-items="ViewBag.StatusList"></select>
+    </div>
+
+    <div>
+        <label>Tác giả (Tên):</label>
+        <input type="text" name="AuthorName" value="@filter.AuthorName" />
+    </div>
+
+    <button type="submit">Tìm kiếm</button>
+</form>
+
+<hr />
+
+@if (Model != null && Model.Count > 0)
+{
+    <table border="1" cellpadding="5" cellspacing="0" style="width:100%">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var story in Model)
+            {
+                <tr>
+                    <td>@story.Title</td>
+                    <td>@story.AuthorName</td>
+                    <td>@story.Status</td>
+                    <td>@story.CreatedAt.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Không tìm thấy kết quả.</p>
+}
