@@ -55,6 +55,14 @@
                 <button type="submit" class="btn btn-danger">🚫 Khóa tài khoản</button>
             </form>
         }
+        @if(Model.userProfile.Status == PBL3.Models.UserModel.UserStatus.Banned)
+        {
+            <form asp-action="UnbanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản người dùng này?');">
+                <input type="hidden" name="id" value="@Model.userProfile.UserID" />
+                <input type="hidden" name="message" value="Tài khoản của bạn đã được mở khóa." />
+                <button type="submit" class="btn btn-success">✔️ Mở khóa tài khoản</button>
+            </form>
+        }
     </section>
     <!-- Section 2: User Stories -->
     <section class="user-stories-section card mb-4">

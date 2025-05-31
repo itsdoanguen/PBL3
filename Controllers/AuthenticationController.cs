@@ -94,6 +94,13 @@ namespace PBL3.Controllers
                     return View(model);
                 }
 
+                if (user.Status == UserModel.UserStatus.Banned)
+                {
+                    ModelState.AddModelError("Email", "Your account has been banned.");
+                    TempData["ErrorMessage"] = "Tài khoản của bạn đã bị cấm. Hãy liên hệ với BQT để giải quyết.";
+                    return View(model);
+                }
+
                 await SignIn(user);
                 TempData["SuccessMessage"] = "Đăng nhập thành công!";
                 return RedirectToAction("Index", "User");

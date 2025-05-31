@@ -182,7 +182,8 @@ namespace PBL3.Service.Notification
                 .Where(n => n.UserID == userId && (n.Type == NotificationModel.NotificationType.NewStory || n.Type == NotificationModel.NotificationType.NewChapter 
                     || n.Type == NotificationModel.NotificationType.NewComment 
                     || n.Type == NotificationModel.NotificationType.NewReplyComment 
-                    || n.Type == NotificationModel.NotificationType.NewFollower))
+                    || n.Type == NotificationModel.NotificationType.NewFollower 
+                    || n.Type == NotificationModel.NotificationType.WarningIssued))
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }

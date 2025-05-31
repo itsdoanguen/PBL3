@@ -63,7 +63,8 @@ namespace PBL3.Service.Moderator
                     Avatar = u.Avatar,
                     Role = u.Role,
                     CreatedAt = u.CreatedAt,
-                    Status = u.Status
+                    Status = u.Status,
+                    TotalWarning = u.TotalWarning
                 })
                 .ToListAsync();
             foreach (var user in users)
@@ -134,6 +135,8 @@ namespace PBL3.Service.Moderator
             }
             user.Status = Models.UserModel.UserStatus.Active;
             _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            await _notificationService.InitNewWarningMessageAsync(userId, message, moderatorId);
             await _context.SaveChangesAsync();
             return (true, "Đã bỏ ban User thành công");
         }
