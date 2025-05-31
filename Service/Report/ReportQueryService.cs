@@ -1,8 +1,4 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 using PBL3.ViewModels.Moderator;
-using PBL3.Service.Notification;
 
 namespace PBL3.Service.Report
 {

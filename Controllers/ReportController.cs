@@ -1,10 +1,9 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PBL3.Models;
 using PBL3.Service.Notification;
 using PBL3.Service.Report;
-using System.Threading.Tasks;
-using PBL3.Models;
-using System.Security.Claims;
 
 namespace PBL3.Controllers
 {

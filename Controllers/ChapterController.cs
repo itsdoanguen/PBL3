@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
@@ -51,6 +52,7 @@ namespace PBL3.Controllers
                 .Where(s => s.StoryID == viewModel.StoryID)
                 .Select(s => s.AuthorID)
                 .FirstOrDefault();
+            ViewBag.IsModerator = User.IsInRole("Moderator") || User.IsInRole("Admin");
             return View(viewModel);
         }
 

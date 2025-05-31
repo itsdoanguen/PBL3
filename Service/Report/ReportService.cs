@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using PBL3.Models;
 using PBL3.Data;
+using PBL3.Models;
 
 namespace PBL3.Service.Report
 {
@@ -18,7 +16,7 @@ namespace PBL3.Service.Report
         {
             var noti = new NotificationModel
             {
-                UserID = reportedUserId, // Lưu ID user bị report
+                UserID = reportedUserId,
                 Type = NotificationModel.NotificationType.ReportUser,
                 Message = message,
                 FromUserID = fromUserId
@@ -33,13 +31,13 @@ namespace PBL3.Service.Report
             if (comment == null) return;
             var noti = new NotificationModel
             {
-                UserID = comment.UserID, // Lưu ID author của comment bị report
+                UserID = comment.UserID,
                 Type = NotificationModel.NotificationType.ReportComment,
                 Message = message,
                 FromUserID = fromUserId,
                 CommentID = commentId,
-                ChapterID = comment.ChapterID, // Lưu luôn chapterId nếu có
-                StoryID = comment.StoryID      // Lưu luôn storyId nếu có
+                ChapterID = comment.ChapterID,
+                StoryID = comment.StoryID
             };
             _context.Notifications.Add(noti);
             await _context.SaveChangesAsync();
@@ -53,7 +51,7 @@ namespace PBL3.Service.Report
             if (story == null) return;
             var noti = new NotificationModel
             {
-                UserID = story.AuthorID, // Lưu ID author của story chứa chapter bị report
+                UserID = story.AuthorID,
                 Type = NotificationModel.NotificationType.ReportChapter,
                 Message = message,
                 FromUserID = fromUserId,
@@ -70,7 +68,7 @@ namespace PBL3.Service.Report
             if (story == null) return;
             var noti = new NotificationModel
             {
-                UserID = story.AuthorID, 
+                UserID = story.AuthorID,
                 Type = NotificationModel.NotificationType.ReportStory,
                 Message = message,
                 FromUserID = fromUserId,
