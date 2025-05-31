@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Story;
+using PBL3.Service.Admin;
 
 namespace PBL3.Controllers
 {
@@ -9,9 +10,11 @@ namespace PBL3.Controllers
     public class AdminController : Controller
     {
         private readonly IStoryService _storyService;
-        public AdminController(IStoryService storyService)
+        private readonly IAdminService _adminService;
+        public AdminController(IStoryService storyService, IAdminService adminService)
         {
             _storyService = storyService;
+            _adminService = adminService;
         }
         // GET: Admin/Index
         public IActionResult Index()
@@ -33,6 +36,26 @@ namespace PBL3.Controllers
             }
             TempData["SuccessMessage"] = "Xóa truyện thành công!";
             return RedirectToAction("StoryManagement", "Moderator");
+        }
+        //GET: Admin/Dashboard
+        public async Task<IActionResult> Dashboard()
+        {
+            var model = await _adminService.GetDashboardStatsAsync();
+            return View(model);
+        }
+        // GET: Admin/Report
+        public async Task<IActionResult> Report(DateTime? from, DateTime? to, int? tagId)
+        {
+            from ??= DateTime.Now.Date.AddDays(-7);
+            to ??= DateTime.Now.Date.AddDays(1).AddTicks(-1);
+            var model = await _adminService.GetReportStatsAsync(from, to, tagId);
+            return View(model);
+        }
+        //GET: Admin/ManageSystem
+        public async Task<IActionResult> ManageSystem()
+        {
+            var model = await _adminService.GetManageSystemStatsAsync();
+            return View(model);
         }
     }
 }

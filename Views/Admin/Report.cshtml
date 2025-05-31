@@ -1,0 +1,111 @@
+@using System.Text.Json
+@model PBL3.ViewModels.Admin.AdminReportViewModel
+@{
+    ViewData["Title"] = "Báo cáo thống kê";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/admin-report.css" />
+<div class="admin-report-container">
+    <h2 class="mb-4">Báo cáo thống kê</h2>
+    <!-- Section 1: Bộ lọc ngày (chung) -->
+    <section class="report-section card mb-4">
+        <div class="card-header"><h4>Bộ lọc thời gian</h4></div>
+        <div class="card-body">
+            <form method="get" asp-action="Report" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label for="from" class="form-label">Từ ngày</label>
+                    <input type="date" class="form-control" id="from" name="from" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-4">
+                    <label for="to" class="form-label">Đến ngày</label>
+                    <input type="date" class="form-control" id="to" name="to" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Lọc dữ liệu</button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- Section 2: Biểu đồ người dùng mới -->
+    <section class="report-section card mb-4">
+        <div class="card-header"><h4>Người dùng mới theo ngày</h4></div>
+        <div class="card-body">
+            <canvas id="userChart"></canvas>
+        </div>
+    </section>
+    <!-- Section 3: Biểu đồ truyện mới và lọc tag -->
+    <section class="report-section card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Truyện mới theo ngày</h4>
+            <form method="get" asp-action="Report" class="d-flex align-items-end gap-2">
+                <input type="hidden" name="from" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                <input type="hidden" name="to" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                <label for="tagId" class="form-label m-2" style="min-width: 60px; text-align:center">Thể loại</label>
+                <select class="form-select" id="tagId" name="tagId" style="min-width: 160px;">
+                    <option value="" selected="@(Model.SelectedTagId == null)">Tất cả</option>
+                    @foreach (var tag in Model.AvailableTags)
+                    {
+                        <option value="@tag.Id" selected="@(Model.SelectedTagId == tag.Id)">@tag.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-outline-primary">Lọc</button>
+            </form>
+        </div>
+        <div class="card-body">
+            <canvas id="storyChart"></canvas>
+        </div>
+    </section>
+    <!-- Section 4: Biểu đồ báo cáo -->
+    <section class="report-section card mb-4">
+        <div class="card-header"><h4>Báo cáo theo ngày</h4></div>
+        <div class="card-body">
+            <canvas id="reportChart"></canvas>
+        </div>
+    </section>
+    <!-- Section 5: Báo cáo theo loại -->
+    <section class="report-section card mb-4">
+        <div class="card-header"><h4>Báo cáo theo loại</h4></div>
+        <div class="card-body">
+            <canvas id="reportTypeChart"></canvas>
+        </div>
+    </section>
+    <!-- Section 6: Thống kê tổng hợp -->
+    <section class="report-section card mb-4">
+        <div class="card-header"><h4>Thống kê tổng hợp</h4></div>
+        <div class="card-body row">
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Tổng user mới</div>
+                <div class="stat-value">@Model.TotalNewUsers</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Tổng truyện mới</div>
+                <div class="stat-value">@Model.TotalNewStories</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Tổng báo cáo</div>
+                <div class="stat-value">@Model.TotalReports</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Truyện mới theo thể loại</div>
+                <div class="stat-value">@Model.NewStoriesByTag</div>
+            </div>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="~/js/admin-report.js"></script>
+    <script>
+        window.adminReportData = {
+            userLabels: @Html.Raw(JsonSerializer.Serialize(Model.NewUsersPerDay.Select(x => x.Date.ToString("dd/MM")))),
+            userData: @Html.Raw(JsonSerializer.Serialize(Model.NewUsersPerDay.Select(x => x.Count))),
+            storyLabels: @Html.Raw(JsonSerializer.Serialize(Model.NewStoriesPerDay.Select(x => x.Date.ToString("dd/MM")))),
+            storyData: @Html.Raw(JsonSerializer.Serialize(Model.NewStoriesPerDay.Select(x => x.Count))),
+            reportLabels: @Html.Raw(JsonSerializer.Serialize(Model.ReportsPerDay.Select(x => x.Date.ToString("dd/MM")))),
+            reportData: @Html.Raw(JsonSerializer.Serialize(Model.ReportsPerDay.Select(x => x.Count))),
+            reportTypeLabels: @Html.Raw(JsonSerializer.Serialize(Model.ReportTypeCounts.Select(x => x.Type))),
+            reportTypeData: @Html.Raw(JsonSerializer.Serialize(Model.ReportTypeCounts.Select(x => x.Count)))
+        };
+    </script>
+}

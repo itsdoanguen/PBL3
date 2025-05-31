@@ -149,5 +149,30 @@ namespace PBL3.Controllers
             var followService = await _followService.GetFollowStoryList(currentUserID);
             return View(followService);
         }
+
+        //POST: User/ToggleUserRole
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleUserRole(int id)
+        {
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "ID không hợp lệ.";
+                return RedirectToAction("ManageSystem", "Admin");
+            }
+
+            try
+            {
+                await _userService.ToggleUpdateUserRoleAsync(id);
+                TempData["SuccessMessage"] = "Cập nhật vai trò người dùng thành công!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error khi update user role: {ex.Message}";
+            }
+
+            return RedirectToAction("ManageSystem", "Admin");
+        }
     }
 }

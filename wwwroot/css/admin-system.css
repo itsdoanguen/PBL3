@@ -1,0 +1,86 @@
+/* admin-system.css */
+.admin-system-container { padding: 24px 0; }
+.admin-section { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 24px; margin-bottom: 32px; }
+.section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; }
+.table {
+    margin-bottom: 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.table th {
+    background: #f1f3f9;
+    color: #222;
+    font-weight: 600;
+    border-top: none;
+    border-bottom: 2px solid #e3e8ee;
+}
+.table td {
+    background: #fff;
+    border-top: 1px solid #e3e8ee;
+    border-bottom: none;
+}
+.table-hover tbody tr:hover {
+    background: #f6faff;
+    transition: background 0.2s;
+}
+.table-bordered th, .table-bordered td {
+    border: 1px solid #e3e8ee !important;
+}
+.nav-tabs {
+    border-bottom: 2px solid #0d6efd;
+}
+.nav-tabs .nav-link {
+    font-weight: 500;
+    border: 1.5px solid #0d6efd;
+    border-bottom: none;
+    background: #f8f9fa;
+    color: #0d6efd;
+    margin-right: 2px;
+    border-radius: 8px 8px 0 0;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-tabs .nav-link.active {
+    color: #fff;
+    background: #0d6efd;
+    border-bottom: 2.5px solid #fff;
+    z-index: 2;
+}
+.nav-tabs .nav-link:not(.active):hover {
+    background: #e3e8ee;
+    color: #0a58ca;
+}
+.user-table .btn, .story-table .btn { padding: 0.25rem 0.75rem; font-size: 0.95em; }
+.user-table .btn-promote { background: #198754; color: #fff; }
+.user-table .btn-demote { background: #ffc107; color: #212529; }
+.user-table .btn-promote:hover { background: #157347; }
+.user-table .btn-demote:hover { background: #e0a800; }
+.user-table .btn-detail {
+    background: #20c997;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: 500;
+    box-shadow: 0 1px 4px rgba(32,201,151,0.08);
+    border: none;
+}
+.user-table .btn-detail:hover {
+    background: #17a589;
+    color: #fff;
+}
+.story-table .btn-detail {
+    background: #20c997;
+    color: #fff;
+    border-radius: 4px;
+    font-weight: 500;
+    border: none;
+}
+.story-table .btn-detail:hover {
+    background: #0a58ca;
+    color: #fff;
+}
+.pagination { margin-top: 16px; }
+@media (max-width: 768px) {
+    .admin-section { padding: 12px; }
+    .section-title { font-size: 1.2rem; }
+}

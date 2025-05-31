@@ -1,0 +1,43 @@
+.admin-report-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 24px 0;
+}
+.report-section {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 10px;
+}
+.stat-box {
+    background: #f1f5f9;
+    border-radius: 8px;
+    padding: 18px 0;
+    text-align: center;
+    margin-bottom: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+.stat-label {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 6px;
+}
+.stat-value {
+    font-size: 1.7rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+.card-header h4 {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #2b2d42;
+}
+canvas {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+    padding: 8px;
+}
+@media (max-width: 768px) {
+    .stat-box {
+        margin-bottom: 12px;
+    }
+}
