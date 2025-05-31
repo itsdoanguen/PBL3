@@ -1,4 +1,4 @@
-﻿@model List<PBL3.ViewModels.Search.SearchViewModel>
+﻿@model List<PBL3.ViewModels.Search.SearchByTitleStory>
 
 @{
     ViewData["Title"] = "Tìm kiếm truyện";
@@ -28,7 +28,6 @@ else
                 <h3>@story.Title</h3>
                 <p><strong>Tác giả:</strong> @story.AuthorName</p>
                 <p><strong>Thể loại:</strong> @string.Join(", ", story.Genres)</p>
-                <p>@story.Description</p>
             </li>
         }
     </ul>
