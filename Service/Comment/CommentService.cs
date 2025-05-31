@@ -193,7 +193,11 @@ namespace PBL3.Service.Comment
             {
                 return (false, "Không tìm thấy bình luận hoặc đã bị xóa");
             }
-            if (comment.UserID != userId)
+            var userRole = _context.Users
+                .Where(u => u.UserID == userId)
+                .Select(u => u.Role)
+                .FirstOrDefault();
+            if (comment.UserID != userId && userRole == UserModel.UserRole.User)
             {
                 return (false, "Bạn không có quyền xóa bình luận này");
             }

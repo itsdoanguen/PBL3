@@ -91,6 +91,11 @@
                                 <li><a class="dropdown-item" asp-controller="User" asp-action="MyStories">Truyện của tôi</a></li>
                                 <li><a class="dropdown-item" asp-controller="History" asp-action="Index">Lịch sử</a></li>
                                 <li><a class="dropdown-item" href="#">Cài đặt</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-primary fw-bold" asp-controller="Admin" asp-action="Index"><i class="bi bi-gear-wide-connected me-1"></i>Quản trị hệ thống</a></li>
+                                }
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" asp-controller="Authentication" asp-action="Logout">Đăng xuất</a></li>
                             </ul>

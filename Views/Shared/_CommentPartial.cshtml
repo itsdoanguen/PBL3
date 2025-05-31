@@ -28,7 +28,7 @@
                 <span class="comment-time me-2">@GetTimeAgo(Model.Comment.CreatedAt)</span>
                 @if (ViewBag.CurrentUserID != null && (int)ViewBag.CurrentUserID != Model.Comment.UserID && !Model.Comment.isDeleted)
                 {
-                    <button type="button" class="btn btn-sm text-danger report-comment-btn" 
+                    <button type="button" class="btn btn-sm text-danger report-comment-btn p-0 me-1" 
                             data-bs-toggle="modal" 
                             data-bs-target="#reportModal-@Model.Comment.CommentID"
                             title="Báo cáo bình luận">
@@ -43,7 +43,7 @@
                                     <h5 class="modal-title">Báo cáo bình luận</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
-                <form asp-controller="Report" asp-action="ReportComment" method="post" 
+                                <form asp-controller="Report" asp-action="ReportComment" method="post" 
                                       class="report-form" data-comment-id="@Model.Comment.CommentID">
                                     @Html.AntiForgeryToken()
                                     <div class="modal-body">
@@ -64,6 +64,20 @@
                         </div>
                     </div>
                 }
+                <!-- Xóa bình luận: chỉ cho moderator hoặc chủ comment, và comment chưa bị xóa -->
+                @if ((ViewBag.CurrentUserID != null && (int)ViewBag.CurrentUserID == Model.Comment.UserID && !Model.Comment.isDeleted)
+                    || (ViewBag.IsModerator == true && !Model.Comment.isDeleted))
+                {
+                    <form asp-action="Delete" asp-controller="Comment" method="post" class="d-inline p-0 m-0 ms-1">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="commentId" value="@Model.Comment.CommentID" />
+                        <input type="hidden" name="storyId" value="@Model.Comment.StoryID" />
+                        <input type="hidden" name="chapterId" value="@Model.Comment.ChapterID" />
+                        <button type="submit" class="btn btn-sm text-danger p-0" title="Xóa bình luận" style="background: none; border: none;" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?');">
+                            <i class="bi bi-trash small"></i>
+                        </button>
+                    </form>
+                }
             </div>
         </div>
         @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
@@ -75,7 +89,21 @@
         <div class="comment-text">
             @if (Model.Comment.isDeleted)
             {
-                <span class="text-muted fst-italic">Bình luận này đã bị xóa</span>
+                if (ViewBag.IsModerator == true)
+                {
+                    <span class="text-muted fst-italic">[Ẩn] Bình luận này đã bị xóa
+                        <a href="#" class="ms-1" data-bs-toggle="collapse" data-bs-target="#deleted-content-@Model.Comment.CommentID" aria-expanded="false" aria-controls="deleted-content-@Model.Comment.CommentID" title="Xem nội dung đã xóa">
+                            <i class="bi bi-eye small"></i>
+                        </a>
+                    </span>
+                    <div class="collapse mt-1" id="deleted-content-@Model.Comment.CommentID">
+                        <div class="border p-2 bg-light">@Model.Comment.Content</div>
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted fst-italic">Bình luận này đã bị xóa</span>
+                }
             }
             else
             {
@@ -88,18 +116,6 @@
                     data-user-name="@Model.Comment.UserName">
                 Trả lời
             </button>
-            @if (ViewBag.CurrentUserID != null && (int)ViewBag.CurrentUserID == Model.Comment.UserID && !Model.Comment.isDeleted)
-            {
-                <form asp-action="Delete" asp-controller="Comment" method="post" class="d-inline ms-2">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="commentId" value="@Model.Comment.CommentID" />
-                    <input type="hidden" name="storyId" value="@Model.Comment.StoryID" />
-                    <input type="hidden" name="chapterId" value="@Model.Comment.ChapterID" />
-                    <button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa bình luận" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?');">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </form>
-            }
         </div>
         @if ((Model.Replies != null && Model.Replies.Any()) || (Model.Comment.RepliesCount > (Model.Replies?.Count ?? 0) && Model.Comment.RepliesCount > 0))
         {
