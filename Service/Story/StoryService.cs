@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Chapter;
@@ -234,7 +235,7 @@ namespace PBL3.Service.Story
             _context.Stories.Update(storyModel);
             await _context.SaveChangesAsync();
 
-            await _notificationService.InitNewMessageFromModeratorAsync(storyModel.AuthorID,"Thông báo: " + message, moderatorId);
+            await _notificationService.InitNewMessageFromModeratorAsync(storyModel.AuthorID, "Thông báo: " + message, moderatorId);
             return (true, "Khóa truyện thành công");
         }
         public async Task<(bool isSuccess, string errorMessage)> UnlockStoryAsync(int storyID, bool isAccepted, string message, int moderatorId)
@@ -282,6 +283,30 @@ namespace PBL3.Service.Story
             _context.SaveChanges();
             await _reportService.InitReportStoryNotificationAsync(storyID, currentUserId, "Yêu cầu duyệt truyện đăng trở lại");
             return (true, "Đã gửi yêu câu duyệt thành công");
+        }
+        public async Task<(bool isSuccess, string errorMessage)> AddNewGenreAsync(string genreName)
+        {
+            if (string.IsNullOrWhiteSpace(genreName))
+            {
+                return (false, "Tên thể loại không được để trống");
+            }
+
+            var existingGenre = await _context.Genres
+    .FirstOrDefaultAsync(g => g.Name.ToLower().Trim() == genreName.ToLower().Trim());
+            if (existingGenre != null)
+            {
+                return (false, "Thể loại đã tồn tại");
+            }
+
+            var newGenre = new GenreModel
+            {
+                Name = genreName
+            };
+
+            await _context.Genres.AddAsync(newGenre);
+            await _context.SaveChangesAsync();
+
+            return (true, "Thể loại mới đã được thêm thành công");
         }
     }
 }

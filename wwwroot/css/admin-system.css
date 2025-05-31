@@ -1,7 +1,27 @@
 /* admin-system.css */
 .admin-system-container { padding: 24px 0; }
-.admin-section { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 24px; margin-bottom: 32px; }
-.section-title { font-size: 1.5rem; font-weight: 600; margin-bottom: 20px; }
+.admin-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10), 0 1.5px 8px rgba(13,110,253,0.06);
+    padding: 28px 24px 24px 24px;
+    margin-bottom: 36px;
+    border: 1.5px solid #e3e8ee;
+    position: relative;
+}
+.section-header-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #0d6efd;
+    letter-spacing: 0.5px;
+}
 .table {
     margin-bottom: 0;
     background: #fff;
@@ -78,6 +98,12 @@
 .story-table .btn-detail:hover {
     background: #0a58ca;
     color: #fff;
+}
+.btn-add-genre {
+    min-width: 120px;
+    font-weight: 500;
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(32,201,151,0.08);
 }
 .pagination { margin-top: 16px; }
 @media (max-width: 768px) {
