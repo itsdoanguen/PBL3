@@ -16,6 +16,7 @@ using PBL3.Service.Notification;
 using PBL3.Service.History;
 using PBL3.Service.Moderator;
 using PBL3.Service.Report;
+using PBL3.Service.Search;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,6 +47,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IReportQueryService, ReportQueryService>();
 builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IModeratorService, ModeratorService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 var dbConnectionString = builder.Configuration["DB_CONNECTION_STRING"];
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

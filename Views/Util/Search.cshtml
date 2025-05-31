@@ -1,0 +1,35 @@
+﻿@model List<PBL3.ViewModels.Search.SearchViewModel>
+
+@{
+    ViewData["Title"] = "Tìm kiếm truyện";
+    // Lấy query param để giữ lại từ khóa tìm kiếm khi submit
+    var currentKeyword = Context.Request.Query["tenTruyen"].ToString();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" asp-controller="Util" asp-action="Search">
+    <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="Nhập tên truyện..." />
+    <button type="submit">Tìm kiếm</button>
+</form>
+
+<hr />
+
+@if (Model == null || !Model.Any())
+{
+    <p>Không tìm thấy truyện nào.</p>
+}
+else
+{
+    <ul>
+        @foreach (var story in Model)
+        {
+            <li>
+                <h3>@story.Title</h3>
+                <p><strong>Tác giả:</strong> @story.AuthorName</p>
+                <p><strong>Thể loại:</strong> @string.Join(", ", story.Genres)</p>
+                <p>@story.Description</p>
+            </li>
+        }
+    </ul>
+}
