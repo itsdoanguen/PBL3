@@ -9,7 +9,6 @@ namespace PBL3.Controllers
         [Route("Error/404")]
         public IActionResult PageNotFound()
         {
-            ViewBag.LayoutPath = GetLayoutForCurrentUser();
             ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
             return View("PageNotFound");
@@ -18,7 +17,6 @@ namespace PBL3.Controllers
         [Route("Error/{statusCode}")]
         public IActionResult HttpStatusCodeHandler(int statusCode)
         {
-            ViewBag.LayoutPath = GetLayoutForCurrentUser();
             ViewBag.UserRole = User.FindFirst(ClaimTypes.Role)?.Value;
 
             if (statusCode == 404)
@@ -28,22 +26,5 @@ namespace PBL3.Controllers
 
             return View("Error");
         }
-
-        private string GetLayoutForCurrentUser()
-        {
-            var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
-            if (User.Identity.IsAuthenticated)
-            {
-                return userRole switch
-                {
-                    "Admin" => "~/Views/Shared/_AdminLayout.cshtml",
-                    "User" => "~/Views/Shared/_UserLayout.cshtml",
-                    _ => "~/Views/Shared/_ModeratorLayout.cshtml"
-                };
-            }
-
-            return "~/Views/Shared/_AuthenticationLayout.cshtml";
-        }
-
     }
 }

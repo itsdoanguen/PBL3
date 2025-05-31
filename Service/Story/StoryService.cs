@@ -94,7 +94,6 @@ namespace PBL3.Service.Story
             {
                 return (false, "AccessDenied");
             }
-
             // Xóa chapter (và các liên kết liên quan) qua IChapterService
             var chapters = await _context.Chapters.Where(c => c.StoryID == storyID).ToListAsync();
             foreach (var chapter in chapters)

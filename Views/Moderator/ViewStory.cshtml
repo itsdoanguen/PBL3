@@ -23,6 +23,7 @@
                         <input type="hidden" name="message" value="Khóa truyện bởi quản trị viên." />
                         <button type="submit" class="btn btn-sm btn-danger">🔒 Khóa truyện</button>
                     </form>
+                    
                 }
                 else if (Model.StoryDetails.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
                 {
@@ -37,6 +38,14 @@
                         <input type="hidden" name="isAccepted" value="false" />
                         <input type="hidden" name="message" value="Yêu câu duyệt truyện đã bị từ chối." />
                         <button type="submit" class="btn btn-sm btn-danger">❌ Từ chối</button>
+                    </form>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <form asp-action="DeleteStory" asp-controller="Admin" method="post" class="d-inline ms-2" onsubmit="return confirm('Bạn có chắc chắn muốn xóa truyện này? Hành động này không thể hoàn tác!');">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="StoryID" value="@Model.StoryDetails.StoryID" />
+                        <button type="submit" class="btn btn-sm btn-danger">🗑️ Xóa truyện</button>
                     </form>
                 }
             </div>

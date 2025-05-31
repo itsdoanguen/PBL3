@@ -1,0 +1,81 @@
+@model PBL3.ViewModels.Admin.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Bảng điều khiển quản trị";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/admin-dashboard.css" />
+<div class="admin-dashboard-container">
+    <h2 class="mb-4">Bảng điều khiển quản trị</h2>
+    <!-- Section 1: Tổng quan hệ thống -->
+    <section class="dashboard-section card mb-4">
+        <div class="card-header"><h4>Tổng quan hệ thống</h4></div>
+        <div class="card-body overview-grid">
+            <div class="overview-item">
+                <div class="overview-title">Tổng người dùng</div>
+                <div class="overview-value">@Model.TotalUsers</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-title">Tổng truyện</div>
+                <div class="overview-value">@Model.TotalStories</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-title">Tổng chương</div>
+                <div class="overview-value">@Model.TotalChapters</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-title">Tổng bình luận</div>
+                <div class="overview-value">@Model.TotalComments</div>
+            </div>
+            <div class="overview-item">
+                <div class="overview-title">Tổng báo cáo</div>
+                <div class="overview-value">@Model.TotalReports</div>
+            </div>
+        </div>
+    </section>
+    <!-- Section 2: Thống kê người dùng -->
+    <section class="dashboard-section card mb-4">
+        <div class="card-header"><h4>Thống kê người dùng</h4></div>
+        <div class="card-body row">
+            <div class="col-md-4 stat-box">
+                <div class="stat-label">Admin</div>
+                <div class="stat-value">@Model.TotalAdmins</div>
+            </div>
+            <div class="col-md-4 stat-box">
+                <div class="stat-label">Moderator</div>
+                <div class="stat-value">@Model.TotalModerators</div>
+            </div>
+            <div class="col-md-4 stat-box">
+                <div class="stat-label">Người dùng thường</div>
+                <div class="stat-value">@Model.TotalNormalUsers</div>
+            </div>
+            <div class="col-12 mt-3">
+                <span class="badge bg-info">Người dùng mới 7 ngày: @Model.NewUsersLast7Days</span>
+            </div>
+        </div>
+    </section>
+    <!-- Section 3: Thống kê truyện -->
+    <section class="dashboard-section card mb-4">
+        <div class="card-header"><h4>Thống kê truyện</h4></div>
+        <div class="card-body row">
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Đang hoạt động</div>
+                <div class="stat-value text-success">@Model.ActiveStories</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Đã hoàn thành</div>
+                <div class="stat-value text-primary">@Model.CompletedStories</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Đang chờ duyệt</div>
+                <div class="stat-value text-warning">@Model.ReviewPendingStories</div>
+            </div>
+            <div class="col-md-3 stat-box">
+                <div class="stat-label">Bị khóa</div>
+                <div class="stat-value text-danger">@Model.LockedStories</div>
+            </div>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    <script src="~/js/admin-dashboard.js"></script>
+}

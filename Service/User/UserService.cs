@@ -146,6 +146,15 @@ namespace PBL3.Service.User
             var updatedProfile = await GetUserProfile(userId);
             return (true, string.Empty, updatedProfile);
         }
-
+        public async Task ToggleUpdateUserRoleAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user != null)
+            {
+                user.Role = user.Role == Models.UserModel.UserRole.User ? Models.UserModel.UserRole.Moderator : Models.UserModel.UserRole.User;
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }
