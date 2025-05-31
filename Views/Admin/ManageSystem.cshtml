@@ -86,7 +86,12 @@
     </section>
     <!-- Section: Genres -->
     <section class="admin-section" id="genre-section">
-        <h3 class="section-title">Thể loại</h3>
+        <div class="section-header-flex">
+            <h3 class="section-title">Thể loại</h3>
+            <button type="button" class="btn btn-success btn-sm btn-add-genre" data-bs-toggle="modal" data-bs-target="#addGenreModal">
+                <i class="bi bi-plus-circle"></i> Thêm thể loại
+            </button>
+        </div>
         <div class="table-responsive">
             <table class="table table-bordered table-hover genre-table">
                 <thead class="table-light">
@@ -107,6 +112,29 @@
                     }
                 </tbody>
             </table>
+        </div>
+        <!-- Modal Add Genre -->
+        <div class="modal fade" id="addGenreModal" tabindex="-1" aria-labelledby="addGenreModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form method="post" asp-controller="Story" asp-action="AddGenre">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addGenreModalLabel">Thêm thể loại mới</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="genreName" class="form-label">Tên thể loại</label>
+                                <input type="text" class="form-control" id="genreName" name="genreName" required maxlength="255" autocomplete="off" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            <button type="submit" class="btn btn-success">Thêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </section>
 </div>

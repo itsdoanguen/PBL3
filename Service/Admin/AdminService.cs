@@ -151,26 +151,26 @@ namespace PBL3.Service.Admin
         public async Task<AdminManageSystemViewModel> GetManageSystemStatsAsync()
         {
             // Lấy danh sách user
-            var users = await _context.Users
+            var users = await _context.Users.Where(u => u.Role != UserModel.UserRole.Admin)
                 .Select(u => new UserInfo
                 {
                     Id = u.UserID,
-                    UserName = u.DisplayName ?? string.Empty,
+                    UserName = u.DisplayName ?? "[]",
                     Email = u.Email,
                     Role = u.Role.ToString(),
                     TotalWarnings = u.TotalWarning,
-                    IsActive = u.Status == Models.UserModel.UserStatus.Active
+                    IsActive = u.Status == UserModel.UserStatus.Active
                 })
                 .ToListAsync();
 
             // Lấy danh sách truyện đang hoạt động
             var activeStories = await _context.Stories
-                .Where(s => s.Status == Models.StoryModel.StoryStatus.Active)
+                .Where(s => s.Status == StoryModel.StoryStatus.Active)
                 .Select(s => new StoryInfo
                 {
                     Id = s.StoryID,
                     Title = s.Title,
-                    Author = s.Author != null ? s.Author.DisplayName ?? "[Ẩn]" : "[Ẩn]",
+                    Author = s.Author != null ? s.Author.DisplayName ?? "[]" : "[]",
                     ChapterCount = _context.Chapters.Count(c => c.StoryID == s.StoryID),
                     Status = s.Status.ToString()
                 })
@@ -178,12 +178,12 @@ namespace PBL3.Service.Admin
 
             // Lấy danh sách truyện đã hoàn thành
             var completedStories = await _context.Stories
-                .Where(s => s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Where(s => s.Status == StoryModel.StoryStatus.Completed)
                 .Select(s => new StoryInfo
                 {
                     Id = s.StoryID,
                     Title = s.Title,
-                    Author = s.Author != null ? s.Author.DisplayName ?? "[Ẩn]" : "[Ẩn]",
+                    Author = s.Author != null ? s.Author.DisplayName ?? "[]" : "[]",
                     ChapterCount = _context.Chapters.Count(c => c.StoryID == s.StoryID),
                     Status = s.Status.ToString()
                 })

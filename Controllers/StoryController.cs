@@ -209,6 +209,21 @@ namespace PBL3.Controllers
             TempData["SuccessMessage"] = "Mở khóa truyện thành công!";
             return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
         }
+        //POST: Story/AddGenre
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddGenre(string genreName)
+        {
+            var (isSuccess, errorMessage) = await _storyService.AddNewGenreAsync(genreName);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("ManageSystem", "Admin");
+            }
+            TempData["SuccessMessage"] = "Thêm thể loại mới thành công!";
+            return RedirectToAction("ManageSystem", "Admin");
+        }
         //METHOD
         private List<GerneVM> GetAvailbleGenres()
         {

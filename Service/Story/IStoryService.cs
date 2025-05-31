@@ -12,5 +12,6 @@ namespace PBL3.Service.Story
         Task<(bool isSuccess, string errorMessage)> LockStoryAsync(int storyID, string message, int moderatorId);
         Task<(bool isSuccess, string errorMessage)> UnlockStoryAsync(int storyID, bool isAccepted, string message, int moderatorId);
         Task<(bool isSuccess, string errorMessage)> PendingReviewAsync(int storyID, int currentUserId);
+        Task<(bool isSuccess, string errorMessage)> AddNewGenreAsync(string genreName);
     }
 }

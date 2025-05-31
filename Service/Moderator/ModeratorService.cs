@@ -121,6 +121,18 @@ namespace PBL3.Service.Moderator
             {
                 return (false, "Không tìm thấy người dùng.");
             }
+            if (user.Role == Models.UserModel.UserRole.Admin)
+            {
+                return (false, "Bạn thực sự cố ban 1 Admin à?");
+            }
+            if (user.Status == Models.UserModel.UserStatus.Banned)
+            {
+                return (false, "Người dùng đã bị cấm trước đó.");
+            }
+            if (userId == moderatorId)
+            {
+                return (false, "Bạn không thể ban chính mình.");
+            }
             user.Status = Models.UserModel.UserStatus.Banned;
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
