@@ -1,0 +1,50 @@
+@model List<PBL3.ViewModels.Admin.StoryInfo>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover story-table">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Tên truyện</th>
+                <th>Tác giả</th>
+                <th>Số chương</th>
+                <th>Trạng thái</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model[i].Title</td>
+                    <td>@Model[i].Author</td>
+                    <td>@Model[i].ChapterCount</td>
+                    <td>
+                        @if(Model[i].Status == PBL3.Models.StoryModel.StoryStatus.Active.ToString())
+                        {
+                            <span class="badge bg-success">Đang hoạt động</span>
+                        }
+                        else if (Model[i].Status == PBL3.Models.StoryModel.StoryStatus.Completed.ToString())
+                        {
+                            <span class="badge bg-secondary">Hoàn thành</span>
+                        }
+                        else if (Model[i].Status == PBL3.Models.StoryModel.StoryStatus.Locked.ToString())
+                        {
+                            <span class="badge bg-danger">Đã khóa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">Chờ duyệt</span>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-detail" href="@Url.Action("ViewStory", "Moderator", new { id = Model[i].Id })">Chi tiết</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <nav>
+        <ul class="pagination justify-content-center"></ul>
+    </nav>
+</div>

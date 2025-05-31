@@ -1,24 +1,16 @@
 ﻿@{
-    Layout = ViewBag.LayoutPath ?? "~/Views/Shared/_AuthenticationLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
     ViewData["Title"] = "Lỗi trang";
 }
 
 <div class="text-center mt-5">
     <h1 class="display-4 text-danger">@ViewBag.StatusCode ?? "Error"</h1>
     <p class="lead">Trang bạn tìm kiếm không tồn tại hoặc bạn không có quyền truy cập.</p>
-    @if (ViewBag.UserRole == PBL3.Models.UserModel.UserRole.User.ToString())
+    @if(ViewBag.UserRole != null)
     {
         <a asp-action="Index" asp-controller="User" class="btn btn-primary mt-3">Quay lại trang chủ</a>
-    }
-    else if (ViewBag.UserRole == PBL3.Models.UserModel.UserRole.Admin.ToString())
-    {
-        <a asp-action="Index" asp-controller="Admin" class="btn btn-primary mt-3">Quay lại trang chủ</a>
-    }
-    else if (ViewBag.UserRole == PBL3.Models.UserModel.UserRole.Moderator.ToString())
-    {
-        <a asp-action="Index" asp-controller="Moderator" class="btn btn-primary mt-3">Quay lại trang chủ</a>
-    }
-    else
+	} 
+    else 
     {
         <a asp-action="Index" asp-controller="Authentication" class="btn btn-primary mt-3">Quay lại trang chủ</a>
     }
