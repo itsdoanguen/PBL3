@@ -11,5 +11,6 @@ namespace PBL3.Service.User
         Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId);
         Task<(bool isSuccess, string errorMessage, UserProfileViewModel? updatedProfile)> UpdateUserProfileAsync(int userId, UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload);
         Task ToggleUpdateUserRoleAsync(int userId);
+        Task<(bool isSuccess, string errorMessage)> ChangePasswordAsync(int userId, string oldPassword, string newPassword);
     }
 }

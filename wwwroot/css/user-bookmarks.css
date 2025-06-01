@@ -1,0 +1,63 @@
+/* Bookmarks Page Styles */
+.user-bookmarks-container {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 4px 24px rgba(0,123,255,0.10);
+	padding: 32px 24px;
+	margin-top: 32px;
+	max-width: 900px;
+}
+.bookmark-story-card {
+	background: #f8faff;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(0,123,255,0.07);
+	padding: 18px 18px 8px 18px;
+	border: 1.5px solid #e3f0ff;
+	transition: box-shadow 0.18s, border 0.18s;
+}
+.bookmark-story-card:hover {
+	box-shadow: 0 6px 24px rgba(0,123,255,0.13);
+	border-color: #007bff;
+}
+.bookmark-story-header {
+	gap: 12px;
+}
+.bookmark-story-cover {
+	width: 56px;
+	height: 70px;
+	object-fit: cover;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.bookmark-chapter-list {
+	margin-top: 10px;
+}
+.btn-toggle-chapters {
+	border-radius: 20px;
+	font-weight: 500;
+	padding: 6px 18px;
+}
+.list-group-item {
+	font-size: 1.01rem;
+}
+.bookmark-chapter-link {
+	transition: background 0.15s, color 0.15s;
+	border-radius: 6px;
+}
+.bookmark-chapter-link:hover, .bookmark-chapter-link:focus {
+	background: #e3f0ff;
+	color: #007bff;
+	text-decoration: underline;
+}
+@media (max-width: 768px) {
+	.user-bookmarks-container {
+		padding: 12px 2px;
+	}
+	.bookmark-story-card {
+		padding: 10px 6px 4px 6px;
+	}
+	.bookmark-story-cover {
+		width: 40px;
+		height: 48px;
+	}
+}

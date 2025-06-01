@@ -1,0 +1,34 @@
+@model PBL3.ViewModels.FollowStory.FollowStoryViewModel
+@{
+    ViewData["Title"] = "Truyện theo dõi";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/user-followstories.css" asp-append-version="true" />
+<script src="~/js/user-followstories.js" asp-append-version="true"></script>
+<div class="container py-5 user-followstories-container">
+    <h2 class="mb-4 text-center">Truyện đang theo dõi</h2>
+    @if (Model.FollowedStories == null || !Model.FollowedStories.Any())
+    {
+        <div class="alert alert-info text-center">Bạn chưa theo dõi truyện nào!</div>
+    }
+    else
+    {
+        <div id="followStoryList">
+            @foreach (var item in Model.FollowedStories)
+            {
+                <div class="follow-story-card mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="@item.StoryCoverImageUrl" class="follow-story-cover" alt="@item.StoryTitle" />
+                        <div>
+                            <h5 class="mb-1">@item.StoryTitle</h5>
+                            <a href="/Story/View/@item.StoryID" class="btn btn-outline-primary btn-sm mt-1">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center" id="followPagination"></ul>
+        </nav>
+    }
+</div>

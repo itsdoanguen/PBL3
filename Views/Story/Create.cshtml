@@ -41,21 +41,22 @@
 			</div>
 
 			<!-- Thể loại -->
-			<div class="mb-3">
-				<label for="Genres" class="form-label">Thể loại</label>
-				<div>
-					@foreach (var genre in Model.availbleGenres)
+			<div class="mb-3 position-relative">
+				<label class="form-label">Thể loại</label>
+				<div id="genreTagList" class="genre-tag-list">
+					@foreach (var genre in Model.availbleGenres.Where(g => g.IsSelected))
 					{
-						<div class="form-check">
-							<input type="checkbox" class="form-check-input"
-								   name="GenreIDs" value="@genre.GenreID"
-								   id="genre_@genre.GenreID"
-							@(genre.IsSelected ? "checked" : "")>
-
-							<label class="form-check-label" for="genre_@genre.GenreID">
-								@genre.Name
-							</label>
-						</div>
+						<span class="genre-tag" data-genre-id="@genre.GenreID">
+							@genre.Name <button type="button" class="remove-genre" title="Xóa">&times;</button>
+						</span>
+					}
+					<span class="ms-1"><button type="button" class="btn-add-genre" id="btnAddGenre" title="Thêm thể loại"><i class="bi bi-plus"></i></button></span>
+				</div>
+				<input type="hidden" name="GenreIDs" id="GenreIDsInput" value="@string.Join(",", Model.GenreIDs)" />
+				<div id="genreDropdown" class="genre-dropdown">
+					@foreach (var genre in Model.availbleGenres.Where(g => !g.IsSelected))
+					{
+						<div class="genre-dropdown-item" data-genre-id="@genre.GenreID">@genre.Name</div>
 					}
 				</div>
 				<span asp-validation-for="GenreIDs" class="text-danger"></span>
@@ -66,6 +67,9 @@
 		</div>
 	</form>
 </div>
+
+<link rel="stylesheet" href="~/css/story-create.css" asp-append-version="true" />
+<script src="~/js/story-create.js" asp-append-version="true"></script>
 
 <script>
 	function previewImage(input) {

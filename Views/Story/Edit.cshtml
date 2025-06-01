@@ -6,58 +6,63 @@
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";  
 }
 
-<div class="container py-5">
-    <h2>Edit Story</h2>
+<link rel="stylesheet" href="~/css/story-edit.css" asp-append-version="true" />
+<script src="~/js/story-edit.js" asp-append-version="true"></script>
 
+<div class="container py-5 story-edit-container">
+    <h2>Chỉnh sửa truyện</h2>
     <form asp-action="Edit" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="StoryID" />
-
         <div class="mb-3">
             <label asp-for="Title" class="form-label"></label>
             <input asp-for="Title" class="form-control" />
             <span asp-validation-for="Title" class="text-danger"></span>
         </div>
-
         <div class="mb-3">
             <label asp-for="Description" class="form-label"></label>
             <textarea asp-for="Description" class="form-control" rows="4"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-
-        <div class="mb-3">
-            <label class="form-label">Genres</label>
-            <div class="d-flex flex-wrap gap-2">
-                @foreach (var genre in Model.AvailableGenres)
+        <!-- Thể loại -->
+        <div class="mb-3 position-relative">
+            <label class="form-label">Thể loại</label>
+            <div id="genreTagList" class="genre-tag-list">
+                @foreach (var genre in Model.AvailableGenres.Where(g => Model.GenreIDs.Contains(g.GenreID)))
                 {
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="GenreIDs" value="@genre.GenreID" @(Model.GenreIDs.Contains(genre.GenreID) ? "checked" : "") />
-                        <label class="form-check-label">@genre.Name</label>
-                    </div>
+                    <span class="genre-tag" data-genre-id="@genre.GenreID">
+                        @genre.Name <button type="button" class="remove-genre" title="Xóa">&times;</button>
+                    </span>
+                }
+                <span class="ms-1"><button type="button" class="btn-add-genre" id="btnAddGenre" title="Thêm thể loại"><i class="bi bi-plus"></i></button></span>
+            </div>
+            <input type="hidden" name="GenreIDs" id="GenreIDsInput" value="@string.Join(",", Model.GenreIDs)" />
+            <div id="genreDropdown" class="genre-dropdown">
+                @foreach (var genre in Model.AvailableGenres.Where(g => !Model.GenreIDs.Contains(g.GenreID)))
+                {
+                    <div class="genre-dropdown-item" data-genre-id="@genre.GenreID">@genre.Name</div>
                 }
             </div>
+            <span asp-validation-for="GenreIDs" class="text-danger"></span>
         </div>
-
         <div class="mb-3">
-            <label asp-for="StoryStatus" class="form-label"></label>
+            <label class="form-label">Trạng thái truyện</label>
             <select asp-for="StoryStatus" class="form-select">
-                <option value="0">Inactive (Draft)</option>
-                <option value="1">Active (Published)</option>
+                <option value="1">Đang xuất bản</option>
+                <option value="0">Bản thảo</option>
+                <option value="2">Đã hoàn thành</option>
             </select>
         </div>
-
         <div class="mb-3">
-            <label class="form-label">Cover Image</label><br />
-            <img src="@Model.CoverImage" alt="Cover" style="max-height:200px;" class="mb-2" /><br />
+            <label class="form-label">Ảnh bìa</label><br />
+            <img src="@Model.CoverImage" alt="Cover" class="mb-2 story-cover-preview" /><br />
             <input type="file" name="UploadCover" class="form-control" />
         </div>
-
         <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-dark btn-modern">💾 Save Changes</button>
-            <a asp-action="EditDetail" asp-route-storyId="@Model.StoryID" class="btn btn-secondary btn-modern">Cancel</a>
+            <button type="submit" class="btn btn-dark btn-modern">💾 Lưu thay đổi</button>
+            <a asp-action="EditDetail" asp-route-storyId="@Model.StoryID" class="btn btn-secondary btn-modern">Hủy</a>
         </div>
     </form>
 </div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

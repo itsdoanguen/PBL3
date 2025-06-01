@@ -1,0 +1,54 @@
+@{
+    ViewData["Title"] = "Thư viện của tôi";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
+<div class="container py-5 user-library-container">
+    <h2 class="mb-4 text-center">Thư viện của tôi</h2>
+    <div class="row justify-content-center g-4 flex-column align-items-center">
+        <div class="col-12 mb-4">
+            <a href="@Url.Action("Bookmarks", "User")" class="library-card library-card-vertical">
+                <div class="library-card-icon bg-primary text-white">
+                    <i class="bi bi-bookmark-star"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">Truyện đã lưu</h4>
+                    <p class="mb-0 text-muted">Xem danh sách các truyện bạn đã bookmark.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 mb-4">
+            <a href="@Url.Action("FollowStories", "User")" class="library-card library-card-vertical">
+                <div class="library-card-icon bg-success text-white">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">Truyện theo dõi</h4>
+                    <p class="mb-0 text-muted">Xem các truyện bạn đang theo dõi cập nhật mới.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 mb-4">
+            <a href="@Url.Action("LibraryFollow", "User")" class="library-card library-card-vertical">
+                <div class="library-card-icon bg-info text-white">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">Theo dõi</h4>
+                    <p class="mb-0 text-muted">Quản lý người bạn đang theo dõi và người theo dõi bạn.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-12 mb-4">
+            <a href="@Url.Action("LikedChapters", "LikeChapter")" class="library-card library-card-vertical">
+                <div class="library-card-icon bg-warning text-white">
+                    <i class="bi bi-hand-thumbs-up"></i>
+                </div>
+                <div>
+                    <h4 class="mb-1">Chương đã thích</h4>
+                    <p class="mb-0 text-muted">Xem các chương bạn đã like, gộp theo truyện.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>

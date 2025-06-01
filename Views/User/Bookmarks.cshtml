@@ -1,0 +1,53 @@
+@model PBL3.ViewModels.Bookmark.BookmarkViewModel
+@{
+    ViewData["Title"] = "Truyện đã lưu";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<link rel="stylesheet" href="~/css/user-bookmarks.css" asp-append-version="true" />
+<script src="~/js/user-bookmarks.js" asp-append-version="true"></script>
+<div class="container py-5 user-bookmarks-container">
+    <h2 class="mb-4 text-center">Truyện đã lưu</h2>
+    @if (Model.BookmarkedStories == null || !Model.BookmarkedStories.Any())
+    {
+        <div class="alert alert-info text-center">Bạn chưa bookmark chương nào!</div>
+    }
+    else
+    {
+        var grouped = Model.BookmarkedStories.GroupBy(b => b.StoryID).ToList();
+        <div id="bookmarkStoryList">
+            @foreach (var group in grouped)
+            {
+                var first = group.First();
+                <div class="bookmark-story-card mb-3 py-4" data-story-id="@first.StoryID">
+                    <div class="d-flex align-items-center justify-content-between bookmark-story-header">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="@first.StoryCoverImageUrl" class="bookmark-story-cover" alt="@first.StoryTitle" />
+                            <div>
+                                <h5 class="mb-1">@first.StoryTitle</h5>
+                                <span class="text-muted">@group.Count() chương đã lưu</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm btn-toggle-chapters" type="button" data-bs-toggle="collapse" data-bs-target="#bookmarkChapters_@first.StoryID" aria-expanded="false">
+                            <i class="bi bi-chevron-down"></i> Xem chương
+                        </button>
+                    </div>
+                    <div class="collapse bookmark-chapter-list" id="bookmarkChapters_@first.StoryID">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in group)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center p-0">
+                                    <a href="/Chapter/ReadChapter/@item.ChapterID" class="d-block w-100 px-3 py-2 text-decoration-none text-dark bookmark-chapter-link">
+                                        @item.ChapterTitle
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center" id="bookmarkPagination"></ul>
+        </nav>
+    }
+</div>

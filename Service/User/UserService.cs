@@ -156,5 +156,25 @@ namespace PBL3.Service.User
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<(bool isSuccess, string errorMessage)> ChangePasswordAsync(int userId, string oldPassword, string newPassword)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return (false, "Không tìm thấy người dùng.");
+
+            // Giả sử user.PasswordHash là trường lưu hash mật khẩu
+            if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
+                return (false, "Mật khẩu cũ không đúng.");
+
+            // Kiểm tra độ mạnh mật khẩu mới (ví dụ: ít nhất 6 ký tự)
+            if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
+                return (false, "Mật khẩu mới phải có ít nhất 6 ký tự.");
+
+            // Có thể thêm kiểm tra phức tạp hơn nếu cần
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            return (true, "Đổi mật khẩu thành công.");
+        }
     }
 }

@@ -1,0 +1,84 @@
+@model PBL3.ViewModels.FollowUser.UserFollowListViewModel
+@using System.Linq
+@{
+    ViewData["Title"] = "Người dùng theo dõi";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var followingIds = Model.FollowingUsers.Select(u => u.UserID).ToHashSet();
+}
+<link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
+<div class="container py-5 user-library-container">
+    <h2 class="mb-4 text-center">Quản lý theo dõi</h2>
+    <ul class="nav nav-tabs mb-4" id="followTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="following-tab" data-bs-toggle="tab" data-bs-target="#following" type="button" role="tab">Đang theo dõi</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="follower-tab" data-bs-toggle="tab" data-bs-target="#follower" type="button" role="tab">Người theo dõi mình</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="followTabContent">
+        <div class="tab-pane fade show active" id="following" role="tabpanel">
+            @if (Model.FollowingUsers.Count == 0)
+            {
+                <div class="alert alert-info">Bạn chưa theo dõi ai.</div>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var user in Model.FollowingUsers)
+                    {
+                        <li class="list-group-item px-0">
+                            <a href="@Url.Action("ViewProfile", "User", new { id = user.UserID })" class="user-follow-card flex-row align-items-center text-decoration-none text-dark">
+                                <img src="@user.AvatarUrl" class="user-avatar" alt="avatar" />
+                                <div class="user-info">
+                                    <h5>@user.UserName</h5>
+                                    <p class="text-muted">@user.ShortBio</p>
+                                </div>
+
+                                <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="ms-auto d-inline-block" style="margin-left:8px;">
+                                    <input type="hidden" name="followingId" value="@user.UserID" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Hủy theo dõi</button>
+                                </form>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        <div class="tab-pane fade" id="follower" role="tabpanel">
+            @if (Model.FollowerUsers.Count == 0)
+            {
+                <div class="alert alert-info">Chưa có ai theo dõi bạn.</div>
+            }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var user in Model.FollowerUsers)
+                    {
+                        <li class="list-group-item px-0">
+                            <a href="@Url.Action("ViewProfile", "User", new { id = user.UserID })" class="user-follow-card flex-row align-items-center text-decoration-none text-dark">
+                                <img src="@user.AvatarUrl" class="user-avatar" alt="avatar" />
+                                <div class="user-info">
+                                    <h5>@user.UserName</h5>
+                                    <p class="text-muted">@user.ShortBio</p>
+                                </div>
+
+                                @if (followingIds.Contains(user.UserID))
+                                {
+                                    <button type="button" class="btn btn-success btn-sm ms-auto" disabled>Đã theo dõi</button>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="ms-auto d-inline-block" style="margin-left:8px;">
+                                        <input type="hidden" name="followingId" value="@user.UserID" />
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Theo dõi lại</button>
+                                    </form>
+                                }
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+    </div>
+</div>

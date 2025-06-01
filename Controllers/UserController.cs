@@ -134,6 +134,12 @@ namespace PBL3.Controllers
             return View(stories);
         }
 
+        //GET: User/Library
+        public async Task<IActionResult> Library()
+        {
+            return View();
+        }
+
         //GET: User/Bookmarks
         public async Task<IActionResult> Bookmarks()
         {
@@ -173,6 +179,53 @@ namespace PBL3.Controllers
             }
 
             return RedirectToAction("ManageSystem", "Admin");
+        }
+
+        //GET: User/ChangePassword
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        //POST: User/ChangePassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        {
+            if (string.IsNullOrWhiteSpace(oldPassword) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ModelState.AddModelError(string.Empty, "Vui lòng nhập đầy đủ thông tin.");
+                return View();
+            }
+            if (newPassword != confirmPassword)
+            {
+                ModelState.AddModelError("", "Mật khẩu mới và xác nhận không khớp.");
+                return View();
+            }
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var (isSuccess, errorMessage) = await _userService.ChangePasswordAsync(currentUserID, oldPassword, newPassword);
+            if (!isSuccess)
+            {
+                ModelState.AddModelError("", errorMessage);
+                return View();
+            }
+            TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+            return RedirectToAction("MyProfile");
+        }
+
+        //GET: User/LibraryFollow
+        public async Task<IActionResult> LibraryFollow()
+        {
+            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var following = await _followService.GetFollowingUsersAsync(currentUserID);
+            var followers = await _followService.GetFollowerUsersAsync(currentUserID);
+            var model = new PBL3.ViewModels.FollowUser.UserFollowListViewModel
+            {
+                FollowingUsers = following,
+                FollowerUsers = followers
+            };
+            return View(model);
         }
     }
 }

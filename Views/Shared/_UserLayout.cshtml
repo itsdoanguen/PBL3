@@ -90,6 +90,7 @@
                                 <li><a class="dropdown-item" asp-controller="User" asp-action="MyProfile">Hồ sơ</a></li>
                                 <li><a class="dropdown-item" asp-controller="User" asp-action="MyStories">Truyện của tôi</a></li>
                                 <li><a class="dropdown-item" asp-controller="History" asp-action="Index">Lịch sử</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Library">Thư viện</a></li>
                                 <li><a class="dropdown-item" href="#">Cài đặt</a></li>
                                 @if (User.IsInRole("Admin"))
                                 {
@@ -106,7 +107,7 @@
         </header>
 
         <!-- Dynamic Content -->
-        <main class="content">
+        <main class="content" style="margin-bottom:40px">
             @RenderBody()
         </main>
 
