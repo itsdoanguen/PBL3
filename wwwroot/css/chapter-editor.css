@@ -1,0 +1,61 @@
+/* Chapter Editor Custom Styles */
+.chapter-editor-container {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 4px 24px rgba(0,123,255,0.10);
+	padding: 32px 24px;
+	margin-top: 32px;
+}
+.chapter-title-input {
+	font-size: 1.3rem;
+	font-weight: bold;
+	border: none;
+	border-bottom: 2px solid #007bff;
+	border-radius: 0;
+	background: #f8faff;
+	box-shadow: none;
+	margin-bottom: 18px;
+	transition: border-color 0.2s;
+}
+.chapter-title-input:focus {
+	border-color: #0056b3;
+	background: #f0f6ff;
+	outline: none;
+}
+.chapter-editor-toolbar {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 8px;
+}
+.chapter-editor-toolbar button {
+	background: #f1f7ff;
+	border: 1px solid #cce0ff;
+	color: #007bff;
+	border-radius: 6px;
+	padding: 6px 12px;
+	font-size: 1.1rem;
+	cursor: pointer;
+	transition: background 0.15s, color 0.15s;
+}
+.chapter-editor-toolbar button.active,
+.chapter-editor-toolbar button:hover {
+	background: #007bff;
+	color: #fff;
+}
+.chapter-content-area {
+	min-height: 350px;
+	background: #f8faff;
+	border-radius: 10px;
+	border: 1.5px solid #e3f0ff;
+	padding: 18px 16px;
+	font-size: 1.08rem;
+	line-height: 1.7;
+	font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+	transition: border-color 0.2s;
+	resize: vertical;
+}
+.chapter-content-area:focus {
+	border-color: #007bff;
+	background: #f0f6ff;
+	outline: none;
+}

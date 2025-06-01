@@ -1,0 +1,70 @@
+/* My Stories Page Custom Styles */
+.my-stories-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 2rem;
+}
+.my-stories-header h2 {
+	font-weight: bold;
+	color: #007bff;
+	margin-bottom: 0;
+}
+.btn-create-story {
+	background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
+	color: #fff;
+	font-weight: 600;
+	border-radius: 24px;
+	padding: 10px 28px;
+	box-shadow: 0 2px 8px rgba(0,123,255,0.10);
+	transition: background 0.2s, box-shadow 0.2s;
+	border: none;
+}
+.btn-create-story:hover {
+	background: linear-gradient(90deg, #0072ff 0%, #00c6ff 100%);
+	color: #fff;
+	box-shadow: 0 4px 16px rgba(0,123,255,0.18);
+}
+.card.my-story-card {
+	transition: transform 0.18s, box-shadow 0.18s;
+	border-radius: 18px;
+	box-shadow: 0 4px 18px rgba(0,123,255,0.08);
+	border: none;
+	background: #fff;
+}
+.card.my-story-card:hover {
+	transform: translateY(-6px) scale(1.03);
+	box-shadow: 0 8px 32px rgba(0,123,255,0.16);
+}
+.card-img-top {
+	border-radius: 18px 18px 0 0;
+	object-fit: cover;
+	height: 180px;
+}
+.card-title {
+	font-size: 1.1rem;
+	font-weight: bold;
+	color: #222;
+}
+.card-text {
+	font-size: 0.97rem;
+}
+.btn-edit-story {
+	border-radius: 20px;
+	font-weight: 500;
+	padding: 6px 18px;
+	transition: background 0.18s, color 0.18s;
+}
+.btn-edit-story:hover {
+	background: #007bff;
+	color: #fff;
+}
+@media (max-width: 768px) {
+	.my-stories-header {
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.card.my-story-card {
+		margin-bottom: 1.5rem;
+	}
+}

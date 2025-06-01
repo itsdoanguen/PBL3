@@ -1,0 +1,89 @@
+/* Story Create Page Custom Styles */
+.story-create-container {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 4px 24px rgba(0,123,255,0.08);
+	padding: 32px 24px;
+	margin-top: 32px;
+}
+.story-cover-preview {
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+	max-height: 320px;
+	object-fit: cover;
+}
+.genre-tag-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 8px;
+}
+.genre-tag {
+	background: #e3f0ff;
+	color: #007bff;
+	border-radius: 16px;
+	padding: 4px 14px 4px 10px;
+	font-size: 0.98rem;
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	transition: background 0.18s;
+	border: none;
+}
+.genre-tag .remove-genre {
+	background: none;
+	border: none;
+	color: #007bff;
+	font-size: 1.1em;
+	margin-left: 2px;
+	cursor: pointer;
+	transition: color 0.15s;
+}
+.genre-tag .remove-genre:hover {
+	color: #dc3545;
+}
+.btn-add-genre {
+	background: #fff;
+	color: #007bff;
+	border: 2px dashed #007bff;
+	border-radius: 50%;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.3rem;
+	cursor: pointer;
+	transition: background 0.18s, color 0.18s;
+}
+.btn-add-genre:hover {
+	background: #007bff;
+	color: #fff;
+}
+.genre-dropdown {
+	position: absolute;
+	z-index: 10;
+	background: #fff;
+	border: 1px solid #e3f0ff;
+	border-radius: 12px;
+	box-shadow: 0 2px 12px rgba(0,123,255,0.10);
+	padding: 8px 0;
+	min-width: 180px;
+	max-height: 220px;
+	overflow-y: auto;
+	top: 40px;
+	left: 0;
+	display: none;
+}
+.genre-dropdown.show {
+	display: block;
+}
+.genre-dropdown-item {
+	padding: 8px 18px;
+	cursor: pointer;
+	transition: background 0.15s;
+	color: #007bff;
+}
+.genre-dropdown-item:hover {
+	background: #e3f0ff;
+}

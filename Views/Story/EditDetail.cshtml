@@ -121,7 +121,7 @@
 
                 <form asp-action="Delete" asp-controller="Story" method="post" style="display:inline;">
                     <input type="hidden" name="StoryID" value="@Model.StoryID" />
-                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa truyện này không?');">🗑️ Xóa</button>
+                    <button type="submit" class="btn btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa truyện này không?');">🗑️ Xóa</button>
                 </form>
 
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)

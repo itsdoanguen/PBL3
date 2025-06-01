@@ -5,6 +5,9 @@
     ViewData["Title"] = "Truyện của tôi";
 }
 
+<link rel="stylesheet" href="~/css/my-stories.css" asp-append-version="true" />
+<script src="~/js/my-stories.js" asp-append-version="true"></script>
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
@@ -14,9 +17,9 @@
 
 
 <div class="container py-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 my-stories-header">
         <h2 class="mb-0">Truyện của tôi</h2>
-        <a class="btn btn-success" asp-controller="Story" asp-action="Create">Viết truyện mới</a>
+        <a class="btn btn-success btn-create-story" asp-controller="Story" asp-action="Create">Viết truyện mới</a>
     </div>
 
     @if (Model == null || !Model.Any())
@@ -27,35 +30,38 @@
     }
     else
     {
-        <div class="row row-cols-1 row-cols-md-4 g-4">
-            <!-- Giảm số lượng card trong mỗi hàng -->
-            @foreach (var story in Model)
+        <div id="myStoriesList" class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var story in Model.Select((s, idx) => new { s, idx }))
             {
                 <div class="col">
-                    <div class="card shadow-sm h-100 border-0 rounded-3">
-                        <img src="@story.Cover" class="card-img-top rounded-top" alt="@story.Title" style="object-fit: cover; height: 180px;"> <!-- Giảm kích thước ảnh -->
+                    <div class="card my-story-card shadow-sm h-100 border-0 rounded-3" data-story-idx="@story.idx">
+                        <img src="@story.s.Cover" class="card-img-top rounded-top" alt="@story.s.Title" style="object-fit: cover; height: 180px;">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">@story.Title</h5>
-                            <p class="card-text text-muted">Cập nhật: @(story.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có cập nhật")</p>
-                            <p class="card-text">Trạng thái: 
+                            <h5 class="card-title">@story.s.Title</h5>
+                            <p class="card-text text-muted">Cập nhật: @(story.s.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có cập nhật")</p>
+                            <p class="card-text">Trạng thái:
                                 <strong>
-                                    @if (story.Status == PBL3.Models.StoryModel.StoryStatus.Active)
+                                    @if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Active)
                                     {
                                         @:Đang thực hiện
-                                    } else
+                                    }
+                                    else
                                     {
                                         @:Bản thảo
                                     }
                                 </strong>
                             </p>
-                            <p class="card-text">Chương: @story.TotalChapters</p>
+                            <p class="card-text">Chương: @story.s.TotalChapters</p>
                             <div class="mt-auto">
-                                <a href="/Story/EditDetail/@story.StoryID" class="btn btn-outline-secondary btn-sm">Chỉnh sửa</a>
+                                <a href="/Story/EditDetail/@story.s.StoryID" class="btn btn-outline-secondary btn-sm btn-edit-story">Chỉnh sửa</a>
                             </div>
                         </div>
                     </div>
                 </div>
             }
         </div>
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center" id="myStoriesPagination"></ul>
+        </nav>
     }
 </div>
