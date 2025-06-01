@@ -41,5 +41,14 @@ namespace PBL3.Controllers
                 id = chapterId
             });
         }
+
+        // GET: LikeChapter/LikedChapters
+        [HttpGet]
+        public async Task<IActionResult> LikedChapters()
+        {
+            var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            var likedChapters = await _likeChapterService.GetLikedChaptersByUserAsync(currentUserId);
+            return View(likedChapters);
+        }
     }
 }
