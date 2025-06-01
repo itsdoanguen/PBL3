@@ -9,8 +9,10 @@ namespace PBL3.Service.Bookmark
     public class BookmarkService : IBookmarkService
     {
         private readonly ApplicationDbContext _context;
-        public BookmarkService(ApplicationDbContext context)
+        private readonly BlobService _blobService;
+        public BookmarkService(ApplicationDbContext context, BlobService blobService)
         {
+            _blobService = blobService;
             _context = context;
         }
 
@@ -69,7 +71,7 @@ namespace PBL3.Service.Bookmark
             var items = await (from b in _context.Bookmarks
                                join c in _context.Chapters on b.ChapterID equals c.ChapterID
                                join s in _context.Stories on c.StoryID equals s.StoryID
-                               where b.UserID == userId
+                               where b.UserID == userId && (s.Status == StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.Completed) 
                                select new BookmarkItemViewModel
                                {
                                    StoryID = s.StoryID,
@@ -80,6 +82,10 @@ namespace PBL3.Service.Bookmark
 
                                }).ToListAsync();
 
+            foreach (var item in items)
+            {
+                item.StoryCoverImageUrl = await _blobService.GetSafeImageUrlAsync(item.StoryCoverImageUrl ?? string.Empty);
+            }
             return new BookmarkViewModel
             {
                 UserID = userId,

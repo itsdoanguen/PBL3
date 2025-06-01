@@ -1,0 +1,42 @@
+/* Follow Stories Page Styles */
+.user-followstories-container {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 4px 24px rgba(0,123,255,0.10);
+	padding: 32px 24px;
+	margin-top: 32px;
+	max-width: 900px;
+}
+.follow-story-card {
+	background: #f8faff;
+	border-radius: 14px;
+	box-shadow: 0 2px 10px rgba(0,123,255,0.07);
+	padding: 18px 18px 8px 18px;
+	border: 1.5px solid #e3f0ff;
+	transition: box-shadow 0.18s, border 0.18s;
+	display: flex;
+	align-items: center;
+}
+.follow-story-card:hover {
+	box-shadow: 0 6px 24px rgba(0,123,255,0.13);
+	border-color: #28a745;
+}
+.follow-story-cover {
+	width: 56px;
+	height: 70px;
+	object-fit: cover;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+@media (max-width: 768px) {
+	.user-followstories-container {
+		padding: 12px 2px;
+	}
+	.follow-story-card {
+		padding: 10px 6px 4px 6px;
+	}
+	.follow-story-cover {
+		width: 40px;
+		height: 48px;
+	}
+}

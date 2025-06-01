@@ -3,6 +3,7 @@ using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Notification;
 using PBL3.ViewModels.FollowStory;
+using PBL3.ViewModels.FollowUser;
 
 namespace PBL3.Service.Follow
 {
@@ -10,10 +11,12 @@ namespace PBL3.Service.Follow
     {
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
-        public FollowService(ApplicationDbContext context, INotificationService notificationService)
+        private readonly BlobService _blobService;
+        public FollowService(ApplicationDbContext context, INotificationService notificationService, BlobService blobService)
         {
             _context = context;
             _notificationService = notificationService;
+            _blobService = blobService;
         }
 
         public async Task<(bool isSuccess, string Message)> FollowStoryAsync(int userId, int storyId)
@@ -51,7 +54,7 @@ namespace PBL3.Service.Follow
         {
             var items = await (from f in _context.FollowStories
                                join s in _context.Stories on f.StoryID equals s.StoryID
-                               where f.UserID == userid
+                               where f.UserID == userid && (s.Status == StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.ReviewPending)
                                select new FollowStoryItemsViewModel
                                {
                                    StoryID = s.StoryID,
@@ -59,6 +62,10 @@ namespace PBL3.Service.Follow
                                    StoryCoverImageUrl = s.CoverImage
                                }).ToListAsync();
 
+            foreach (var item in items)
+            {
+                item.StoryCoverImageUrl = await _blobService.GetSafeImageUrlAsync(item.StoryCoverImageUrl ?? string.Empty);
+            }
             return new FollowStoryViewModel
             {
                 UserID = userid,
@@ -105,6 +112,44 @@ namespace PBL3.Service.Follow
         public async Task<int> CountUserFollowingsAsync(int userId)
         {
             return await _context.FollowUsers.CountAsync(f => f.FollowerID == userId);
+        }
+
+        public async Task<List<UserFollowItemViewModel>> GetFollowingUsersAsync(int userId)
+        {
+            var users = await (from f in _context.FollowUsers
+                              join u in _context.Users on f.FollowingID equals u.UserID
+                              where f.FollowerID == userId
+                              select new UserFollowItemViewModel
+                              {
+                                  UserID = u.UserID,
+                                  UserName = u.DisplayName ?? u.Email,
+                                  AvatarUrl = u.Avatar,
+                                  ShortBio = u.Bio
+                              }).ToListAsync();
+            foreach (var user in users)
+            {
+                user.AvatarUrl = await _blobService.GetSafeImageUrlAsync(user.AvatarUrl ?? string.Empty);
+            }
+            return users;
+        }
+
+        public async Task<List<UserFollowItemViewModel>> GetFollowerUsersAsync(int userId)
+        {
+            var users = await (from f in _context.FollowUsers
+                              join u in _context.Users on f.FollowerID equals u.UserID
+                              where f.FollowingID == userId
+                              select new UserFollowItemViewModel
+                              {
+                                  UserID = u.UserID,
+                                  UserName = u.DisplayName ?? u.Email,
+                                  AvatarUrl = u.Avatar,
+                                  ShortBio = u.Bio
+                              }).ToListAsync();
+            foreach (var user in users)
+            {
+                user.AvatarUrl = await _blobService.GetSafeImageUrlAsync(user.AvatarUrl ?? string.Empty);
+            }
+            return users;
         }
     }
 }

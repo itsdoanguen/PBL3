@@ -1,4 +1,5 @@
 using PBL3.ViewModels.FollowStory;
+using PBL3.ViewModels.FollowUser;
 
 namespace PBL3.Service.Follow
 {
@@ -17,5 +18,7 @@ namespace PBL3.Service.Follow
         Task<bool> IsFollowingUserAsync(int followerId, int followingId);
         Task<int> CountUserFollowersAsync(int userId);
         Task<int> CountUserFollowingsAsync(int userId);
+        Task<List<UserFollowItemViewModel>> GetFollowingUsersAsync(int userId);
+        Task<List<UserFollowItemViewModel>> GetFollowerUsersAsync(int userId);
     }
 }
