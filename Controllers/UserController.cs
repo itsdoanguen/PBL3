@@ -252,38 +252,29 @@ namespace PBL3.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.Email))
+            var (isSuccess, message) = await _userService.ForgotPasswordAsync(
+                model.Email,
+                async (toEmail, newPassword, displayName) =>
+                {
+                    await SendResetPasswordEmail(toEmail, newPassword, displayName);
+                });
+            if (!isSuccess)
             {
-                ModelState.AddModelError("Email", "Vui lòng nhập email đã đăng ký.");
+                if (string.IsNullOrWhiteSpace(model.Email))
+                    ModelState.AddModelError("Email", message);
+                else
+                    TempData["ErrorMessage"] = message;
                 return View(model);
             }
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-            if (user == null)
-            {
-                TempData["ErrorMessage"] = "Email không tồn tại trong hệ thống.";
-                return View(model);
-            }
-            // Random mật khẩu mới
-            var newPassword = GenerateRandomPassword(8);
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            await SendResetPasswordEmail(user.Email, newPassword, user.DisplayName);
             // Nếu người dùng đang đăng nhập, đăng xuất họ ra
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             }
-            TempData["SuccessMessage"] = "Mật khẩu mới đã được gửi về email của bạn. Vui lòng đăng nhập lại.";
+            TempData["SuccessMessage"] = message;
             return RedirectToAction("Login", "Authentication");
         }
-
-        private string GenerateRandomPassword(int length = 8)
-        {
-            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
-            var random = new Random();
-            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
-        }
+        
         // Hàm gửi email
         private async Task SendResetPasswordEmail(string toEmail, string newPassword, string? displayName = null)
         {
