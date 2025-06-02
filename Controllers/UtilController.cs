@@ -21,6 +21,7 @@ namespace PBL3.Controllers
         }
 
         // Tìm kiếm theo tên truyện hiện tại
+        //GET: /Util/Search?tenTruyen={}&page={}
         public async Task<IActionResult> Search(string? tenTruyen, int page = 1)
         {
             List<SearchByTitleStory> results = await _searchService.SearchByTitleAsync(tenTruyen, page, PageSize);
@@ -28,8 +29,7 @@ namespace PBL3.Controllers
         }
 
         // Tìm kiếm nâng cao
-        // URL: /Util/AdvancedSearch?page=1
-        [HttpGet]
+        // GET: /Util/AdvancedSearch?page=1
         public async Task<IActionResult> AdvancedSearch([FromQuery] StoryFilterModel filter, int page = 1)
         {
             if (filter == null) filter = new StoryFilterModel();
@@ -54,8 +54,8 @@ namespace PBL3.Controllers
             ViewBag.StatusList = new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "--Chọn--" },
-                new SelectListItem { Value = "Active", Text = "Active" },
-                new SelectListItem { Value = "Completed", Text = "Completed" }
+                new SelectListItem { Value = "Active", Text = "Đang tiến hành" },
+                new SelectListItem { Value = "Completed", Text = "Đã hoàn thành" }
             };
 
             return View(results);

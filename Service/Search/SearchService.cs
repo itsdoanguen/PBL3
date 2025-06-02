@@ -1,18 +1,17 @@
 ﻿using PBL3.Data;
 using PBL3.ViewModels.Search;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PBL3.Service.Search
 {
     public class SearchService : ISearchService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly BlobService _blobService;
 
-        public SearchService(ApplicationDbContext dbContext)
+        public SearchService(ApplicationDbContext dbContext, BlobService blobService)
         {
+            _blobService = blobService;
             _dbContext = dbContext;
         }
 
@@ -41,10 +40,13 @@ namespace PBL3.Service.Search
                     AuthorName = s.Author != null ? s.Author.DisplayName ?? "Unknown" : "Unknown",
                     Status = s.Status.ToString(),
                     CreatedAt = s.CreatedAt,
-                    Genres = s.Genres.Select(g => g.Genre.Name).ToList()
+                    Genres = s.Genres == null ? new List<string>() : s.Genres.Where(g => g != null && g.Genre != null && g.Genre.Name != null).Select(g => g.Genre.Name).ToList()
                 })
                 .ToListAsync();
-
+            foreach (var story in results)
+            {
+                story.CoverImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage ?? string.Empty);
+            }
             return results;
         }
 
@@ -58,10 +60,11 @@ namespace PBL3.Service.Search
                 query = query.Where(s => EF.Functions.Like(s.Title, $"%{filter.TenTruyen}%"));
             }
 
-            // Bỏ lọc theo GenreId, chỉ dùng lọc tên thể loại
-            if (!string.IsNullOrWhiteSpace(filter.GenreName))
+            // Lọc theo nhiều thể loại nếu có
+            var genreNames = filter.GenreNames ?? new List<string>();
+            if (genreNames.Any())
             {
-                query = query.Where(s => s.Genres.Any(g => EF.Functions.Like(g.Genre.Name, $"%{filter.GenreName}%")));
+                query = query.Where(s => s.Genres != null && s.Genres.Any(g => g.Genre != null && genreNames.Contains(g.Genre.Name)));
             }
 
             if (filter.CreatedFrom.HasValue)
@@ -90,9 +93,8 @@ namespace PBL3.Service.Search
             // Bỏ lọc theo AuthorId, chỉ dùng lọc theo tên tác giả
             if (!string.IsNullOrWhiteSpace(filter.AuthorName))
             {
-                query = query.Where(s => EF.Functions.Like(s.Author.DisplayName, $"%{filter.AuthorName}%"));
+                query = query.Where(s => s.Author != null && EF.Functions.Like(s.Author.DisplayName ?? "", $"%{filter.AuthorName}%"));
             }
-
             var results = await query
                 .Include(s => s.Author)
                 .Include(s => s.Genres)
@@ -108,9 +110,14 @@ namespace PBL3.Service.Search
                     AuthorName = s.Author != null ? s.Author.DisplayName ?? "Unknown" : "Unknown",
                     Status = s.Status.ToString(),
                     CreatedAt = s.CreatedAt,
-                    Genres = s.Genres.Select(g => g.Genre.Name).ToList()
+                    Genres = s.Genres == null ? new List<string>() : s.Genres.Where(g => g != null && g.Genre != null && g.Genre.Name != null).Select(g => g.Genre.Name).ToList()
                 })
                 .ToListAsync();
+
+            foreach (var story in results)
+            {
+                story.CoverImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage ?? string.Empty);
+            }
 
             return results;
         }
