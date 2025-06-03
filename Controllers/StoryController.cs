@@ -229,6 +229,21 @@ namespace PBL3.Controllers
             TempData["SuccessMessage"] = "Thêm thể loại mới thành công!";
             return RedirectToAction("ManageSystem", "Admin");
         }
+        //POST: Story/DeleteGenre
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteGenre(int genreId)
+        {
+            var (isSuccess, errorMessage) = await _storyService.DeleteGenreAsync(genreId);
+            if (!isSuccess)
+            {
+                TempData["ErrorMessage"] = errorMessage;
+                return RedirectToAction("ManageSystem", "Admin");
+            }
+            TempData["SuccessMessage"] = "Xóa thể loại thành công!";
+            return RedirectToAction("ManageSystem", "Admin");
+        }
 
         //GET: Story/AllStories?query
         public async Task<IActionResult> AllStories(string? query = null, int page = 1, int pageSize = 10)
@@ -243,7 +258,7 @@ namespace PBL3.Controllers
             List<UserStoryCardViewModel> stories = new List<UserStoryCardViewModel>();
             if (string.IsNullOrEmpty(query))
             {
-                query = "updated"; 
+                query = "updated";
             }
             switch (query.ToLower())
             {

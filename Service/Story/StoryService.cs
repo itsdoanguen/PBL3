@@ -308,5 +308,19 @@ namespace PBL3.Service.Story
 
             return (true, "Thể loại mới đã được thêm thành công");
         }
+        public async Task<(bool isSuccess, string errorMessage)> DeleteGenreAsync(int genreId)
+        {
+            var genre = await _context.Genres.FirstOrDefaultAsync(g => g.GenreID == genreId);
+            if (genre == null)
+            {
+                return (false, "Thể loại không tồn tại");
+            }
+            
+            var relatedStoryGenres = _context.StoryGenres.Where(sg => sg.GenreID == genreId);
+            _context.StoryGenres.RemoveRange(relatedStoryGenres);
+            _context.Genres.Remove(genre);
+            await _context.SaveChangesAsync();
+            return (true, "Đã xóa thể loại thành công");
+        }
     }
 }

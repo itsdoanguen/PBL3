@@ -207,5 +207,22 @@ namespace PBL3.Controllers
             var replies = await _commentService.GetRepliesAsync(type, id, parentCommentId);
             return PartialView("_RepliesPartial", replies);
         }
+
+        // POST: Chapter/UpdateChapterOrder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateChapterOrder(int chapterId, int storyId, int newOrder)
+        {
+            var success = await _chapterService.UpdateChapterOrderAsync(chapterId, storyId, newOrder);
+            if (!success)
+            {
+                TempData["ErrorMessage"] = "Không thể cập nhật thứ tự chương.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Cập nhật thứ tự chương thành công!";
+            }
+            return RedirectToAction("EditDetail", "Story", new { id = storyId });
+        }
     }
 }

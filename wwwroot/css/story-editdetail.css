@@ -1,0 +1,68 @@
+/* story-editdetail.css */
+.badge-modern {
+    background-color: #1f1f1f;
+    color: white;
+    font-weight: 500;
+    padding: 0.6em 1em;
+    border-radius: 999px;
+}
+
+.btn-modern {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+.btn-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.chapter-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+.chapter-table td, .chapter-table th {
+    vertical-align: middle;
+}
+.chapter-table tr:hover {
+    background-color: #f1f1f1;
+}
+h2, h3 {
+    font-weight: 700;
+    color: #111;
+}
+p {
+    color: #444;
+}
+.genre-badge {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 0.4em 0.8em;
+    border-radius: 8px;
+    margin-right: 0.5em;
+    font-size: 0.9em;
+}
+.order-form {
+    gap: 4px;
+}
+.order-input {
+    width: 60px;
+}
+.edit-order-btn {
+    color: #007bff;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.edit-order-btn:hover {
+    color: #0056b3;
+}
+.cancel-order-btn {
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.cancel-order-btn:hover {
+    color: #dc3545;
+}

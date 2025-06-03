@@ -14,5 +14,6 @@ namespace PBL3.Service.Chapter
         Task<(bool Success, string Message, int StoryId)> UpdateChapterStatusAsync(int chapterId, int currentUserId, string newStatus);
         Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId);
         int CountWordsInChapter(string content);
+        Task<bool> UpdateChapterOrderAsync(int chapterId, int storyId, int newOrder);
     }
 }

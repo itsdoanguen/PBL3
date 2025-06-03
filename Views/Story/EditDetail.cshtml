@@ -6,58 +6,6 @@
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
 }
 
-<style>
-    .badge-modern {
-        background-color: #1f1f1f;
-        color: white;
-        font-weight: 500;
-        padding: 0.6em 1em;
-        border-radius: 999px;
-    }
-
-    .btn-modern {
-        border-radius: 8px;
-        font-weight: 500;
-        transition: all 0.2s ease-in-out;
-    }
-
-        .btn-modern:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-        }
-
-    .chapter-table th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-    }
-
-    .chapter-table td, .chapter-table th {
-        vertical-align: middle;
-    }
-
-    .chapter-table tr:hover {
-        background-color: #f1f1f1;
-    }
-
-    h2, h3 {
-        font-weight: 700;
-        color: #111;
-    }
-
-    p {
-        color: #444;
-    }
-
-    .genre-badge {
-        background-color: #ff6b6b;
-        color: white;
-        padding: 0.4em 0.8em;
-        border-radius: 8px;
-        margin-right: 0.5em;
-        font-size: 0.9em;
-    }
-</style>
-
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
@@ -168,26 +116,26 @@
                     <th style="width: 110px">Ngày tạo</th>
                     <th style="width: 110px">Cập nhật</th>
                     <th style="width: 110px">Lượt xem</th>
+                    <th style="width: 90px">Thứ tự</th>
                     <th style="width: 110px">Trạng thái</th>
                     <th style="width: 170px">Hành động</th>
                 </tr>
             </thead>
             <tbody id="chapterTableBody">
-
                 <!-- Inline Add Chapter Row -->
                 <tr id="inlineChapterForm" style="display: none;">
                     <form id="createChapterForm" asp-controller="Chapter" asp-action="CreateChapter" method="post">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
-                    <td>-</td>
-                    <td><input type="text" name="Title" class="form-control" placeholder="Nhập tiêu đề chương..." required /></td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>0</td>
-                    <td>-</td>
-                    <td>
-                        <button type="submit" class="btn btn-sm btn-dark btn-modern">Lưu</button>
-                        <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Hủy</button>
-                    </td>
+                        <td>-</td>
+                        <td><input type="text" name="Title" class="form-control" placeholder="Nhập tiêu đề chương..." required /></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>0</td>
+                        <td>-</td>
+                        <td>
+                            <button type="submit" class="btn btn-sm btn-dark btn-modern">Lưu</button>
+                            <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Hủy</button>
+                        </td>
                     </form>
                 </tr>
 
@@ -204,6 +152,38 @@
                             <td>@chapter.CreatedAt.ToString("yyyy-MM-dd")</td>
                             <td>@(chapter.UpdatedAt?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                             <td>@chapter.ViewCount</td>
+                            <td>
+                                <span class="chapter-order-value">@chapter.ChapterOrder</span>
+                                @if (chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Active)
+                                {
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 edit-order-btn" data-bs-toggle="modal" data-bs-target="#orderModal-@chapter.ChapterID" title="Sửa thứ tự"><i class="bi bi-gear"></i></button>
+                                    <!-- Modal đổi thứ tự chương -->
+                                    <div class="modal fade" id="orderModal-@chapter.ChapterID" tabindex="-1" aria-labelledby="orderModalLabel-@chapter.ChapterID" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <form asp-action="UpdateChapterOrder" asp-controller="Chapter" method="post">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="orderModalLabel-@chapter.ChapterID">Đổi thứ tự chương</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <input type="hidden" name="chapterId" value="@chapter.ChapterID" />
+                                                        <input type="hidden" name="storyId" value="@Model.StoryID" />
+                                                        <div class="mb-3">
+                                                            <label for="newOrder-@chapter.ChapterID" class="form-label">Thứ tự mới</label>
+                                                            <input type="number" name="newOrder" id="newOrder-@chapter.ChapterID" min="1" max="@Model.Chapters.Count" value="@chapter.ChapterOrder" class="form-control" required />
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </td>
                             <td>
                                 @if (chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive)
                                 {
@@ -233,7 +213,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted">Chưa có chương nào. Bắt đầu bằng cách thêm chương mới!</td>
+                        <td colspan="8" class="text-center text-muted">Chưa có chương nào. Bắt đầu bằng cách thêm chương mới!</td>
                     </tr>
                 }
             </tbody>
@@ -241,49 +221,9 @@
     </div>
 </div>
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/story-editdetail.css" asp-append-version="true" />
+}
 @section Scripts {
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const formContainer = document.getElementById("inlineChapterForm");
-            const form = document.querySelector("#createChapterForm");
-            const toggleButton = document.getElementById("toggleAddChapter");
-            const cancelButton = document.getElementById("cancelAddChapter");
-
-            toggleButton.addEventListener("click", () => {
-                formContainer.style.display = "table-row";
-                toggleButton.style.display = "none";
-            });
-
-            cancelButton.addEventListener("click", () => {
-                formContainer.style.display = "none";
-                toggleButton.style.display = "inline-block";
-                form.reset();
-            });
-
-            form.addEventListener("submit", async function (e) {
-                e.preventDefault();
-
-                const formData = new FormData(form);
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: "POST",
-                        headers: {
-                            "X-Requested-With": "XMLHttpRequest"
-                        },
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        window.location.reload();
-                    } else {
-                        alert("Đã xảy ra lỗi trong quá trình tạo chương!");
-                    }
-                } catch (error) {
-                    console.error("Fetch error:", error);
-                    alert("Đã xảy ra lỗi trong quá trình tạo chương!");
-                }
-            });
-        });
-    </script>
+    <script src="~/js/story-editdetail.js" asp-append-version="true"></script>
 }
