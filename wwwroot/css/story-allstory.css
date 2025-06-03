@@ -1,0 +1,147 @@
+/* story-allstory.css */
+.story-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    border: 1.5px solid #e6e6e6;
+    transition: box-shadow 0.22s, border 0.18s;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+}
+.story-card:hover {
+    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    border: 1.5px solid #b2e0ff;
+    z-index: 2;
+}
+.story-cover {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.card-title {
+    font-size: 1.13rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
+}
+.card-text {
+    font-size: 0.97rem;
+    color: #444;
+}
+.badge {
+    font-size: 0.89rem;
+    padding: 0.35em 0.7em;
+    border-radius: 0.7em;
+    font-weight: 500;
+}
+#storyFilter {
+    min-width: 180px;
+    border-radius: 6px;
+    border: 1px solid #b2e0ff;
+    background: #fafdff;
+    font-weight: 500;
+}
+@media (max-width: 768px) {
+    .col-md-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    .story-cover {
+        height: 160px;
+    }
+}
+@media (max-width: 576px) {
+    .col-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+    .story-cover {
+        height: 120px;
+    }
+}
+.story-popup {
+    min-width: 320px;
+    max-width: 370px;
+    background: #232b3b;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.32);
+    padding: 20px 22px 18px 22px;
+    font-size: 1.03rem;
+    pointer-events: none;
+    opacity: 0.98;
+    transition: opacity 0.18s, left 0.18s, top 0.18s;
+    position: absolute;
+    z-index: 9999;
+    display: none;
+    border: 2.5px solid #4fc3f7;
+}
+.story-popup img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.13);
+}
+.story-popup h5 {
+    font-size: 1.13rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #fff;
+    letter-spacing: 0.01em;
+}
+.story-popup .popup-meta {
+    font-size: 0.99rem;
+    margin-bottom: 7px;
+    color: #b2e0ff;
+    font-weight: 500;
+}
+.story-popup .popup-desc {
+    font-size: 0.98rem;
+    color: #e3f2fd;
+    margin-top: 10px;
+    line-height: 1.55;
+    max-height: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+@media (max-width: 576px) {
+    .story-popup {
+        min-width: 210px;
+        max-width: 97vw;
+        font-size: 0.96rem;
+        padding: 10px 8px;
+    }
+    .story-popup img {
+        height: 100px;
+    }
+}
+/* Nâng cấp phân trang */
+.pagination .page-item .page-link {
+    border-radius: 6px;
+    margin: 0 2px;
+    color: #1976d2;
+    border: 1px solid #b2e0ff;
+    background: #fafdff;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+}
+.pagination .page-item.active .page-link {
+    background: #4fc3f7;
+    color: #fff;
+    border-color: #4fc3f7;
+}
+.pagination .page-item .page-link:hover {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+/* Nâng cấp label filter */
+label.me-2 {
+    font-weight: 600;
+    color: #1976d2;
+    letter-spacing: 0.01em;
+}

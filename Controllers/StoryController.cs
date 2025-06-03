@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Chapter;
+using PBL3.Service.Discovery;
 using PBL3.Service.Story;
 using PBL3.ViewModels.Story;
+using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Controllers
 {
@@ -16,13 +18,15 @@ namespace PBL3.Controllers
         private readonly IChapterService _chapterService;
         private readonly IStoryService _storyService;
         private readonly IStoryQueryService _storyQueryService;
-        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IStoryService storyService, IStoryQueryService storyQueryService)
+        private readonly IStoryRankingService _storyRankingService;
+        public StoryController(ApplicationDbContext context, BlobService blobService, IChapterService chapterService, IStoryService storyService, IStoryQueryService storyQueryService, IStoryRankingService storyRankingService)
         {
             _context = context;
             _blobService = blobService;
             _chapterService = chapterService;
             _storyService = storyService;
             _storyQueryService = storyQueryService;
+            _storyRankingService = storyRankingService;
         }
 
         // GET: Story/View/{id}
@@ -176,8 +180,9 @@ namespace PBL3.Controllers
             TempData["SuccessMessage"] = "Đã gửi truyện chờ duyệt thành công!";
             return RedirectToAction("MyStories", "User");
         }
-            //POST: Story/Lock
-            [HttpPost]
+
+        //POST: Story/Lock
+        [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin,Moderator")]
         public async Task<IActionResult> Lock(int storyID, string message)
@@ -223,6 +228,46 @@ namespace PBL3.Controllers
             }
             TempData["SuccessMessage"] = "Thêm thể loại mới thành công!";
             return RedirectToAction("ManageSystem", "Admin");
+        }
+
+        //GET: Story/AllStories?query
+        public async Task<IActionResult> AllStories(string? query = "updated", int page = 1, int pageSize = 10)
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int currentUserID = 0;
+            if (!string.IsNullOrEmpty(userIdClaim))
+            {
+                currentUserID = int.Parse(userIdClaim);
+            }
+
+            List<UserStoryCardViewModel> stories = new List<UserStoryCardViewModel>();
+            switch (query.ToLower())
+            {
+            case "view":
+                    // Lấy truyện theo lượt xem
+                    stories = await _storyRankingService.GetStoriesByViewAsync();
+                    break;
+                case "follow":
+                    // Lấy truyện theo lượt follow
+                    // stories = await _storyRankingService.GetStoriesByFollowAsync(page, pageSize);
+                    break;
+                case "recommend":
+                    // Lấy truyện đề xuất cho user
+                    stories = await _storyRankingService.GetRecommendedStoryAsync(currentUserID);
+                    break;
+                case "wordcount":
+                    // Lấy truyện theo số lượng từ
+                    // stories = await _storyRankingService.GetStoriesByWordCountAsync(page, pageSize);
+                    break;
+                case "updated":
+                default:
+                    // Lấy truyện mới cập nhật
+                    // stories = await _storyRankingService.GetStoriesByUpdatedAsync(page, pageSize);
+                    break;
+            }
+
+            ViewBag.CurrentQuery = query;
+            return View(stories);
         }
         //METHOD
         private List<GerneVM> GetAvailbleGenres()
