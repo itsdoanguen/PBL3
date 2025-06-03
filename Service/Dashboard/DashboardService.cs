@@ -44,7 +44,8 @@ namespace PBL3.Service.Dashboard
                     ChapterCount = s.Story.Chapters.Count,
                     LastUpdated = s.Story.UpdatedAt,
                     AuthorName = s.Story.Author.DisplayName,
-                    ViewCount = s.TotalViews
+                    ViewCount = s.TotalViews,
+                    LikeCount = s.Story.Chapters.SelectMany(c => c.Likes).Count()
                 })
                 .ToListAsync();
 
@@ -74,7 +75,8 @@ namespace PBL3.Service.Dashboard
                     ChapterCount = s.Chapters.Count,
                     LastUpdated = s.UpdatedAt,
                     AuthorName = s.Author.DisplayName,
-                    ViewCount = s.Chapters.Sum(c => c.ViewCount)
+                    ViewCount = s.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count()
                 })
                 .ToListAsync();
 
@@ -110,7 +112,45 @@ namespace PBL3.Service.Dashboard
                     ChapterCount = s.Chapters.Count,
                     LastUpdated = s.UpdatedAt,
                     AuthorName = s.Author.DisplayName,
-                    ViewCount = s.Chapters.Sum(c => c.ViewCount)
+                    ViewCount = s.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count()
+                })
+                .ToListAsync();
+
+            // Update image URLs
+            foreach (var story in stories)
+            {
+                story.CoverImageUrl = await _blobService.GetSafeImageUrlAsync(story.CoverImageUrl);
+            }
+
+            return stories;
+        }
+
+        public async Task<List<StoryViewModel>> GetMostLikedStoriesAsync(int count = 16)
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == StoryStatus.Active)
+                .Select(s => new
+                {
+                    Story = s,
+                    TotalLikes = s.Chapters.SelectMany(c => c.Likes).Count()
+                })
+                .Where(s => s.TotalLikes > 0)
+                .OrderByDescending(s => s.TotalLikes)
+                .Take(count)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.Story.StoryID,
+                    Title = s.Story.Title,
+                    CoverImageUrl = s.Story.CoverImage ?? "/image/default-cover.jpg",
+                    IsHot = s.Story.Chapters.Sum(c => c.ViewCount) > 1000,
+                    IsNew = s.Story.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Story.Status == StoryStatus.Completed,
+                    ChapterCount = s.Story.Chapters.Count,
+                    LastUpdated = s.Story.UpdatedAt,
+                    AuthorName = s.Story.Author.DisplayName,
+                    ViewCount = s.Story.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.TotalLikes
                 })
                 .ToListAsync();
 
@@ -141,6 +181,7 @@ namespace PBL3.Service.Dashboard
                     LastUpdated = s.UpdatedAt,
                     AuthorName = s.Author.DisplayName,
                     ViewCount = s.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count(),
                     Categories = s.Genres
                         .Select(sg => new CategoryViewModel
                         {
@@ -186,7 +227,8 @@ namespace PBL3.Service.Dashboard
                     ChapterCount = s.Chapters.Count,
                     LastUpdated = s.UpdatedAt,
                     AuthorName = s.Author.DisplayName,
-                    ViewCount = s.Chapters.Sum(c => c.ViewCount)
+                    ViewCount = s.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count()
                 })
                 .ToListAsync();
 
@@ -230,6 +272,7 @@ namespace PBL3.Service.Dashboard
                     LastUpdated = s.UpdatedAt,
                     AuthorName = s.Author.DisplayName,
                     ViewCount = s.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count(),
                     LatestChapter = s.Chapters
                         .OrderByDescending(c => c.ChapterOrder)
                         .Select(c => new ChapterViewModel
@@ -299,6 +342,7 @@ namespace PBL3.Service.Dashboard
             {
                 HeaderMessage = "KHÁM PHÁ THẾ GIỚI TRUYỆN TIỂU THUYẾT CÙNG CHÚNG TÔI!",
                 HotStories = await GetHotStoriesAsync(),
+                MostLikedStories = await GetMostLikedStoriesAsync(),
                 NewStories = await GetNewStoriesAsync(),
                 CompletedStories = await GetCompletedStoriesAsync(),
                 AllCategories = await GetAllCategoriesAsync(),

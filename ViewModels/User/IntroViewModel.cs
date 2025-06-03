@@ -11,6 +11,9 @@ namespace PBL3.ViewModels.User
         // List of hot stories to display in the first section
         public List<StoryViewModel> HotStories { get; set; }
 
+        // List of most liked stories to display in the liked section
+        public List<StoryViewModel> MostLikedStories { get; set; }
+
         // List of new stories to display in the second section
         public List<StoryViewModel> NewStories { get; set; }
 
@@ -51,6 +54,7 @@ namespace PBL3.ViewModels.User
         public DateTime? LastUpdated { get; set; }
         public string AuthorName { get; set; }
         public int ViewCount { get; set; }
+        public int LikeCount { get; set; }
     }
 
     // View model for category items

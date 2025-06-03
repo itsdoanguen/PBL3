@@ -236,5 +236,50 @@ namespace PBL3.Controllers
             };
             return View(model);
         }
+
+        //GET: User/GetHotStoriesByCategory
+        [HttpGet]
+        public async Task<IActionResult> GetHotStoriesByCategory(int categoryId)
+        {
+            var stories = await _dashboardService.GetHotStoriesByCategoryAsync(categoryId, 20);
+            return PartialView("_HotStoriesPartial", stories);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> TestData()
+        {
+            try
+            {
+                // Test database connection
+                var storyCount = await _context.Stories.CountAsync();
+                var userCount = await _context.Users.CountAsync();
+                var genreCount = await _context.Genres.CountAsync();
+                var chapterCount = await _context.Chapters.CountAsync();
+
+                var testInfo = new
+                {
+                    DatabaseConnected = true,
+                    StoriesCount = storyCount,
+                    UsersCount = userCount,
+                    GenresCount = genreCount,
+                    ChaptersCount = chapterCount,
+                    Message = "Database connection successful"
+                };
+
+                return Json(testInfo);
+            }
+            catch (Exception ex)
+            {
+                var errorInfo = new
+                {
+                    DatabaseConnected = false,
+                    Error = ex.Message,
+                    Message = "Database connection failed"
+                };
+
+                return Json(errorInfo);
+            }
+        }
     }
 }
