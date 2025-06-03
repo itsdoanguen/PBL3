@@ -164,7 +164,8 @@ namespace PBL3.Service.Story
                 Chapters = await GetChapterForStoryAsync(storyID),
                 IsFollowed = await _context.FollowStories
                     .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
-                Rating = await RatingStoryAsync(storyID)
+                Rating = await RatingStoryAsync(storyID),
+                LastReadAt = await LastReadAtAsync(currentUserID, storyID)
             };
 
             return viewModel;
@@ -249,13 +250,13 @@ namespace PBL3.Service.Story
 
             return rating;
         }
-        // private async Task<int> LastReadAtAsync(int userID, int storyID)
-        // {
-        //     var history = await _context.History
-        //         .Where(h => h.UserID == userID && h.StoryID == storyID)
-        //         .OrderByDescending(h => h.LastReadAt)
-        //         .FirstOrDefaultAsync();
-        //     return history?.ChapterID ?? 0; // Trả về 0 nếu không có lịch sử đọc
-        // }
+        private async Task<int> LastReadAtAsync(int userID, int storyID)
+        {
+            var history = await _context.Set<HistoryModel>()
+                .Where(h => h.UserID == userID && h.StoryID == storyID)
+                .OrderByDescending(h => h.LastReadAt)
+                .FirstOrDefaultAsync();
+            return history?.ChapterID ?? 0; 
+        }
     }
 }

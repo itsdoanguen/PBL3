@@ -6,7 +6,6 @@
     Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<!-- Link to external CSS file -->
 <link rel="stylesheet" href="~/css/user-profile.css" asp-append-version="true" />
 
 <!-- Banner -->
@@ -126,14 +125,14 @@
                         @foreach (var story in Model.Stories.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active))
                         {
                             <div class="col-md-6">
-                                <div class="story-card">
+                                <a href="@Url.Action("View", "Story", new { id = story.StoryID })" class="story-card text-decoration-none">
                                     <img src="@story.Cover" class="story-cover" alt="@story.Title">
                                     <div class="story-info">
                                         <h6>@story.Title</h6>
                                         <p><strong>Chương:</strong> @story.TotalChapters</p>
                                         <p><strong>Trạng thái:</strong> @story.Status</p>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         }
                     </div>
