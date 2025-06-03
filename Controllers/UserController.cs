@@ -16,6 +16,8 @@ using PBL3.Service;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Service.Bookmark;
 using PBL3.Service.Follow;
+using PBL3.Service.Dashboard;   
+
 
 namespace PBL3.Controllers
 {
@@ -31,8 +33,10 @@ namespace PBL3.Controllers
         private readonly IImageService _imageService;
         private readonly IBookmarkService _bookmarkService;
         private readonly IFollowService _followService;
+        private readonly IDashboardService _dashboardService;
+        
 
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService)
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService, IDashboardService dashboardService)
         {
             _context = context;
             _blobService = blobService;
@@ -40,14 +44,19 @@ namespace PBL3.Controllers
             _imageService = imageService;
             _bookmarkService = bookmarkService;
             _followService = followService;
+            _dashboardService = dashboardService;
         }
         //GET: User/Index
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            int? currentUserID = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
 
-            var viewModel = await _userService.GetUserIndexViewModelAsync(currentUserID);
+            var viewModel = await _dashboardService.GetDashboardDataAsync(currentUserID);
 
             return View(viewModel);
         }

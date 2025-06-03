@@ -1,7 +1,7 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
 @{
     ViewData["Title"] = Model.Title;
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
     ViewBag.CurrentUserID = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 }

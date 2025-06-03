@@ -1,231 +1,254 @@
 ﻿@{
+    ViewData["Title"] = "Chào mừng đến với PBL3";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Trang chủ";
+}
+
+@section Styles {
+    <link href="~/css/introduction.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 }
 
 <!-- Hero Section -->
-<section class="hero-section text-center py-5 bg-light w-100 vh-100 d-flex align-items-center">
-    <div class="container-fluid px-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">
-                    Chào mừng đến với thế giới truyện hấp dẫn
-                </h1>
-                <p class="hero-description lead mb-5 animate__animated animate__fadeIn" style="animation-delay: 0.3s">
-                    Khám phá hàng triệu câu chuyện thú vị từ nhiều thể loại khác nhau.
-                    Đồng hành để nhận những đề xuất truyện phù hợp với sở thích của bạn
-                </p>
-                <div class="d-flex justify-content-center gap-3 animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
-                    <a class="btn btn-dark btn-lg px-4 d-inline-flex align-items-center"
-                       asp-controller="Authentication"
-                       asp-action="Register">
-                        <i class="bi bi-compass me-2"></i>
-                        Khám phá
-                    </a>
-                    <a class="btn btn-outline-dark btn-lg px-4 d-inline-flex align-items-center border-2"
-                       asp-controller="Authentication"
-                       asp-action="Login">
-                        <i class="bi bi-box-arrow-in-right me-2"></i>
-                        Đăng nhập
-                    </a>
-                </div>
-            </div>
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="floating-elements">
+            <div class="floating-book book-1"><i class="fas fa-book"></i></div>
+            <div class="floating-book book-2"><i class="fas fa-book-open"></i></div>
+            <div class="floating-book book-3"><i class="fas fa-feather-alt"></i></div>
+            <div class="floating-book book-4"><i class="fas fa-scroll"></i></div>
+            <div class="floating-book book-5"><i class="fas fa-bookmark"></i></div>
         </div>
     </div>
-</section>
 
-<!-- Image Section Full Width -->
-<section class="w-100 py-5">
-    <div class="container-fluid px-0">
-        <div class="placeholder-image bg-light d-flex align-items-center justify-content-center w-100"
-             style="height: 500px;">
-            <div class="placeholder-icon text-secondary animate__animated animate__pulse animate__infinite">
-                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor"
-                     class="bi bi-image" viewBox="0 0 16 16">
-                    <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                    <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                </svg>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Feature Section Full Width -->
-<section class="bg-secondary py-5 text-white full-width-section">
-    <div class="container-fluid px-4">
-        <div class="row align-items-center">
-            <div class="col-md-6 pe-md-5">
-                <div class="ps-md-5">
-                    <h2 class="display-6 fw-bold mb-2 animate__animated animate__fadeInLeft">Khám phá</h2>
-                    <h3 class="h2 mb-4 animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
-                        Truyện Hay Nhất
-                    </h3>
-                    <p class="lead mb-5 animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
-                        Khám phá thế giới truyện phong phú với những thể loại đa dạng và hấp dẫn.
-                    </p>
-                    <div class="animate__animated animate__fadeInUp" style="animation-delay: 0.6s">
-                        <a href="#" class="btn btn-light btn-lg px-4 me-3">
-                            <i class="bi bi-eye me-2"></i>Xem
-                        </a>
-                        <a href="#" class="btn btn-outline-light btn-lg px-4">
-                            <i class="bi bi-person-plus me-2"></i>Đăng ký
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 mt-5 mt-md-0">
-                <div class="placeholder-image bg-dark d-flex align-items-center justify-content-center w-100
-                            animate__animated animate__fadeInRight"
-                     style="height: 400px;">
-                    <div class="placeholder-icon text-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor"
-                             class="bi bi-image" viewBox="0 0 16 16">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Featured Stories Section -->
-<section class="py-5 bg-light">
-    <div class="container-fluid px-0">
-        <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold mb-3">Truyện Nổi Bật</h2>
-            <p class="lead text-muted">Khám phá những câu chuyện được yêu thích nhất</p>
-        </div>
-
-        <div class="row g-4">
-            @for (int i = 1; i <= 3; i++)
-            {
-                <div class="col-md-4">
-                    <div class="card h-100 border-0 shadow-sm fade-up" style="animation-delay: @(i * 0.2)s">
-                        <img src="/images/story-@(i).jpg" class="card-img-top" alt="Story Cover">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">Tên Truyện @i</h5>
-                            <p class="card-text text-muted">Mô tả ngắn về nội dung truyện...</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <i class="bi bi-star-fill text-warning me-1"></i>
-                                    <span>4.@(i)</span>
-                                </div>
-                                <a href="#" class="btn btn-outline-primary">Đọc ngay</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</section>
-
-<!-- Categories Section -->
-<section class="py-5">
     <div class="container">
-        <h2 class="display-6 fw-bold text-center mb-5">Thể Loại Phổ Biến</h2>
-        <div class="row g-4">
-            @foreach (var category in new[] { "Tiên Hiệp", "Ngôn Tình", "Kiếm Hiệp", "Đô Thị", "Huyền Huyễn", "Xuyên Không" })
-            {
-                <div class="col-md-4 col-lg-2">
-                    <div class="card h-100 border-0 shadow-sm text-center fade-in">
-                        <div class="card-body">
-                            <i class="bi bi-book display-6 mb-3 text-primary"></i>
-                            <h5 class="card-title">@category</h5>
-                            <a href="#" class="stretched-link"></a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</section>
-
-<!-- Rankings Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-6 fw-bold mb-3">Bảng Xếp Hạng</h2>
-            <p class="lead text-muted">Những câu chuyện được yêu thích nhất</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm fade-up">
-                    <div class="card-body text-center">
-                        <i class="bi bi-heart-fill display-5 text-danger mb-3"></i>
-                        <h3 class="h4 fw-bold">Top Yêu Thích</h3>
-                        <p class="text-muted mb-4">Truyện được độc giả yêu thích nhất</p>
-                        <a href="#" class="btn btn-outline-danger">
-                            Xem thêm <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm fade-up" style="animation-delay: 0.2s">
-                    <div class="card-body text-center">
-                        <i class="bi bi-graph-up display-5 text-primary mb-3"></i>
-                        <h3 class="h4 fw-bold">Xu Hướng</h3>
-                        <p class="text-muted mb-4">Truyện đang hot trong cộng đồng</p>
-                        <a href="#" class="btn btn-outline-primary">
-                            Xem thêm <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card h-100 border-0 shadow-sm fade-up" style="animation-delay: 0.4s">
-                    <div class="card-body text-center">
-                        <i class="bi bi-clock-fill display-5 text-success mb-3"></i>
-                        <h3 class="h4 fw-bold">Mới Cập Nhật</h3>
-                        <p class="text-muted mb-4">Truyện mới nhất trong ngày</p>
-                        <a href="#" class="btn btn-outline-success">
-                            Xem thêm <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Call to Action -->
-<section class="py-5 bg-dark text-light text-center">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <h2 class="display-6 fw-bold mb-4">Bắt đầu viết câu chuyện của bạn</h2>
-                <p class="lead mb-4">Chia sẻ câu chuyện của bạn với hàng triệu độc giả</p>
-                <a href="#" class="btn btn-primary btn-lg">
-                    <i class="bi bi-pencil-square me-2"></i>Bắt đầu viết
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+            <h1 class="hero-title">
+                <span class="title-line">Khám Phá</span>
+                <span class="title-line highlight">Thế Giới Truyện</span>
+                <span class="title-line">Bất Tận</span>
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
+                Nơi hội tụ những câu chuyện tuyệt vời nhất, nơi bạn có thể đọc, chia sẻ và khám phá
+                vô vàn tác phẩm từ các tác giả tài năng trên khắp thế giới.
+            </p>
+            <div class="hero-actions" data-aos="fade-up" data-aos-delay="600">
+                <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Tham Gia Ngay
                 </a>
+                <a asp-controller="Authentication" asp-action="Login" class="btn btn-secondary">
+                    <i class="fas fa-compass"></i>
+                    Khám Phá Truyện
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-indicator" data-aos="fade-in" data-aos-delay="1000">
+        <div class="scroll-arrow">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <span>Cuộn xuống để khám phá</span>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Tại Sao Chọn Chúng Tôi?</h2>
+            <p class="section-subtitle">Những tính năng độc đáo giúp bạn có trải nghiệm đọc truyện tuyệt vời nhất</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-book-reader"></i>
+                </div>
+                <h3 class="feature-title">Đọc Mọi Lúc Mọi Nơi</h3>
+                <p class="feature-description">
+                    Giao diện tối ưu cho mọi thiết bị, cho phép bạn đọc truyện một cách thoải mái
+                    trên điện thoại, máy tính bảng hay máy tính.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Cộng Đồng Sôi Động</h3>
+                <p class="feature-description">
+                    Kết nối với hàng nghìn độc giả và tác giả, chia sẻ cảm xúc,
+                    bình luận và thảo luận về những câu chuyện yêu thích.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="feature-title">Gợi Ý Thông Minh</h3>
+                <p class="feature-description">
+                    Hệ thống AI thông minh giúp gợi ý những truyện phù hợp với
+                    sở thích của bạn, giúp bạn khám phá những tác phẩm mới.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">
+                    <i class="fas fa-pen-fancy"></i>
+                </div>
+                <h3 class="feature-title">Sáng Tác Tự Do</h3>
+                <p class="feature-description">
+                    Công cụ viết truyện mạnh mẽ với editor hiện đại,
+                    giúp bạn dễ dàng sáng tác và chia sẻ tác phẩm của mình.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon">
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <h3 class="feature-title">Quản Lý Cá Nhân</h3>
+                <p class="feature-description">
+                    Lưu trữ và quản lý danh sách truyện yêu thích,
+                    theo dõi tiến độ đọc và không bao giờ bỏ lỡ chương mới.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">An Toàn & Bảo Mật</h3>
+                <p class="feature-description">
+                    Hệ thống bảo mật cao cấp, bảo vệ thông tin cá nhân
+                    và tác phẩm của bạn một cách tuyệt đối.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-number">10,000+</div>
+                <div class="stat-label">Truyện Đa Dạng</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-number">50,000+</div>
+                <div class="stat-label">Độc Giả Tích Cực</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Tác Giả Tài Năng</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-number">1M+</div>
+                <div class="stat-label">Chương Đã Đăng</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2 class="cta-title">Sẵn Sàng Bắt Đầu Hành Trình?</h2>
+            <p class="cta-subtitle">
+                Tham gia cộng đồng của chúng tôi ngay hôm nay và khám phá thế giới truyện bất tận
+            </p>
+            <div class="cta-actions">
+                <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i>
+                    Đăng Ký Miễn Phí
+                </a>
+                <div class="login-link">
+                    Đã có tài khoản?
+                    <a asp-controller="Authentication" asp-action="Login">Đăng nhập ngay</a>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 @section Scripts {
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
-        // Add any custom JavaScript here
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize animations
-            const fadeElements = document.querySelectorAll('.fade-up, .fade-in');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.style.opacity = '1';
-                        entry.target.style.transform = 'translateY(0)';
-                    }
-                });
-            });
-
-            fadeElements.forEach(element => observer.observe(element));
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
         });
+
+        // Smooth scrolling for scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            document.querySelector('.features-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelectorAll('.floating-book');
+            const speed = 0.5;
+
+            parallax.forEach((element, index) => {
+                const yPos = -(scrolled * speed * (index + 1) * 0.1);
+                element.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Counter animation for statistics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+                const increment = target / 100;
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+
+                    // Format number with appropriate suffix
+                    let displayValue = Math.floor(current);
+                    if (target >= 1000000) {
+                        displayValue = (displayValue / 1000000).toFixed(1) + 'M+';
+                    } else if (target >= 1000) {
+                        displayValue = (displayValue / 1000).toFixed(0) + ',000+';
+                    } else {
+                        displayValue = displayValue.toLocaleString() + '+';
+                    }
+
+                    counter.textContent = displayValue;
+                }, 20);
+            });
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsSection = document.querySelector('.stats-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(statsSection);
     </script>
-}
+} 

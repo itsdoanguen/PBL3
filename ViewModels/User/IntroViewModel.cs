@@ -22,6 +22,18 @@ namespace PBL3.ViewModels.User
 
         // SelectList for category dropdown
         public SelectList CategorySelectList { get; set; }
+
+        // Top stories of the week
+        public List<StoryViewModel> TopStoriesOfWeek { get; set; }
+
+        // Followed stories (for authenticated users)
+        public List<StoryViewModel> FollowedStories { get; set; }
+
+        // Followed authors (for authenticated users)
+        public List<AuthorViewModel> FollowedAuthors { get; set; }
+
+        // Flag to indicate if user is authenticated
+        public bool IsAuthenticated { get; set; }
     }
 
     // View model for story items
@@ -36,6 +48,9 @@ namespace PBL3.ViewModels.User
         public int ChapterCount { get; set; }
         public List<CategoryViewModel> Categories { get; set; }
         public ChapterViewModel LatestChapter { get; set; }
+        public DateTime? LastUpdated { get; set; }
+        public string AuthorName { get; set; }
+        public int ViewCount { get; set; }
     }
 
     // View model for category items
@@ -52,4 +67,16 @@ namespace PBL3.ViewModels.User
         public int ChapterNumber { get; set; }
         public string Title { get; set; }
     }
-} 
+
+    // View model for author items
+    public class AuthorViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Avatar { get; set; }
+        public int TotalStories { get; set; }
+        public int TotalFollowers { get; set; }
+        public bool IsFollowed { get; set; }
+        public List<StoryViewModel> RecentStories { get; set; }
+    }
+}

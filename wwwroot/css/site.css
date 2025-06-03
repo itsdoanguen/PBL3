@@ -121,8 +121,9 @@ html, body {
     }
 
 .navbar-custom {
-    background-color: var(--dark-primary);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #2d2d2d 100%) !important;
+    border-bottom: 3px solid #ffd700;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .dropdown-menu-dark-custom {
@@ -290,6 +291,7 @@ html, body {
         display: none; /* Implement mobile menu separately */
     }
 }
+
 .full-width-section {
     width: 100vw;
     position: relative;
@@ -298,6 +300,7 @@ html, body {
     left: 0%;
     right: 20%;
 }
+
 .switch-theme-btn {
     width: 64px;
     height: 32px;
