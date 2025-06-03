@@ -9,5 +9,7 @@ namespace PBL3.Service.Discovery
         Task<List<UserStoryCardViewModel>> GetStoriesByViewAsync();
         Task<List<UserStoryCardViewModel>> GetStoriesByFollowAsync();
         Task<List<UserStoryCardViewModel>> GetStoriesByWordCountAsync();
+        Task<List<UserStoryCardViewModel>> GetStoriesByLikeAsync();
+        Task<List<UserStoryCardViewModel>> GetStoriesByUpdatedAsync();
     }
 }

@@ -105,10 +105,13 @@ namespace PBL3.Service.Discovery
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
-                .OrderByDescending(s => s.Chapters.Sum(c => c.ViewCount))
+                .Include(s => s.Followers)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
                 .ToListAsync();
+            var sorted = stories.OrderByDescending(s => s.Chapters.Sum(c => c.ViewCount)).ToList();
             var result = new List<UserStoryCardViewModel>();
-            foreach (var s in stories)
+            foreach (var s in sorted)
             {
                 result.Add(await ToUserStoryCardViewModel(s));
             }
@@ -134,11 +137,14 @@ namespace PBL3.Service.Discovery
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Include(s => s.Followers)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
                 .ToListAsync();
             var storyWordCounts = new List<(Models.StoryModel story, int wordCount)>();
             foreach (var s in stories)
             {
-                var chapters = await _context.Chapters.Where(c => c.StoryID == s.StoryID).ToListAsync();
+                var chapters = s.Chapters;
                 int totalWords = 0;
                 foreach (var chapter in chapters)
                 {
@@ -149,6 +155,39 @@ namespace PBL3.Service.Discovery
             var sorted = storyWordCounts.OrderByDescending(x => x.wordCount).Select(x => x.story).ToList();
             var result = new List<UserStoryCardViewModel>();
             foreach (var s in sorted)
+            {
+                result.Add(await ToUserStoryCardViewModel(s));
+            }
+            return result;
+        }
+
+        public async Task<List<UserStoryCardViewModel>> GetStoriesByLikeAsync()
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
+                .ToListAsync();
+            var sorted = stories.OrderByDescending(s => s.Chapters.Sum(c => c.Likes != null ? c.Likes.Count : 0)).ToList();
+            var result = new List<UserStoryCardViewModel>();
+            foreach (var s in sorted)
+            {
+                result.Add(await ToUserStoryCardViewModel(s));
+            }
+            return result;
+        }
+
+        public async Task<List<UserStoryCardViewModel>> GetStoriesByUpdatedAsync()
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Include(s => s.Followers)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
+                .OrderByDescending(s => s.UpdatedAt)
+                .ToListAsync();
+            var result = new List<UserStoryCardViewModel>();
+            foreach (var s in stories)
             {
                 result.Add(await ToUserStoryCardViewModel(s));
             }

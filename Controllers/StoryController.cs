@@ -231,7 +231,7 @@ namespace PBL3.Controllers
         }
 
         //GET: Story/AllStories?query
-        public async Task<IActionResult> AllStories(string? query = "updated", int page = 1, int pageSize = 10)
+        public async Task<IActionResult> AllStories(string? query = null, int page = 1, int pageSize = 10)
         {
             var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int currentUserID = 0;
@@ -241,9 +241,13 @@ namespace PBL3.Controllers
             }
 
             List<UserStoryCardViewModel> stories = new List<UserStoryCardViewModel>();
+            if (string.IsNullOrEmpty(query))
+            {
+                query = "updated"; 
+            }
             switch (query.ToLower())
             {
-            case "view":
+                case "view":
                     // Lấy truyện theo lượt xem
                     stories = await _storyRankingService.GetStoriesByViewAsync();
                     break;
@@ -259,10 +263,16 @@ namespace PBL3.Controllers
                     // Lấy truyện theo số lượng từ
                     stories = await _storyRankingService.GetStoriesByWordCountAsync();
                     break;
+                case "like":
+                    // Lấy truyện theo lượt thích 
+                    stories = await _storyRankingService.GetStoriesByLikeAsync();
+                    break;
                 case "updated":
-                default:
                     // Lấy truyện mới cập nhật
-                    // stories = await _storyRankingService.GetStoriesByUpdatedAsync(page, pageSize);
+                    stories = await _storyRankingService.GetStoriesByUpdatedAsync();
+                    break;
+                default:
+                    stories = await _storyRankingService.GetStoriesByUpdatedAsync();
                     break;
             }
 
