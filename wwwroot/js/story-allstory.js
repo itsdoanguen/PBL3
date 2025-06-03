@@ -40,7 +40,13 @@ document.addEventListener('DOMContentLoaded', function () {
             html += `<div class='popup-desc'>${desc || ''}</div>`;
             popup.innerHTML = html;
             popup.style.display = 'block';
-            popup.style.opacity = 1;
+            popup.style.opacity = 0;
+            popup.style.transition = 'opacity 0.18s, left 0.18s, top 0.18s, box-shadow 0.18s';
+            setTimeout(() => {
+                popup.style.opacity = 1;
+                popup.style.boxShadow = '0 12px 40px rgba(33,150,243,0.22)';
+                popup.style.transform = 'scale(1.03)';
+            }, 10);
             const popupRect = popup.getBoundingClientRect();
             let top = window.scrollY + rect.top;
             let left = window.scrollX + rect.right + 12; 
@@ -58,7 +64,9 @@ document.addEventListener('DOMContentLoaded', function () {
         card.addEventListener('mouseleave', function () {
             popupTimeout = setTimeout(function() {
                 popup.style.opacity = 0;
-                popup.style.display = 'none';
+                popup.style.transform = 'scale(0.98)';
+                popup.style.boxShadow = '0 2px 10px rgba(33,150,243,0.13)';
+                setTimeout(() => { popup.style.display = 'none'; }, 180);
             }, 120);
         });
     });

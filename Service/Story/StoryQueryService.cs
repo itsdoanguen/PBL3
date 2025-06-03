@@ -148,7 +148,7 @@ namespace PBL3.Service.Story
             {
                 StoryID = story.StoryID,
                 StoryName = story.Title,
-                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n","<br/>"),
+                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n", "<br/>"),
                 StoryImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 LastUpdated = story.UpdatedAt,
                 StoryStatus = story.Status,
@@ -186,7 +186,7 @@ namespace PBL3.Service.Story
         public async Task<List<ChapterInfo>> GetChapterForStoryAsync(int storyID)
         {
             var chapters = await _context.Chapters
-                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c=> c.ChapterOrder)
+                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c => c.ChapterOrder)
                 .Select(c => new ChapterInfo
                 {
                     ChapterID = c.ChapterID,
@@ -249,5 +249,13 @@ namespace PBL3.Service.Story
 
             return rating;
         }
+        // private async Task<int> LastReadAtAsync(int userID, int storyID)
+        // {
+        //     var history = await _context.History
+        //         .Where(h => h.UserID == userID && h.StoryID == storyID)
+        //         .OrderByDescending(h => h.LastReadAt)
+        //         .FirstOrDefaultAsync();
+        //     return history?.ChapterID ?? 0; // Trả về 0 nếu không có lịch sử đọc
+        // }
     }
 }

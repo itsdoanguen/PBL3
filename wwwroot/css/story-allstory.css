@@ -1,48 +1,64 @@
 /* story-allstory.css */
 .story-card {
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    border: 1.5px solid #e6e6e6;
-    transition: box-shadow 0.22s, border 0.18s;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    border: 1.5px solid #e3f2fd;
+    transition: box-shadow 0.22s, border 0.18s, transform 0.18s;
     overflow: hidden;
     background: #fff;
     position: relative;
 }
 .story-card:hover {
-    box-shadow: 0 8px 28px rgba(0,0,0,0.18);
-    border: 1.5px solid #b2e0ff;
-    z-index: 2;
+    box-shadow: 0 12px 32px rgba(33,150,243,0.18);
+    border: 1.5px solid #4fc3f7;
+    z-index: 3;
+    transform: translateY(-4px) scale(1.025);
 }
 .story-cover {
     width: 100%;
     height: 220px;
     object-fit: cover;
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-    border-bottom: 1px solid #f0f0f0;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom: 1px solid #e3f2fd;
+    transition: filter 0.18s;
+}
+.story-card:hover .story-cover {
+    filter: brightness(0.97) saturate(1.1);
 }
 .card-title {
-    font-size: 1.13rem;
+    font-size: 1.15rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
-    color: #1a1a1a;
+    color: #1976d2;
+    letter-spacing: 0.01em;
 }
 .card-text {
-    font-size: 0.97rem;
+    font-size: 0.99rem;
     color: #444;
 }
 .badge {
-    font-size: 0.89rem;
-    padding: 0.35em 0.7em;
-    border-radius: 0.7em;
-    font-weight: 500;
+    font-size: 0.93rem;
+    padding: 0.38em 0.8em;
+    border-radius: 0.8em;
+    font-weight: 600;
+    background: linear-gradient(90deg,#4fc3f7 60%,#1976d2 100%);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(33,150,243,0.08);
 }
 #storyFilter {
     min-width: 180px;
-    border-radius: 6px;
-    border: 1px solid #b2e0ff;
+    border-radius: 8px;
+    border: 1.5px solid #4fc3f7;
     background: #fafdff;
-    font-weight: 500;
+    font-weight: 600;
+    color: #1976d2;
+    box-shadow: 0 1px 4px rgba(33,150,243,0.07);
+    transition: border 0.15s;
+}
+#storyFilter:focus {
+    border: 1.5px solid #1976d2;
+    outline: none;
 }
 @media (max-width: 768px) {
     .col-md-3 {
@@ -59,7 +75,7 @@
         max-width: 100%;
     }
     .story-cover {
-        height: 120px;
+        height: 110px;
     }
 }
 .story-popup {
@@ -67,41 +83,46 @@
     max-width: 370px;
     background: #232b3b;
     color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.32);
-    padding: 20px 22px 18px 22px;
-    font-size: 1.03rem;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(33,150,243,0.22);
+    padding: 22px 24px 20px 24px;
+    font-size: 1.07rem;
     pointer-events: none;
     opacity: 0.98;
-    transition: opacity 0.18s, left 0.18s, top 0.18s;
+    transition: opacity 0.18s, left 0.18s, top 0.18s, box-shadow 0.18s;
     position: absolute;
     z-index: 9999;
     display: none;
     border: 2.5px solid #4fc3f7;
+    animation: popupFadeIn 0.22s cubic-bezier(.4,1.4,.6,1) 1;
+}
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 0.98; transform: none; }
 }
 .story-popup img {
     width: 100%;
     height: 180px;
     object-fit: cover;
-    border-radius: 8px;
+    border-radius: 10px;
     margin-bottom: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.13);
+    box-shadow: 0 2px 10px rgba(33,150,243,0.13);
 }
 .story-popup h5 {
-    font-size: 1.13rem;
+    font-size: 1.15rem;
     font-weight: bold;
     margin-bottom: 10px;
     color: #fff;
     letter-spacing: 0.01em;
 }
 .story-popup .popup-meta {
-    font-size: 0.99rem;
+    font-size: 1.01rem;
     margin-bottom: 7px;
-    color: #b2e0ff;
-    font-weight: 500;
+    color: #4fc3f7;
+    font-weight: 600;
 }
 .story-popup .popup-desc {
-    font-size: 0.98rem;
+    font-size: 0.99rem;
     color: #e3f2fd;
     margin-top: 10px;
     line-height: 1.55;
@@ -113,35 +134,35 @@
     .story-popup {
         min-width: 210px;
         max-width: 97vw;
-        font-size: 0.96rem;
+        font-size: 0.97rem;
         padding: 10px 8px;
     }
     .story-popup img {
-        height: 100px;
+        height: 90px;
     }
 }
-/* Nâng cấp phân trang */
 .pagination .page-item .page-link {
-    border-radius: 6px;
+    border-radius: 8px;
     margin: 0 2px;
     color: #1976d2;
-    border: 1px solid #b2e0ff;
+    border: 1.5px solid #4fc3f7;
     background: #fafdff;
-    font-weight: 500;
-    transition: background 0.15s, color 0.15s;
+    font-weight: 600;
+    transition: background 0.15s, color 0.15s, border 0.15s;
 }
 .pagination .page-item.active .page-link {
-    background: #4fc3f7;
+    background: linear-gradient(90deg,#4fc3f7 60%,#1976d2 100%);
     color: #fff;
     border-color: #4fc3f7;
 }
 .pagination .page-item .page-link:hover {
     background: #e3f2fd;
     color: #1976d2;
+    border-color: #1976d2;
 }
-/* Nâng cấp label filter */
 label.me-2 {
-    font-weight: 600;
+    font-weight: 700;
     color: #1976d2;
     letter-spacing: 0.01em;
+    font-size: 1.07rem;
 }
