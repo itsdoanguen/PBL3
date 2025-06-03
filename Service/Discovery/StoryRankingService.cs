@@ -114,5 +114,45 @@ namespace PBL3.Service.Discovery
             }
             return result;
         }
+
+        public async Task<List<UserStoryCardViewModel>> GetStoriesByFollowAsync()
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Include(s => s.Followers)
+                .ToListAsync();
+            var sorted = stories.OrderByDescending(s => s.Followers != null ? s.Followers.Count : 0).ToList();
+            var result = new List<UserStoryCardViewModel>();
+            foreach (var s in sorted)
+            {
+                result.Add(await ToUserStoryCardViewModel(s));
+            }
+            return result;
+        }
+
+        public async Task<List<UserStoryCardViewModel>> GetStoriesByWordCountAsync()
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .ToListAsync();
+            var storyWordCounts = new List<(Models.StoryModel story, int wordCount)>();
+            foreach (var s in stories)
+            {
+                var chapters = await _context.Chapters.Where(c => c.StoryID == s.StoryID).ToListAsync();
+                int totalWords = 0;
+                foreach (var chapter in chapters)
+                {
+                    totalWords += _chapterService.CountWordsInChapter(chapter.Content);
+                }
+                storyWordCounts.Add((s, totalWords));
+            }
+            var sorted = storyWordCounts.OrderByDescending(x => x.wordCount).Select(x => x.story).ToList();
+            var result = new List<UserStoryCardViewModel>();
+            foreach (var s in sorted)
+            {
+                result.Add(await ToUserStoryCardViewModel(s));
+            }
+            return result;
+        }
     }
 }

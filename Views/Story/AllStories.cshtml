@@ -33,7 +33,7 @@
         @foreach (var story in pagedStories)
         {
             <div class="col-6 col-md-3">
-                <div class="story-card card h-100 position-relative story-hover-card" data-title="@story.Title" data-cover="@story.Cover" data-words="@story.TotalWords" data-views="@story.TotalViews" data-likes="@story.TotalLikes" data-description="@story.Discription">
+                <div class="story-card card h-100 position-relative story-hover-card" data-title="@story.Title" data-cover="@story.Cover" data-words="@story.TotalWords" data-views="@story.TotalViews" data-likes="@story.TotalLikes" data-follow="@story.TotalFollowers" data-description="@story.Discription">
                     <a asp-controller="Story" asp-action="View" asp-route-id="@story.StoryID">
                         <img src="@story.Cover" class="card-img-top story-cover" alt="@story.Title" />
                     </a>

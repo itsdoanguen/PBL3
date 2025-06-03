@@ -249,7 +249,7 @@ namespace PBL3.Controllers
                     break;
                 case "follow":
                     // Lấy truyện theo lượt follow
-                    // stories = await _storyRankingService.GetStoriesByFollowAsync(page, pageSize);
+                    stories = await _storyRankingService.GetStoriesByFollowAsync();
                     break;
                 case "recommend":
                     // Lấy truyện đề xuất cho user
@@ -257,7 +257,7 @@ namespace PBL3.Controllers
                     break;
                 case "wordcount":
                     // Lấy truyện theo số lượng từ
-                    // stories = await _storyRankingService.GetStoriesByWordCountAsync(page, pageSize);
+                    stories = await _storyRankingService.GetStoriesByWordCountAsync();
                     break;
                 case "updated":
                 default:
