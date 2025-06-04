@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = Model.StoryName ?? "Chi tiết truyện";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
     ViewBag.CurrentUserID = userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
 }

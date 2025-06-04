@@ -1,1271 +1,775 @@
-﻿@model PBL3.ViewModels.User.UserIndexViewModel
-
-
+﻿@model PBL3.ViewModels.User.IntroViewModel
 @{
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Trang chủ";
 }
 @section css {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/StyleSheet.css" rel="stylesheet">
+    <link href="~/css/dashboard-optimized.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
 }
-<div class="bg-light header-bottom">
-    <div class="container py-1">
-        <p class="mb-0">
-			ĐỌC ĐỌC ĐỌC QUÁI VẬT TIỂU THUYẾT TRỖI DẬY! やめろ‼
-        </p>
+
+<!-- Hero Header -->
+<div class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">@Model.HeaderMessage</h1>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">@Model.HotStories?.Count</span>
+                    <span class="stat-label">Truyện Hot</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.NewStories?.Count</span>
+                    <span class="stat-label">Truyện Mới</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.CompletedStories?.Count</span>
+                    <span class="stat-label">Hoàn Thành</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">@Model.AllCategories?.Count</span>
+                    <span class="stat-label">Thể Loại</span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-
-<main>
-    <div class="section-stories-hot mb-3">
-        <div class="container">
-            <div class="row">
-                <div class="head-title-global d-flex justify-content-between mb-2">
-                    <div class="col-6 col-md-4 col-lg-4 head-title-global__left d-flex align-items-center">
-                        <h2 class="me-2 mb-0 border-bottom border-secondary pb-1">
-                            <a href="#" class="d-block text-decoration-none text-dark fs-4 story-name"
-                               title="Truyện Hot">Truyện Hot</a>
-                        </h2>
-                        <i class="fa-solid fa-fire-flame-curved"></i>
+<main class="dashboard-main">
+    <div class="container-fluid">
+        @if (Model.IsAuthenticated)
+        {
+            <!-- Featured Sections for Authenticated Users -->
+            
+            <!-- Top Stories of Week Carousel -->
+            @if (Model.TopStoriesOfWeek != null && Model.TopStoriesOfWeek.Any())
+            {
+                <div class="stories-container top-stories" data-aos="fade-up" data-aos-duration="800">
+                    <div class="container-header">
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-crown"></i>
+                                <h2>Top Truyện Tuần</h2>
+                            </div>
+                            <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần này</div>
+                        </div>
+                        <a asp-controller="Discovery" asp-action="TopWeek" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
+                    <div class="stories-slider" data-carousel="top-stories">
+                        <div class="stories-track">
+                            @for (int i = 0; i < Model.TopStoriesOfWeek.Count; i++)
+                            {
+                                var story = Model.TopStoriesOfWeek[i];
+                                var rankClass = i < 3 ? $"rank-{i + 1}" : "rank-normal";
 
-                    <div class="col-4 col-md-3 col-lg-2">
-                        <select class="form-select select-stories-hot" aria-label="Truyen hot">
-                            <option selected="">Tất cả</option>
-                            <option value="1">Ngôn Tình</option>
-                            <option value="2">Trọng Sinh</option>
-                            <option value="3">Cổ Đại</option>
-                            <option value="4">Tiên Hiệp</option>
-                            <option value="5">Ngược</option>
-                            <option value="6">Khác</option>
-                        </select>
+                                <div class="story-item @rankClass">
+                                    <div class="rank-badge">
+                                        @if (i < 3)
+                                        {
+                                            <i class="fas fa-medal"></i>
+                                        }
+                                        else
+                                        {
+                                            <span>@(i + 1)</span>
+                                        }
+                                    </div>
+                                    <div class="story-image">
+                                        <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                        <div class="story-badges">
+                                            @if (story.IsHot)
+                                            {
+                                                <span class="badge badge-hot">Hot</span>
+                                            }
+                                            @if (story.IsNew)
+                                            {
+                                                <span class="badge badge-new">New</span>
+                                            }
+                                            @if (story.IsCompleted)
+                                            {
+                                                <span class="badge badge-complete">Full</span>
+                                            }
+                                        </div>
+                                        <div class="story-overlay">
+                                            <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                                <i class="fas fa-book-open"></i>
+                                                <span>Đọc ngay</span>
+                                            </a>
+                                        </div>
+                                        <div class="view-count">
+                                            <i class="fas fa-eye"></i>
+                                            <span>@story.ViewCount.ToString("N0")</span>
+                                        </div>
+                                    </div>
+                                    <div class="story-info">
+                                        <h4 class="story-title">@story.Title</h4>
+                                        <p class="story-author">@story.AuthorName</p>
+                                        <div class="story-stats">
+                                            <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                            <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="nav-arrow prev" data-direction="prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow next" data-direction="next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
-            </div>
+            }
 
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-stories-hot__list">
-                        @foreach (var story in Model.TopStoryInWeek)
+            <!-- Top Liked Stories Carousel -->
+            <div class="stories-container liked-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+                <div class="container-header">
+                    <div class="container-title-section">
+                        <div class="container-title">
+                            <i class="fas fa-heart"></i>
+                            <h2>Được Yêu Thích Nhất</h2>
+                        </div>
+                        <div class="container-subtitle">Những truyện có lượt thích cao nhất</div>
+                    </div>
+                    <a asp-controller="Discovery" asp-action="MostLiked" class="btn-view-all">
+                        <span>Xem tất cả</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stories-slider" data-carousel="liked-stories">
+                    <div class="stories-track">
+                        @foreach (var story in Model.MostLikedStories)
                         {
                             <div class="story-item">
-                                <a asp-controller="Story" asp-action="View" asp-route-id="@story.StoryID" class="d-block text-decoration-none">
-                                    <div class="story-item__image">
-                                        <img src="@story.Cover" alt="@story.Title" class="img-fluid" width="150"
-                                             height="230" loading="lazy">
-                                    </div>
-                                    <h3 class="story-item__name text-one-row story-name">@story.Title</h3>
-
-                                    <div class="list-badge">
-                                        @if (story.Status == PBL3.Models.StoryModel.StoryStatus.Completed)
+                                <div class="story-image">
+                                    <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                    <div class="story-badges">
+                                        @if (story.IsHot)
                                         {
-                                            <span class="story-item__badge badge text-bg-success">Full</span>
+                                            <span class="badge badge-hot">Hot</span>
                                         }
-                                        else if (story.Status == PBL3.Models.StoryModel.StoryStatus.Active)
+                                        @if (story.IsNew)
                                         {
-                                            <span class="story-item__badge badge text-bg-warning">Đang ra</span>
+                                            <span class="badge badge-new">New</span>
                                         }
-
-                                        <span class="story-item__badge story-item__badge-hot badge text-bg-danger">Hot</span>
-
-                                        @if (story.LastUpdated.HasValue && story.LastUpdated.Value >= DateTime.Now.AddDays(-7))
+                                        @if (story.IsCompleted)
                                         {
-                                            <span class="story-item__badge story-item__badge-new badge text-bg-info text-light">New</span>
+                                            <span class="badge badge-complete">Full</span>
                                         }
                                     </div>
-                                </a>
+                                    <div class="story-overlay">
+                                        <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Đọc ngay</span>
+                                        </a>
+                                    </div>
+                                    <div class="view-count">
+                                        <i class="fas fa-heart"></i>
+                                        <span>@story.LikeCount</span>
+                                    </div>
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title">@story.Title</h4>
+                                    <p class="story-author">@story.AuthorName</p>
+                                    <div class="story-stats">
+                                        <span><i class="fas fa-heart"></i> @story.LikeCount</span>
+                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                    </div>
+                                </div>
                             </div>
                         }
                     </div>
-
-                    <!-- Skeleton loading -->
-                    <div class="section-stories-hot__list wrapper-skeleton d-none">
-                        @for (int i = 0; i < 16; i++)
-                        {
-                            <div class="skeleton" style="max-width: 150px; width: 100%; height: 230px;"></div>
-                        }
-                    </div>
+                    <button class="nav-arrow prev" data-direction="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow next" data-direction="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
 
-        </div>
-    </div>
-    <div class="container">
-        <div class="row align-items-start">
-            <div class="col-12 col-md-8 col-lg-9">
-                <div class="section-stories-new mb-3">
-                    <div class="row">
-                        <div class="head-title-global d-flex justify-content-between mb-2">
-                            <div class="col-6 col-md-4 col-lg-4 head-title-global__left d-flex align-items-center">
-                                <h2 class="me-2 mb-0 border-bottom border-secondary pb-1">
-                                    <a href="https://suustore.com/#"
-                                       class="d-block text-decoration-none text-dark fs-4 story-name"
-                                       title="Truyện Mới">Truyện Mới</a>
-                                </h2>
+            <!-- Top Authors Carousel -->
+            @if (Model.FollowedAuthors != null && Model.FollowedAuthors.Any())
+            {
+                <div class="stories-container authors-carousel" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="400">
+                    <div class="container-header">
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-users"></i>
+                                <h2>Tác Giả Nổi Bật</h2>
                             </div>
-
+                            <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
                         </div>
+                        <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
+                    <div class="stories-slider" data-carousel="authors">
+                        <div class="stories-track">
+                            @foreach (var author in Model.FollowedAuthors)
+                            {
+                                var tierClass = author.TotalFollowers switch
+                                {
+                                    >= 5000 => "tier-diamond",
+                                    >= 1000 => "tier-gold",
+                                    >= 500 => "tier-silver",
+                                    >= 100 => "tier-bronze",
+                                    _ => "tier-basic"
+                                };
 
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="section-stories-new__list">
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Kiếm
-                                                Động Cửu Thiên
+                                <div class="story-item author-item @tierClass">
+                                    <div class="story-image">
+                                        <img src="@author.Avatar" alt="@author.Name" loading="lazy">
+                                        <div class="story-overlay">
+                                            <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-read">
+                                                <i class="fas fa-user"></i>
+                                                <span>Xem Profile</span>
                                             </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
+                                            <button class="unfollow-story unfollow-author" data-author-id="@author.Id">
+                                                <i class="fas fa-user-minus"></i>
+                                            </button>
+                                        </div>
+                                        <div class="view-count">
+                                            <i class="fas fa-users"></i>
+                                            <span>@author.TotalFollowers</span>
+                                        </div>
                                     </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                        </p>
+                                    <div class="story-info">
+                                        <h4 class="story-title">@author.Name</h4>
+                                        <p class="story-author">@author.TotalStories truyện</p>
+                                        <div class="story-stats">
+                                            <span><i class="fas fa-heart"></i> @author.TotalFollowers</span>
+                                            <span><i class="fas fa-book"></i> @author.TotalStories</span>
+                                        </div>
                                     </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            1149
-                                        </a>
-                                    </div>
-
-
                                 </div>
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Tinh
-                                                Thần Biến
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            671
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Linh
-                                                Vũ Thiên Hạ
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Huyền
-                                                Huyễn,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            5024
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Kiếm
-                                                Động Cửu Thiên
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            1149
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Tinh
-                                                Thần Biến
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            671
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Linh
-                                                Vũ Thiên Hạ
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Huyền
-                                                Huyễn,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            5024
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Kiếm
-                                                Động Cửu Thiên
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            1149
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Tinh
-                                                Thần Biến
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            671
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Linh
-                                                Vũ Thiên Hạ
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Huyền
-                                                Huyễn,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            5024
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Kiếm
-                                                Động Cửu Thiên
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            1149
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Tinh
-                                                Thần Biến
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            671
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Linh
-                                                Vũ Thiên Hạ
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Huyền
-                                                Huyễn,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            5024
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Kiếm
-                                                Động Cửu Thiên
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            1149
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Tinh
-                                                Thần Biến
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Kiếm
-                                                Hiệp
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            671
-                                        </a>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="story-item-no-image">
-                                    <div class="story-item-no-image__name d-flex align-items-center">
-                                        <h3 class="me-1 mb-0 d-flex align-items-center">
-
-                                            <svg style="width: 10px; margin-right: 5px;"
-                                                 xmlns="http://www.w3.org/2000/svg" height="1em"
-                                                 viewBox="0 0 320 512">
-                                                <path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z">
-                                                </path>
-                                            </svg>
-                                            <a href="#"
-                                               class="text-decoration-none text-dark fs-6 hover-title text-one-row story-name">
-                                                Linh
-                                                Vũ Thiên Hạ
-                                            </a>
-                                        </h3>
-                                        <span class="badge text-bg-info text-light me-1">New</span>
-
-                                        <span class="badge text-bg-success text-light me-1">Full</span>
-
-                                        <span class="badge text-bg-danger text-light">Hot</span>
-                                    </div>
-
-                                    <div class="story-item-no-image__categories ms-2 d-none d-lg-block">
-                                        <p class="mb-0">
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Tiên
-                                                Hiệp,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Dị
-                                                Giới,
-                                            </a>
-                                            <a href="#"
-                                               class="hover-title text-decoration-none text-dark category-name">
-                                                Huyền
-                                                Huyễn,
-                                            </a>
-                                        </p>
-                                    </div>
-
-                                    <div class="story-item-no-image__chapters ms-2">
-                                        <a href="#" class="hover-title text-decoration-none text-info">
-                                            Chương
-                                            5024
-                                        </a>
-                                    </div>
-
-
-                                </div>
-                            </div>
+                            }
                         </div>
+                        <button class="nav-arrow prev" data-direction="prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow next" data-direction="next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     </div>
                 </div>
+            }
+
+            <!-- Followed Stories Carousel -->
+            @if (Model.FollowedStories != null && Model.FollowedStories.Any())
+            {
+                <div class="stories-container followed-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
+                    <div class="container-header">
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-bookmark"></i>
+                                <h2>Truyện Đang Theo Dõi</h2>
+                            </div>
+                            <div class="container-subtitle">Cập nhật mới nhất từ truyện bạn yêu thích</div>
+                        </div>
+                        <a asp-controller="Discovery" asp-action="FollowedStories" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="stories-slider" data-carousel="followed-stories">
+                        <div class="stories-track">
+                            @foreach (var story in Model.FollowedStories)
+                            {
+                                <div class="story-item followed-item">
+                                    <div class="story-image">
+                                        <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                        <div class="story-badges">
+                                            @if (story.LastUpdated != null)
+                                            {
+                                                <span class="badge badge-new">Cập nhật @story.LastUpdated?.ToString("dd/MM")</span>
+                                            }
+                                        </div>
+                                        <div class="story-overlay">
+                                            <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                                <i class="fas fa-book-open"></i>
+                                                <span>Tiếp tục đọc</span>
+                                            </a>
+                                        </div>
+                                        @if (story.LatestChapter != null)
+                                        {
+                                            <div class="view-count">
+                                                <i class="fas fa-book-open"></i>
+                                                <span>Ch. @story.LatestChapter.ChapterNumber</span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="story-info">
+                                        <h4 class="story-title">@story.Title</h4>
+                                        <p class="story-author">@story.AuthorName</p>
+                                        <div class="story-stats">
+                                            <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                            <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                        </div>
+                                        <button class="unfollow-story" data-story-id="@story.Id">
+                                            <i class="fas fa-bookmark-slash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="nav-arrow prev" data-direction="prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow next" data-direction="next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+
+        <!-- Hot Stories Carousel -->
+        <div class="stories-container hot-stories-section" data-aos="fade-right" data-aos-duration="800">
+            <div class="container-header">
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-fire"></i>
+                        <h2>Truyện Hot</h2>
+                    </div>
+                    <div class="container-subtitle">Những truyện được yêu thích nhất</div>
+                </div>
+                <a asp-controller="Discovery" asp-action="Hot" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
-
-            <div class="col-12 col-md-4 col-lg-3 sticky-md-top">
-                <div class="row">
-
-                    <div class="col-12">
-                        <div class="section-list-category bg-light p-2 rounded card-custom">
-                            <div class="head-title-global mb-2">
-                                <div class="col-12 col-md-12 head-title-global__left">
-                                    <h2 class="mb-0 border-bottom border-secondary pb-1">
-                                        <span href="#" class="d-block text-decoration-none text-dark fs-4"
-                                              title="Truyện đang đọc">Thể loại truyện</span>
-                                    </h2>
+            <div class="filter-section">
+                <label for="categoryFilter">Lọc theo thể loại:</label>
+                <select class="form-select" id="categoryFilter" asp-items="@Model.CategorySelectList">
+                    <option value="0" selected>Tất cả thể loại</option>
+                </select>
+            </div>
+            <div class="stories-slider" data-carousel="hot-stories">
+                <div class="stories-track" id="hotStoriesContainer">
+                    @foreach (var story in Model.HotStories)
+                    {
+                        <div class="story-item">
+                            <div class="story-image">
+                                <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                <div class="story-badges">
+                                    @if (story.IsHot)
+                                    {
+                                        <span class="badge badge-hot">Hot</span>
+                                    }
+                                    @if (story.IsNew)
+                                    {
+                                        <span class="badge badge-new">New</span>
+                                    }
+                                    @if (story.IsCompleted)
+                                    {
+                                        <span class="badge badge-complete">Full</span>
+                                    }
+                                </div>
+                                <div class="story-overlay">
+                                    <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                        <i class="fas fa-book-open"></i>
+                                        <span>Đọc ngay</span>
+                                    </a>
+                                </div>
+                                <div class="view-count">
+                                    <i class="fas fa-eye"></i>
+                                    <span>@story.ViewCount.ToString("N0")</span>
                                 </div>
                             </div>
-                            <div class="row">
-                                <!-- Horizontal under breakpoint -->
-                                <ul class="list-category">
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Ngôn Tình</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Trọng
-                                            Sinh
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Cổ Đại</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Tiên Hiệp</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Ngược</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Khác</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Dị Giới</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Huyền
-                                            Huyễn
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Xuyên
-                                            Không
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Sủng</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Cung Đấu</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Gia Đấu</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Điền Văn</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Đô Thị</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Truyện
-                                            Teen
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Hài Hước</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Kiếm Hiệp</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Đông
-                                            Phương
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Trinh
-                                            Thám
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Quan
-                                            Trường
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Linh Dị</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Đam Mỹ</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Quân Sự</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Khoa
-                                            Huyễn
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Mạt Thế</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">
-                                            Xuyên
-                                            Nhanh
-                                        </a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Hệ Thống</a>
-                                    </li>
-                                    <li class="">
-                                        <a href="#" class="text-decoration-none text-dark hover-title">Nữ Cường</a>
-                                    </li>
-                                </ul>
+                            <div class="story-info">
+                                <h4 class="story-title">@story.Title</h4>
+                                <p class="story-author">@story.AuthorName</p>
+                                <div class="story-stats">
+                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                    <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 </div>
+                <button class="nav-arrow prev" data-direction="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-arrow next" data-direction="next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
             </div>
         </div>
-    </div>
 
-    <div class="section-stories-full mb-3 mt-3">
-        <div class="container">
-            <div class="row">
-                <div class="head-title-global d-flex justify-content-between mb-2">
-                    <div class="col-12 col-md-4 head-title-global__left d-flex">
-                        <h2 class="me-2 mb-0 border-bottom border-secondary pb-1">
-                            <span class="d-block text-decoration-none text-dark fs-4 title-head-name"
-                                  title="Truyện đã hoàn thành">Truyện đã hoàn thành</span>
-                        </h2>
-                        <!-- <i class="fa-solid fa-fire-flame-curved"></i> -->
+        <!-- New Stories Carousel -->
+        <div class="stories-container new-stories-section" data-aos="fade-left" data-aos-duration="800">
+            <div class="container-header">
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-sparkles"></i>
+                        <h2>Truyện Mới</h2>
                     </div>
+                    <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
                 </div>
+                <a asp-controller="Discovery" asp-action="New" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
-
-            <div class="row">
-                <div class="col-12">
-                    <div class="section-stories-full__list">
-                        <div class="story-item-full text-center">
-                            <a href="#" class="d-block story-item-full__image">
-                                <img src="~/image/read/tu_cam.jpg" alt="Tự Cẩm" class="img-fluid w-100"
-                                     width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Tự Cẩm
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 836 chương</span>
+            <div class="stories-slider" data-carousel="new-stories">
+                <div class="stories-track">
+                    @foreach (var story in Model.NewStories)
+                    {
+                        <div class="story-item new-story-item">
+                            <div class="story-image">
+                                <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                <div class="story-badges">
+                                    @if (story.IsNew)
+                                    {
+                                        <span class="badge badge-new">New</span>
+                                    }
+                                    @if (story.IsCompleted)
+                                    {
+                                        <span class="badge badge-complete">Full</span>
+                                    }
+                                    @if (story.IsHot)
+                                    {
+                                        <span class="badge badge-hot">Hot</span>
+                                    }
+                                </div>
+                                <div class="story-overlay">
+                                    <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                        <i class="fas fa-book-open"></i>
+                                        <span>Đọc ngay</span>
+                                    </a>
+                                </div>
+                                @if (story.LatestChapter != null)
+                                {
+                                    <div class="view-count">
+                                        <i class="fas fa-book-open"></i>
+                                        <span>Ch. @story.LatestChapter.ChapterNumber</span>
+                                    </div>
+                                }
+                            </div>
+                            <div class="story-info">
+                                <h4 class="story-title">@story.Title</h4>
+                                <p class="story-author">@story.AuthorName</p>
+                                <div class="story-stats">
+                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                    <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/ngao_the_dan_than.jpg" alt="Ngạo Thế Đan Thần"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Ngạo Thế Đan Thần
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 3808 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/nang_khong_muon_lam_hoang_hau.jpg"
-                                     alt="Nàng Không Muốn Làm Hoàng Hậu" class="img-fluid w-100" width="150"
-                                     height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Nàng Không Muốn Làm Hoàng Hậu
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 80 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/kieu_sung_vi_thuong.jpg" alt="Kiều Sủng Vi Thượng"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Kiều Sủng Vi Thượng
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 81 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/linh_vu_thien_ha.jpg" alt="Linh Vũ Thiên Hạ"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Linh Vũ Thiên Hạ
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 5024 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/anh_dao_ho_phach.jpg" alt="Anh Đào Hổ Phách"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Anh Đào Hổ Phách
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 93 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/cuoi_truoc_yeu_sau_mong_tieu_nhi.jpg"
-                                     alt="Cưới Trước Yêu Sau - Mộng Tiêu Nhị" class="img-fluid w-100" width="150"
-                                     height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Cưới Trước Yêu Sau - Mộng Tiêu Nhị
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 96 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#" class="d-block story-item-full__image">
-                                <img src="~/image/read/me_dam.jpg" alt="Mê Đắm" class="img-fluid w-100"
-                                     width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Mê Đắm
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 118 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/khong_phu_the_duyen.jpg" alt="Không Phụ Thê Duyên"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Không Phụ Thê Duyên
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 177 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/diu_dang_tan_xuong.jpg" alt="Dịu Dàng Tận Xương"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Dịu Dàng Tận Xương
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 108 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/vo_chong_sieu_sao_hoi_ngot.jpg"
-                                     alt="Vợ Chồng Siêu Sao Hơi Ngọt" class="img-fluid w-100" width="150"
-                                     height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Vợ Chồng Siêu Sao Hơi Ngọt
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 100 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/that_u_that_u_phai_la_hong_phai_xanh_tham.jpg"
-                                     alt="Thật Ư? Thật Ư? Phải Là Hồng Phai Xanh Thắm" class="img-fluid w-100"
-                                     width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Thật Ư? Thật Ư? Phải Là Hồng Phai Xanh Thắm
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 229 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/thien_huong_nguoi_mu_liec_mat_dua_tinh.jpg"
-                                     alt="Thiên Hướng Người Mù, Liếc Mắt Đưa Tình" class="img-fluid w-100"
-                                     width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Thiên Hướng Người Mù, Liếc Mắt Đưa Tình
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 70 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/hat_de_va_chanel.jpg" alt="Hạt Dẻ Và Chanel"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Hạt Dẻ Và Chanel
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 6 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/em_anh_va_chung_ta.jpg" alt="Em, Anh Và Chúng Ta"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Em, Anh Và Chúng Ta
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 105 chương</span>
-                        </div>
-                        <div class="story-item-full text-center">
-                            <a href="#"
-                               class="d-block story-item-full__image">
-                                <img src="~/image/read/me_vo_khong_loi_ve.jpg" alt="Mê Vợ Không Lối Về"
-                                     class="img-fluid w-100" width="150" height="230" loading="lazy">
-                            </a>
-                            <h3 class="fs-6 story-item-full__name fw-bold text-center mb-0">
-                                <a href="#"
-                                   class="text-decoration-none text-one-row story-name">
-                                    Mê Vợ Không Lối Về
-                                </a>
-                            </h3>
-                            <span class="story-item-full__badge badge text-bg-success">Full - 1845 chương</span>
-                        </div>
-                    </div>
+                    }
                 </div>
+                <button class="nav-arrow prev" data-direction="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-arrow next" data-direction="next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Completed Stories Carousel -->
+        <div class="stories-container completed-stories-section" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
+            <div class="container-header">
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Truyện Đã Hoàn Thành</h2>
+                    </div>
+                    <div class="container-subtitle">Những câu chuyện đã có kết thúc hoàn chỉnh</div>
+                </div>
+                <a asp-controller="Discovery" asp-action="Completed" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="stories-slider" data-carousel="completed-stories">
+                <div class="stories-track">
+                    @foreach (var story in Model.CompletedStories)
+                    {
+                        <div class="story-item completed-story-item">
+                            <div class="story-image">
+                                <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                <div class="story-badges">
+                                    <span class="badge badge-complete">Hoàn thành</span>
+                                </div>
+                                <div class="story-overlay">
+                                    <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                        <i class="fas fa-book-open"></i>
+                                        <span>Đọc ngay</span>
+                                    </a>
+                                </div>
+                                <div class="view-count">
+                                    <i class="fas fa-check"></i>
+                                    <span>@story.ChapterCount ch</span>
+                                </div>
+                            </div>
+                            <div class="story-info">
+                                <h4 class="story-title">@story.Title</h4>
+                                <p class="story-author">@story.AuthorName</p>
+                                <div class="story-stats">
+                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                    <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <button class="nav-arrow prev" data-direction="prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="nav-arrow next" data-direction="next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Categories Sidebar -->
+        <div class="categories-sidebar">
+            <h3><i class="fas fa-tags"></i> Thể Loại</h3>
+            <div class="categories-grid">
+                @foreach (var category in Model.AllCategories)
+                {
+                    <a asp-controller="Category" asp-action="Details" asp-route-id="@category.Id" class="category-tag">
+                        @category.Name
+                    </a>
+                }
             </div>
         </div>
     </div>
 </main>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Carousel Configuration
+        const carouselConfig = {
+            'top-stories': { itemWidth: 260, visibleItems: { desktop: 5, tablet: 3, mobile: 2 } },
+            'liked-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'authors': { itemWidth: 240, visibleItems: { desktop: 6, tablet: 4, mobile: 3 } },
+            'followed-stories': { itemWidth: 320, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
+            'hot-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'new-stories': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 2, mobile: 2 } },
+            'completed-stories': { itemWidth: 260, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } }
+        };
+
+        // Initialize Carousel Function
+        function initCarousel(slider, carouselType) {
+            const track = slider.querySelector('.stories-track');
+            const prevBtn = slider.querySelector('.nav-arrow.prev');
+            const nextBtn = slider.querySelector('.nav-arrow.next');
+            const items = track.querySelectorAll('.story-item');
+            
+            if (!track || !prevBtn || !nextBtn || items.length === 0) return;
+
+            const config = carouselConfig[carouselType] || carouselConfig['hot-stories'];
+            let currentIndex = 0;
+            let visibleItems = getVisibleItems(config);
+            let itemWidth = config.itemWidth;
+
+            function getVisibleItems(config) {
+                const width = window.innerWidth;
+                if (width >= 1200) return config.visibleItems.desktop;
+                if (width >= 768) return config.visibleItems.tablet;
+                return config.visibleItems.mobile;
+            }
+
+            function updateCarousel() {
+                const translateX = -(currentIndex * (itemWidth + 24)); // 24px for gap
+                track.style.transform = `translateX(${translateX}px)`;
+                
+                // Update button states
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex >= items.length - visibleItems;
+                
+                if (prevBtn.disabled) {
+                    prevBtn.classList.add('disabled');
+                } else {
+                    prevBtn.classList.remove('disabled');
+                }
+                
+                if (nextBtn.disabled) {
+                    nextBtn.classList.add('disabled');
+                } else {
+                    nextBtn.classList.remove('disabled');
+                }
+            }
+
+            function moveToNext() {
+                if (currentIndex < items.length - visibleItems) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            }
+
+            function moveToPrev() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+
+            function handleResize() {
+                visibleItems = getVisibleItems(config);
+                currentIndex = Math.min(currentIndex, Math.max(0, items.length - visibleItems));
+                updateCarousel();
+            }
+
+            // Event listeners
+            nextBtn.addEventListener('click', moveToNext);
+            prevBtn.addEventListener('click', moveToPrev);
+            window.addEventListener('resize', handleResize);
+
+            // Initialize
+            updateCarousel();
+
+            // Return cleanup function
+            return () => {
+                nextBtn.removeEventListener('click', moveToNext);
+                prevBtn.removeEventListener('click', moveToPrev);
+                window.removeEventListener('resize', handleResize);
+            };
+        }
+
+        $(document).ready(function () {
+            // Initialize all carousels
+            const carousels = document.querySelectorAll('[data-carousel]');
+            const cleanupFunctions = [];
+
+            carousels.forEach(carousel => {
+                const carouselType = carousel.getAttribute('data-carousel');
+                const cleanup = initCarousel(carousel, carouselType);
+                if (cleanup) cleanupFunctions.push(cleanup);
+            });
+
+            // Category filter for hot stories
+            $('#categoryFilter').change(function () {
+                const categoryId = $(this).val();
+                const hotStoriesContainer = $('#hotStoriesContainer');
+                const hotStoriesSlider = hotStoriesContainer.closest('[data-carousel="hot-stories"]');
+
+                hotStoriesContainer.addClass('loading');
+
+                $.ajax({
+                    url: '@Url.Action("GetHotStoriesByCategory", "User")',
+                    type: 'GET',
+                    data: { categoryId: categoryId },
+                    success: function (data) {
+                        hotStoriesContainer.html(data).removeClass('loading');
+                        
+                        // Reinitialize hot stories carousel
+                        const cleanup = initCarousel(hotStoriesSlider, 'hot-stories');
+                        if (cleanup) {
+                            // Remove old cleanup and add new one
+                            cleanupFunctions.push(cleanup);
+                        }
+                    },
+                    error: function () {
+                        hotStoriesContainer.removeClass('loading');
+                        toastr.error('Đã xảy ra lỗi khi tải dữ liệu.');
+                    }
+                });
+            });
+
+            // Unfollow story
+            $('.unfollow-story').click(function() {
+                var storyId = $(this).data('story-id');
+                var button = $(this);
+
+                if (confirm('Bạn có chắc chắn muốn bỏ theo dõi truyện này?')) {
+                    $.ajax({
+                        url: '/Follow/UnfollowStory',
+                        type: 'POST',
+                        data: { storyId: storyId },
+                        success: function(response) {
+                            if (response.success) {
+                                const storyItem = button.closest('.story-item');
+                                storyItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                storyItem.style.opacity = '0';
+                                storyItem.style.transform = 'scale(0.8)';
+                                
+                                setTimeout(() => {
+                                    storyItem.remove();
+                                    
+                                    // Reinitialize carousel after item removal
+                                    const carousel = button.closest('[data-carousel]');
+                                    if (carousel) {
+                                        const carouselType = carousel.getAttribute('data-carousel');
+                                        initCarousel(carousel, carouselType);
+                                    }
+                                }, 300);
+                                
+                                toastr.success('Đã bỏ theo dõi truyện');
+                            } else {
+                                toastr.error(response.message || 'Có lỗi xảy ra');
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Có lỗi xảy ra khi bỏ theo dõi');
+                        }
+                    });
+                }
+            });
+
+            // Unfollow author
+            $('.unfollow-author').click(function() {
+                var authorId = $(this).data('author-id');
+                var button = $(this);
+
+                if (confirm('Bạn có chắc chắn muốn bỏ theo dõi tác giả này?')) {
+                    $.ajax({
+                        url: '/Follow/UnfollowUser',
+                        type: 'POST',
+                        data: { followingId: authorId },
+                        success: function(response) {
+                            if (response.success) {
+                                const authorItem = button.closest('.story-item');
+                                authorItem.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                                authorItem.style.opacity = '0';
+                                authorItem.style.transform = 'scale(0.8)';
+                                
+                                setTimeout(() => {
+                                    authorItem.remove();
+                                    
+                                    // Reinitialize carousel after item removal
+                                    const carousel = button.closest('[data-carousel]');
+                                    if (carousel) {
+                                        const carouselType = carousel.getAttribute('data-carousel');
+                                        initCarousel(carousel, carouselType);
+                                    }
+                                }, 300);
+                                
+                                toastr.success('Đã bỏ theo dõi tác giả');
+                            } else {
+                                toastr.error(response.message || 'Có lỗi xảy ra');
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Có lỗi xảy ra khi bỏ theo dõi');
+                        }
+                    });
+                }
+            });
+
+            // Initialize animations
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
+
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
+                cleanupFunctions.forEach(cleanup => cleanup());
+            });
+        });
+    </script>
+} 

@@ -1,105 +1,254 @@
 ﻿@{
+    ViewData["Title"] = "Chào mừng đến với PBL3";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Đọc Truyện";
-}
-@section css {
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 }
 
-<div class="hero-section text-center py-5 bg-light">
+@section Styles {
+    <link href="~/css/introduction.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+}
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-background">
+        <div class="floating-elements">
+            <div class="floating-book book-1"><i class="fas fa-book"></i></div>
+            <div class="floating-book book-2"><i class="fas fa-book-open"></i></div>
+            <div class="floating-book book-3"><i class="fas fa-feather-alt"></i></div>
+            <div class="floating-book book-4"><i class="fas fa-scroll"></i></div>
+            <div class="floating-book book-5"><i class="fas fa-bookmark"></i></div>
+        </div>
+    </div>
+
     <div class="container">
-        <h1 class="display-4 fw-bold">Chào mừng đến với thế giới truyện hấp dẫn</h1>
-        <p class="hero-description my-4">
-            Khám phá hàng triệu câu chuyện thú vị từ nhiều thể loại khác nhau. Đồng hành để nhận những đề xuất truyện phù hợp với sở thích của bạn
-        </p>
-        <div class="hero-buttons">
-            <a href="#" class="btn btn-dark me-2">Khám Phá</a>
-            <a href="#" class="btn btn-outline-dark">Đăng Nhập</a>
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+            <h1 class="hero-title">
+                <span class="title-line">Khám Phá</span>
+                <span class="title-line highlight">Thế Giới Truyện</span>
+                <span class="title-line">Bất Tận</span>
+            </h1>
+            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
+                Nơi hội tụ những câu chuyện tuyệt vời nhất, nơi bạn có thể đọc, chia sẻ và khám phá
+                vô vàn tác phẩm từ các tác giả tài năng trên khắp thế giới.
+            </p>
+            <div class="hero-actions" data-aos="fade-up" data-aos-delay="600">
+                <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Tham Gia Ngay
+                </a>
+                <a asp-controller="Authentication" asp-action="Login" class="btn btn-secondary">
+                    <i class="fas fa-compass"></i>
+                    Khám Phá Truyện
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="container my-5">
-    <div class="placeholder-image bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
-        <div class="placeholder-icon text-secondary">
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-            </svg>
+    <div class="scroll-indicator" data-aos="fade-in" data-aos-delay="1000">
+        <div class="scroll-arrow">
+            <i class="fas fa-chevron-down"></i>
         </div>
+        <span>Cuộn xuống để khám phá</span>
     </div>
-</div>
+</section>
 
-<div class="bg-secondary py-5 text-white">
+<!-- Features Section -->
+<section class="features-section">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h2 class="mb-2">Khám phá</h2>
-                <h3 class="mb-3">Truyện Hay Nhất</h3>
-                <p>Khám phá thế giới truyện phong phú với những thể loại đa dạng và hấp dẫn.</p>
-                <div class="mt-4">
-                    <a href="#" class="btn btn-light me-2">Xem</a>
-                    <a href="#" class="btn btn-outline-light">Đăng ký</a>
+        <div class="section-header" data-aos="fade-up">
+            <h2 class="section-title">Tại Sao Chọn Chúng Tôi?</h2>
+            <p class="section-subtitle">Những tính năng độc đáo giúp bạn có trải nghiệm đọc truyện tuyệt vời nhất</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="feature-icon">
+                    <i class="fas fa-book-reader"></i>
                 </div>
+                <h3 class="feature-title">Đọc Mọi Lúc Mọi Nơi</h3>
+                <p class="feature-description">
+                    Giao diện tối ưu cho mọi thiết bị, cho phép bạn đọc truyện một cách thoải mái
+                    trên điện thoại, máy tính bảng hay máy tính.
+                </p>
             </div>
-            <div class="col-md-6">
-                <div class="placeholder-image bg-dark d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <div class="placeholder-icon text-secondary">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                        </svg>
-                    </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="feature-title">Cộng Đồng Sôi Động</h3>
+                <p class="feature-description">
+                    Kết nối với hàng nghìn độc giả và tác giả, chia sẻ cảm xúc,
+                    bình luận và thảo luận về những câu chuyện yêu thích.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3 class="feature-title">Gợi Ý Thông Minh</h3>
+                <p class="feature-description">
+                    Hệ thống AI thông minh giúp gợi ý những truyện phù hợp với
+                    sở thích của bạn, giúp bạn khám phá những tác phẩm mới.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">
+                    <i class="fas fa-pen-fancy"></i>
+                </div>
+                <h3 class="feature-title">Sáng Tác Tự Do</h3>
+                <p class="feature-description">
+                    Công cụ viết truyện mạnh mẽ với editor hiện đại,
+                    giúp bạn dễ dàng sáng tác và chia sẻ tác phẩm của mình.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon">
+                    <i class="fas fa-bookmark"></i>
+                </div>
+                <h3 class="feature-title">Quản Lý Cá Nhân</h3>
+                <p class="feature-description">
+                    Lưu trữ và quản lý danh sách truyện yêu thích,
+                    theo dõi tiến độ đọc và không bao giờ bỏ lỡ chương mới.
+                </p>
+            </div>
+
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">An Toàn & Bảo Mật</h3>
+                <p class="feature-description">
+                    Hệ thống bảo mật cao cấp, bảo vệ thông tin cá nhân
+                    và tác phẩm của bạn một cách tuyệt đối.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                <div class="stat-number">10,000+</div>
+                <div class="stat-label">Truyện Đa Dạng</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                <div class="stat-number">50,000+</div>
+                <div class="stat-label">Độc Giả Tích Cực</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Tác Giả Tài Năng</div>
+            </div>
+            <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
+                <div class="stat-number">1M+</div>
+                <div class="stat-label">Chương Đã Đăng</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <div class="cta-content" data-aos="fade-up">
+            <h2 class="cta-title">Sẵn Sàng Bắt Đầu Hành Trình?</h2>
+            <p class="cta-subtitle">
+                Tham gia cộng đồng của chúng tôi ngay hôm nay và khám phá thế giới truyện bất tận
+            </p>
+            <div class="cta-actions">
+                <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary btn-large">
+                    <i class="fas fa-rocket"></i>
+                    Đăng Ký Miễn Phí
+                </a>
+                <div class="login-link">
+                    Đã có tài khoản?
+                    <a asp-controller="Authentication" asp-action="Login">Đăng nhập ngay</a>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<div class="container py-5">
-    <h2 class="text-center mb-4">Khám Phá Bảng Xếp Hạng Truyện</h2>
-    <p class="text-center mb-5">Khám phá những truyện hot nhất, được yêu thích nhất và mới nhất trên nền tảng của chúng tôi. Tìm kiếm những câu chuyện phù hợp với sở thích của bạn.</p>
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
 
-    <div class="row">
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="text-center py-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
-                    </svg>
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title">Top 50+ Truyện Được Yêu Thích</h5>
-                    <p class="card-text">Danh sách những truyện được yêu thích nhất trên nền tảng</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="text-center py-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-chat" viewBox="0 0 16 16">
-                        <path d="M2.678 11.894a1 1 0 0 1 .287.801 10.97 10.97 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8.06 8.06 0 0 0 8 14c3.996 0 7-2.807 7-6 0-3.192-3.004-6-7-6S1 4.808 1 8c0 1.468.617 2.83 1.678 3.894zm-.493 3.905a21.682 21.682 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a9.68 9.68 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9.06 9.06 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105z" />
-                    </svg>
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title">Top 50+ Truyện Nổi Bật</h5>
-                    <p class="card-text">Những câu chuyện thu hút nhiều người đọc nhất trên nền tảng</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="text-center py-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16">
-                        <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z" />
-                        <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z" />
-                    </svg>
-                </div>
-                <div class="card-body text-center">
-                    <h5 class="card-title">Top Truyện Mới Hôm Nay</h5>
-                    <p class="card-text">Những câu chuyện mới nhất, cập nhật liên tục trong ngày</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+        // Smooth scrolling for scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            document.querySelector('.features-section').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelectorAll('.floating-book');
+            const speed = 0.5;
+
+            parallax.forEach((element, index) => {
+                const yPos = -(scrolled * speed * (index + 1) * 0.1);
+                element.style.transform = `translateY(${yPos}px)`;
+            });
+        });
+
+        // Counter animation for statistics
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+
+            counters.forEach(counter => {
+                const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+                const increment = target / 100;
+                let current = 0;
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+
+                    // Format number with appropriate suffix
+                    let displayValue = Math.floor(current);
+                    if (target >= 1000000) {
+                        displayValue = (displayValue / 1000000).toFixed(1) + 'M+';
+                    } else if (target >= 1000) {
+                        displayValue = (displayValue / 1000).toFixed(0) + ',000+';
+                    } else {
+                        displayValue = displayValue.toLocaleString() + '+';
+                    }
+
+                    counter.textContent = displayValue;
+                }, 20);
+            });
+        }
+
+        // Trigger counter animation when stats section is visible
+        const statsSection = document.querySelector('.stats-section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        });
+
+        observer.observe(statsSection);
+    </script>
+} 

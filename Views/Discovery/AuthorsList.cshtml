@@ -1,0 +1,292 @@
+@model List<PBL3.ViewModels.User.AuthorViewModel>
+@{
+    ViewData["Title"] = ViewBag.PageTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section css {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/dashboard-optimized.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+}
+
+<style>
+    .discovery-header {
+        background: linear-gradient(135deg, #000000 0%, #2d2d2d 100%);
+        color: white;
+        padding: 3rem 0;
+        margin-bottom: 2rem;
+        border-radius: 0 0 30px 30px;
+    }
+    
+    .authors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+    
+    .author-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .author-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        border-color: #ffd700;
+    }
+    
+    .author-avatar {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+    
+    .author-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+    
+    .author-card:hover .author-avatar img {
+        transform: scale(1.05);
+    }
+    
+    .author-info {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .author-name {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #000;
+    }
+    
+    .author-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .author-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+    
+    .btn-view-profile {
+        flex: 1;
+        background: #000;
+        color: #ffd700;
+        border: none;
+        padding: 0.75rem;
+        border-radius: 10px;
+        text-decoration: none;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-view-profile:hover {
+        background: #ffd700;
+        color: #000;
+        transform: translateY(-2px);
+    }
+    
+    .btn-unfollow {
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-unfollow:hover {
+        background: #c82333;
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="discovery-header">
+    <div class="container text-center">
+        <h1 class="discovery-title">@ViewBag.PageTitle</h1>
+        <p class="discovery-description">@ViewBag.PageDescription</p>
+        <div class="discovery-stats">
+            <div class="stat-badge">
+                <i class="fas fa-users me-2"></i>
+                <strong>@ViewBag.TotalCount</strong> tác giả
+            </div>
+            <div class="stat-badge">
+                <i class="fas fa-file-alt me-2"></i>
+                Trang <strong>@ViewBag.CurrentPage</strong> / <strong>@ViewBag.TotalPages</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    @if (Model != null && Model.Any())
+    {
+        <div class="authors-grid" data-aos="fade-up">
+            @foreach (var author in Model)
+            {
+                <div class="author-card" data-aos="zoom-in" data-aos-delay="@(Model.IndexOf(author) * 100)">
+                    <div class="author-avatar">
+                        <img src="@author.Avatar" alt="@author.Name" loading="lazy" 
+                             onerror="this.src='/image/default-avatar.png';">
+                    </div>
+                    <div class="author-info">
+                        <h4 class="author-name">@author.Name</h4>
+                        <div class="author-stats">
+                            <span><i class="fas fa-book me-1"></i> @author.TotalStories truyện</span>
+                            <span><i class="fas fa-heart me-1"></i> @author.TotalFollowers followers</span>
+                        </div>
+                        <div class="author-actions">
+                            <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-view-profile">
+                                <i class="fas fa-user me-2"></i>Xem Profile
+                            </a>
+                            <button class="btn-unfollow" data-author-id="@author.Id" title="Bỏ theo dõi">
+                                <i class="fas fa-user-minus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* Pagination *@
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-wrapper">
+                <div class="custom-pagination">
+                    @* Previous Button *@
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <a href="?page=@(ViewBag.CurrentPage - 1)" class="page-link">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    }
+
+                    @* Page Numbers *@
+                    @{
+                        int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
+                        int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
+                    }
+
+                    @if (startPage > 1)
+                    {
+                        <a href="?page=1" class="page-link">1</a>
+                        @if (startPage > 2)
+                        {
+                            <span class="page-link disabled">...</span>
+                        }
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <a href="?page=@i" class="page-link @(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
+                    }
+
+                    @if (endPage < ViewBag.TotalPages)
+                    {
+                        @if (endPage < ViewBag.TotalPages - 1)
+                        {
+                            <span class="page-link disabled">...</span>
+                        }
+                        <a href="?page=@ViewBag.TotalPages" class="page-link">@ViewBag.TotalPages</a>
+                    }
+
+                    @* Next Button *@
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <a href="?page=@(ViewBag.CurrentPage + 1)" class="page-link">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-users fa-5x text-muted"></i>
+            </div>
+            <h3 class="text-muted">Không có tác giả nào</h3>
+            <p class="text-muted">Hãy thử theo dõi một số tác giả hoặc khám phá những tác giả khác.</p>
+            <a asp-controller="User" asp-action="Index" class="btn btn-primary">
+                <i class="fas fa-home me-2"></i>Về trang chủ
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Unfollow author functionality
+        document.querySelectorAll('.btn-unfollow').forEach(button => {
+            button.addEventListener('click', function() {
+                const authorId = this.getAttribute('data-author-id');
+                
+                if (confirm('Bạn có chắc chắn muốn bỏ theo dõi tác giả này?')) {
+                    fetch('/Follow/UnfollowUser', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `followingId=${authorId}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the author card with animation
+                            const authorCard = this.closest('.author-card');
+                            authorCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            authorCard.style.opacity = '0';
+                            authorCard.style.transform = 'scale(0.8)';
+                            
+                            setTimeout(() => {
+                                authorCard.remove();
+                            }, 300);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra khi bỏ theo dõi');
+                    });
+                }
+            });
+        });
+    </script>
+} 

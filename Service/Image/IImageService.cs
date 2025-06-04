@@ -2,6 +2,6 @@
 {
     public interface IImageService
     {
-        Task<(bool isSuccess, string? errorMessage, string? imageUrl)> UploadValidateImageAsync(IFormFile imageFile, string folerName, int maxSizeMB = 1);
+        Task<(bool isSuccess, string? errorMessage, string? imageUrl)> UploadValidateImageAsync(IFormFile imageFile, string folderName, int maxSizeMB = 1);
     }
 }

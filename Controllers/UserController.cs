@@ -17,6 +17,7 @@ using PBL3.Service;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Service.Bookmark;
 using PBL3.Service.Follow;
+using PBL3.Service.Dashboard;   
 using PBL3.ViewModels.Account;
 using PBL3.Service.Email;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -35,9 +36,10 @@ namespace PBL3.Controllers
         private readonly IImageService _imageService;
         private readonly IBookmarkService _bookmarkService;
         private readonly IFollowService _followService;
+        private readonly IDashboardService _dashboardService;
         private readonly IEmailService _emailService;
 
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService, IEmailService emailService)
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService, IEmailService emailService, IDashboardService dashboardService)
         {
             _context = context;
             _blobService = blobService;
@@ -45,15 +47,20 @@ namespace PBL3.Controllers
             _imageService = imageService;
             _bookmarkService = bookmarkService;
             _followService = followService;
+            _dashboardService = dashboardService;
             _emailService = emailService;
         }
         //GET: User/Index
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            int? currentUserID = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            }
 
-            var viewModel = await _userService.GetUserIndexViewModelAsync(currentUserID);
+            var viewModel = await _dashboardService.GetDashboardDataAsync(currentUserID);
 
             return View(viewModel);
         }
@@ -240,6 +247,49 @@ namespace PBL3.Controllers
             return View(model);
         }
 
+        //GET: User/GetHotStoriesByCategory
+        [HttpGet]
+        public async Task<IActionResult> GetHotStoriesByCategory(int categoryId)
+        {
+            var stories = await _dashboardService.GetHotStoriesByCategoryAsync(categoryId, 20);
+            return PartialView("_HotStoriesPartial", stories);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> TestData()
+        {
+            try
+            {
+                // Test database connection
+                var storyCount = await _context.Stories.CountAsync();
+                var userCount = await _context.Users.CountAsync();
+                var genreCount = await _context.Genres.CountAsync();
+                var chapterCount = await _context.Chapters.CountAsync();
+
+                var testInfo = new
+                {
+                    DatabaseConnected = true,
+                    StoriesCount = storyCount,
+                    UsersCount = userCount,
+                    GenresCount = genreCount,
+                    ChaptersCount = chapterCount,
+                    Message = "Database connection successful"
+                };
+
+                return Json(testInfo);
+            }
+            catch (Exception ex)
+            {
+                var errorInfo = new
+                {
+                    DatabaseConnected = false,
+                    Error = ex.Message,
+                    Message = "Database connection failed"
+                };
+
+                return Json(errorInfo);
+            }
         [AllowAnonymous]
         [HttpGet]
         public IActionResult ForgotPassword()

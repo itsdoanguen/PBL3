@@ -1,7 +1,7 @@
 @model List<PBL3.ViewModels.Moderator.UserProfileViewModel>
 @{
     ViewData["Title"] = "Quản lý người dùng";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 
     var normalUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 0).ToList();
     var warning1Users = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 1).ToList();
