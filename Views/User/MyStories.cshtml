@@ -8,14 +8,6 @@
 <link rel="stylesheet" href="~/css/my-stories.css" asp-append-version="true" />
 <script src="~/js/my-stories.js" asp-append-version="true"></script>
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4 my-stories-header">
         <h2 class="mb-0">Truyện của tôi</h2>
