@@ -313,6 +313,14 @@ namespace PBL3.Controllers
                     // Lấy truyện mới cập nhật
                     stories = await _storyRankingService.GetStoriesByUpdatedAsync();
                     break;
+                case "topweek":
+                    // Lấy truyện top tuần
+                    stories = await _storyRankingService.GetTopStoriesOfWeekAsync();
+                    break;
+                case "completed":
+                    // Lấy truyện đã hoàn thành
+                    stories = await _storyRankingService.GetCompletedStoriesAsync();
+                    break;
                 default:
                     stories = await _storyRankingService.GetStoriesByUpdatedAsync();
                     break;

@@ -57,7 +57,7 @@
                             </div>
                             <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần này</div>
                         </div>
-                        <a asp-controller="Discovery" asp-action="TopWeek" class="btn-view-all">
+                        <a asp-controller="Story" asp-action="AllStories" asp-route-query="topweek" class="btn-view-all">
                             <span>Xem tất cả</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -485,7 +485,7 @@
                     </div>
                     <div class="container-subtitle">Những câu chuyện đã có kết thúc hoàn chỉnh</div>
                 </div>
-                <a asp-controller="Discovery" asp-action="Completed" class="btn-view-all">
+                <a asp-controller="Story" asp-action="AllStories" asp-route-query="completed" class="btn-view-all">
                     <span>Xem tất cả</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
