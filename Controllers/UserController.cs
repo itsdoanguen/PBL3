@@ -290,6 +290,8 @@ namespace PBL3.Controllers
 
                 return Json(errorInfo);
             }
+        }
+
         [AllowAnonymous]
         [HttpGet]
         public IActionResult ForgotPassword()

@@ -59,7 +59,13 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.availbleGenres = GetAvailbleGenres();
+                // Cập nhật lại trạng thái IsSelected dựa vào GenreIDs
+                var allGenres = GetAvailbleGenres();
+                foreach (var genre in allGenres)
+                {
+                    genre.IsSelected = model.GenreIDs != null && model.GenreIDs.Contains(genre.GenreID);
+                }
+                model.availbleGenres = allGenres;
                 return View(model);
             }
 
@@ -69,8 +75,14 @@ namespace PBL3.Controllers
 
             if (!isSuccess)
             {
+                // Cập nhật lại trạng thái IsSelected dựa vào GenreIDs
+                var allGenres = GetAvailbleGenres();
+                foreach (var genre in allGenres)
+                {
+                    genre.IsSelected = model.GenreIDs != null && model.GenreIDs.Contains(genre.GenreID);
+                }
+                model.availbleGenres = allGenres;
                 TempData["ErrorMessage"] = errorMessage;
-                model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
 
