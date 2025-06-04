@@ -4,7 +4,8 @@
 {
     <div class="story-item">
         <div class="story-image">
-            <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+            <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy" 
+                 onerror="this.src='/image/default-cover.jpg';">
             <div class="story-badges">
                 @if (story.IsHot)
                 {

@@ -65,7 +65,7 @@ namespace PBL3.Controllers
 
             if (!isSuccess)
             {
-                ModelState.AddModelError(string.Empty, errorMessage);
+                TempData["ErrorMessage"] = errorMessage;
                 model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
@@ -144,17 +144,32 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
+                // Reload AvailableGenres if validation fails
+                model.AvailableGenres = _context.Genres.Select(g => new GerneVM
+                {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                }).ToList();
                 return View(model);
             }
+            
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var (isSuccess, errorMessage) = await _storyService.UpdateStoryAsync(model, currentAuthorID);
+            
             if (!isSuccess)
             {
-                ModelState.AddModelError(string.Empty, errorMessage);
+                TempData["ErrorMessage"] = errorMessage;
+                // Reload AvailableGenres if service fails
+                model.AvailableGenres = _context.Genres.Select(g => new GerneVM
+                {
+                    GenreID = g.GenreID,
+                    Name = g.Name
+                }).ToList();
                 return View(model);
             }
+            
             TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
-            return RedirectToAction("MyStories", "User");
+            return RedirectToAction("EditDetail", new { id = model.StoryID });
         }
         //POST: Story/PendingReview
         [HttpPost]

@@ -18,7 +18,7 @@ namespace PBL3.Service.Dashboard
             _blobService = blobService;
         }
 
-        public async Task<List<StoryViewModel>> GetTopStoriesOfWeekAsync(int count = 10)
+        public async Task<List<StoryViewModel>> GetTopStoriesOfWeekAsync(int count = 20)
         {
             DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
 
@@ -58,7 +58,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetHotStoriesAsync(int count = 16)
+        public async Task<List<StoryViewModel>> GetHotStoriesAsync(int count = 20)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -89,7 +89,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId, int count = 16)
+        public async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId, int count = 20)
         {
             if (categoryId == 0)
             {
@@ -126,7 +126,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetMostLikedStoriesAsync(int count = 16)
+        public async Task<List<StoryViewModel>> GetMostLikedStoriesAsync(int count = 20)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -163,7 +163,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetNewStoriesAsync(int count = 15)
+        public async Task<List<StoryViewModel>> GetNewStoriesAsync(int count = 20)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -210,7 +210,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetCompletedStoriesAsync(int count = 15)
+        public async Task<List<StoryViewModel>> GetCompletedStoriesAsync(int count = 20)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Completed)
@@ -252,7 +252,7 @@ namespace PBL3.Service.Dashboard
                 .ToListAsync();
         }
 
-        public async Task<List<StoryViewModel>> GetFollowedStoriesAsync(int userId, int count = 10)
+        public async Task<List<StoryViewModel>> GetFollowedStoriesAsync(int userId, int count = 20)
         {
             var stories = await _context.FollowStories
                 .Where(fs => fs.UserID == userId)
@@ -294,7 +294,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<AuthorViewModel>> GetFollowedAuthorsAsync(int userId, int count = 10)
+        public async Task<List<AuthorViewModel>> GetFollowedAuthorsAsync(int userId, int count = 20)
         {
             var authors = await _context.FollowUsers
                 .Where(fu => fu.FollowerID == userId)
@@ -340,7 +340,7 @@ namespace PBL3.Service.Dashboard
         {
             var viewModel = new IntroViewModel
             {
-                HeaderMessage = "KHÁM PHÁ THẾ GIỚI TRUYỆN TIỂU THUYẾT CÙNG CHÚNG TÔI!",
+                HeaderMessage = "CHÀO MỪNG BẠN ĐẾN VỚI THẾ GIỚI TRUYỆN CỦA CHÚNG TÔI!",
                 HotStories = await GetHotStoriesAsync(),
                 MostLikedStories = await GetMostLikedStoriesAsync(),
                 NewStories = await GetNewStoriesAsync(),

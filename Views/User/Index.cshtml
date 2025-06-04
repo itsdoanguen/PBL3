@@ -50,11 +50,17 @@
             {
                 <div class="stories-container top-stories" data-aos="fade-up" data-aos-duration="800">
                     <div class="container-header">
-                        <div class="container-title">
-                            <i class="fas fa-trophy"></i>
-                            <h2>Top Tuần</h2>
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-crown"></i>
+                                <h2>Top Truyện Tuần</h2>
+                            </div>
+                            <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần này</div>
                         </div>
-                        <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần</div>
+                        <a asp-controller="Discovery" asp-action="TopWeek" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                     <div class="stories-slider" data-carousel="top-stories">
                         <div class="stories-track">
@@ -125,11 +131,17 @@
             <!-- Top Liked Stories Carousel -->
             <div class="stories-container liked-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
                 <div class="container-header">
-                    <div class="container-title">
-                        <i class="fas fa-heart"></i>
-                        <h2>Được Yêu Thích Nhất</h2>
+                    <div class="container-title-section">
+                        <div class="container-title">
+                            <i class="fas fa-heart"></i>
+                            <h2>Được Yêu Thích Nhất</h2>
+                        </div>
+                        <div class="container-subtitle">Những truyện có lượt thích cao nhất</div>
                     </div>
-                    <div class="container-subtitle">Những truyện có lượt thích cao nhất</div>
+                    <a asp-controller="Discovery" asp-action="MostLiked" class="btn-view-all">
+                        <span>Xem tất cả</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
                 <div class="stories-slider" data-carousel="liked-stories">
                     <div class="stories-track">
@@ -188,11 +200,17 @@
             {
                 <div class="stories-container authors-carousel" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="400">
                     <div class="container-header">
-                        <div class="container-title">
-                            <i class="fas fa-users"></i>
-                            <h2>Tác Giả Nổi Bật</h2>
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-users"></i>
+                                <h2>Tác Giả Nổi Bật</h2>
+                            </div>
+                            <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
                         </div>
-                        <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
+                        <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                     <div class="stories-slider" data-carousel="authors">
                         <div class="stories-track">
@@ -250,11 +268,17 @@
             {
                 <div class="stories-container followed-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
                     <div class="container-header">
-                        <div class="container-title">
-                            <i class="fas fa-bookmark"></i>
-                            <h2>Truyện Đang Theo Dõi</h2>
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-bookmark"></i>
+                                <h2>Truyện Đang Theo Dõi</h2>
+                            </div>
+                            <div class="container-subtitle">Cập nhật mới nhất từ truyện bạn yêu thích</div>
                         </div>
-                        <div class="container-subtitle">Cập nhật mới nhất từ truyện bạn yêu thích</div>
+                        <a asp-controller="Discovery" asp-action="FollowedStories" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                     <div class="stories-slider" data-carousel="followed-stories">
                         <div class="stories-track">
@@ -274,9 +298,6 @@
                                                 <i class="fas fa-book-open"></i>
                                                 <span>Tiếp tục đọc</span>
                                             </a>
-                                            <button class="unfollow-story" data-story-id="@story.Id">
-                                                <i class="fas fa-bookmark-slash"></i>
-                                            </button>
                                         </div>
                                         @if (story.LatestChapter != null)
                                         {
@@ -293,6 +314,9 @@
                                             <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
                                             <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                         </div>
+                                        <button class="unfollow-story" data-story-id="@story.Id">
+                                            <i class="fas fa-bookmark-slash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             }
@@ -311,11 +335,17 @@
         <!-- Hot Stories Carousel -->
         <div class="stories-container hot-stories-section" data-aos="fade-right" data-aos-duration="800">
             <div class="container-header">
-                <div class="container-title">
-                    <i class="fas fa-fire"></i>
-                    <h2>Truyện Hot</h2>
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-fire"></i>
+                        <h2>Truyện Hot</h2>
+                    </div>
+                    <div class="container-subtitle">Những truyện được yêu thích nhất</div>
                 </div>
-                <div class="container-subtitle">Những truyện được yêu thích nhất</div>
+                <a asp-controller="Discovery" asp-action="Hot" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
             <div class="filter-section">
                 <label for="categoryFilter">Lọc theo thể loại:</label>
@@ -376,13 +406,19 @@
         </div>
 
         <!-- New Stories Carousel -->
-        <div class="stories-container new-stories-section">
+        <div class="stories-container new-stories-section" data-aos="fade-left" data-aos-duration="800">
             <div class="container-header">
-                <div class="container-title">
-                    <i class="fas fa-plus-circle"></i>
-                    <h2>Truyện Mới</h2>
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-sparkles"></i>
+                        <h2>Truyện Mới</h2>
+                    </div>
+                    <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
                 </div>
-                <div class="container-subtitle">Những truyện mới cập nhật</div>
+                <a asp-controller="Discovery" asp-action="New" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
             <div class="stories-slider" data-carousel="new-stories">
                 <div class="stories-track">
@@ -440,13 +476,19 @@
         </div>
 
         <!-- Completed Stories Carousel -->
-        <div class="stories-container completed-stories-section">
+        <div class="stories-container completed-stories-section" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
             <div class="container-header">
-                <div class="container-title">
-                    <i class="fas fa-check-circle"></i>
-                    <h2>Truyện Hoàn Thành</h2>
+                <div class="container-title-section">
+                    <div class="container-title">
+                        <i class="fas fa-check-circle"></i>
+                        <h2>Truyện Đã Hoàn Thành</h2>
+                    </div>
+                    <div class="container-subtitle">Những câu chuyện đã có kết thúc hoàn chỉnh</div>
                 </div>
-                <div class="container-subtitle">Những truyện đã hoàn thành</div>
+                <a asp-controller="Discovery" asp-action="Completed" class="btn-view-all">
+                    <span>Xem tất cả</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
             </div>
             <div class="stories-slider" data-carousel="completed-stories">
                 <div class="stories-track">
@@ -510,13 +552,13 @@
     <script>
         // Carousel Configuration
         const carouselConfig = {
-            'top-stories': { itemWidth: 220, visibleItems: { desktop: 5, tablet: 3, mobile: 2 } },
-            'liked-stories': { itemWidth: 250, visibleItems: { desktop: 4, tablet: 2, mobile: 1 } },
-            'authors': { itemWidth: 180, visibleItems: { desktop: 6, tablet: 4, mobile: 2 } },
-            'followed-stories': { itemWidth: 350, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
-            'hot-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 1 } },
-            'new-stories': { itemWidth: 400, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
-            'completed-stories': { itemWidth: 250, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } }
+            'top-stories': { itemWidth: 260, visibleItems: { desktop: 5, tablet: 3, mobile: 2 } },
+            'liked-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'authors': { itemWidth: 240, visibleItems: { desktop: 6, tablet: 4, mobile: 3 } },
+            'followed-stories': { itemWidth: 320, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
+            'hot-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'new-stories': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 2, mobile: 2 } },
+            'completed-stories': { itemWidth: 260, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } }
         };
 
         // Initialize Carousel Function
