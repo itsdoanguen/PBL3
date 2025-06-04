@@ -355,5 +355,33 @@ namespace PBL3.Service.Chapter
             var words = content.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries);
             return words.Length;
         }
+        public async Task<bool> UpdateChapterOrderAsync(int chapterId, int storyId, int newOrder)
+        {
+            var chapters = await _context.Chapters
+                .Where(c => c.StoryID == storyId)
+                .OrderBy(c => c.ChapterOrder)
+                .ToListAsync();
+            var chapter = chapters.FirstOrDefault(c => c.ChapterID == chapterId);
+            if (chapter == null) return false;
+            if (chapter.Status == ChapterStatus.Inactive)
+                return false;
+            int oldOrder = chapter.ChapterOrder;
+            if (newOrder == oldOrder) return true;
+            if (newOrder < 1) newOrder = 1;
+            if (newOrder > chapters.Count) newOrder = chapters.Count;
+            if (newOrder < oldOrder)
+            {
+                foreach (var c in chapters.Where(c => c.ChapterOrder >= newOrder && c.ChapterOrder < oldOrder))
+                    c.ChapterOrder++;
+            }
+            else
+            {
+                foreach (var c in chapters.Where(c => c.ChapterOrder > oldOrder && c.ChapterOrder <= newOrder))
+                    c.ChapterOrder--;
+            }
+            chapter.ChapterOrder = newOrder;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

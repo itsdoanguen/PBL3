@@ -23,7 +23,7 @@ namespace PBL3.ViewModels.Story
 
         public UserInfo Author { get; set; } = new UserInfo();
         public bool IsFollowed { get; set; } = false;
-
+        public int LastReadAt { get; set; } = 0;
         public List<CommentTreeViewModel> Comments { get; set; } = new List<CommentTreeViewModel>();
         public List<ChapterInfo> Chapters { get; set; } = new List<ChapterInfo>();
     }

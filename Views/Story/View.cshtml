@@ -93,18 +93,16 @@
                             </div>
 
                             <!-- Nút hành động -->
-                            <div class="action-buttons d-flex flex-wrap">
-                                <a class="btn btn-danger rounded-pill" href="@Url.Action("ReadChapter", "Chapter", new { id = Model.Chapters?.FirstOrDefault()?.ChapterID })">Đọc tiếp</a>
-                                <a class="btn btn-warning rounded-pill" href="#">Đánh giá</a>
+                            <div class="action-buttons d-flex flex-wrap align-items-center gap-2">
+                                <a class="btn btn-danger rounded-pill" href="@Url.Action("ReadChapter", "Chapter", new { id = Model.LastReadAt })">Đọc tiếp</a>
                                 <a class="btn btn-secondary rounded-pill" href="#chapterlist">Mục lục</a>
                                 <a class="btn btn-info rounded-pill" href="#comments">Bình luận</a>
-                                <form asp-controller="Follow" asp-action="ToggleStoryFollow" method="post" class="d-inline ms-2">
+                                <form asp-controller="Follow" asp-action="ToggleStoryFollow" method="post" class="d-inline">
                                     <input type="hidden" name="storyId" value="@Model.StoryID" />
-                                    <button type="submit" class="btn btn-outline-success rounded-circle" title="@((Model.IsFollowed ? "Bỏ theo dõi" : "Theo dõi truyện"))" style="width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;">
+                                    <button type="submit" class="btn btn-outline-success rounded-circle ms-2" title="@((Model.IsFollowed ? "Bỏ theo dõi" : "Theo dõi truyện"))" style="width:40px;height:40px;display:inline-flex;align-items:center;justify-content:center;">
                                         <i class="bi @(Model.IsFollowed ? "bi-bookmark-fill text-success" : "bi-bookmark")" style="font-size:1.3rem;"></i>
                                     </button>
                                 </form>
-                                
                                 @if (ViewBag.CurrentUserID != Model.Author?.UserID)
                                 {
                                     <!-- Report Button -->
@@ -150,13 +148,12 @@
 
                         <!-- Cột phải: Thẻ tác giả -->
                         <div class="col-md-4 d-flex justify-content-center align-items-start">
-                            <div class="author-card text-center">
+                            <a href="@Url.Action("ViewProfile", "User", new { id = Model.Author?.UserID })" class="author-card text-center border border-primary rounded-4 p-3 d-block text-decoration-none" style="transition:box-shadow .2s;box-shadow:0 2px 8px rgba(33,150,243,0.07);">
                                 <div class="avatar-frame mb-2">
                                     <img src=@Model.Author?.UserAvatar ?? Url.Content("~/image/default-avatar.png") alt="Tác giả" class="author-avatar" />
-
                                 </div>
-                                <div class="author-name">@Model.Author?.UserName</div>
-                            </div>
+                                <div class="author-name text-primary fw-bold">@Model.Author?.UserName</div>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -215,7 +212,7 @@
     </div>
 
     <!-- Bình luận -->
-    <div class="story-comments center-cl">
+    <div class="story-comments center-cl" id="comments">
         <h5 class="mb-3" id="story-comments">Bình luận (@CountAllComments(Model.Comments))</h5>
 
         <!-- Form bình luận -->
