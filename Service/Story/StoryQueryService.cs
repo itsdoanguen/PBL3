@@ -49,7 +49,7 @@ namespace PBL3.Service.Story
         public async Task<List<M_ChapterViewModel>> GetChaptersForStoryAsync(int storyId)
         {
             var chapters = await _context.Chapters
-                .Where(c => c.StoryID == storyId)
+                .Where(c => c.StoryID == storyId && c.Status == ChapterStatus.Active)
                 .OrderBy(c => c.ChapterOrder)
                 .Select(c => new M_ChapterViewModel
                 {
