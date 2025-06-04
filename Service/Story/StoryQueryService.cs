@@ -148,7 +148,7 @@ namespace PBL3.Service.Story
             {
                 StoryID = story.StoryID,
                 StoryName = story.Title,
-                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n","<br/>"),
+                StoryDescription = (story.Description ?? "Chưa có mô tả").Replace("\n", "<br/>"),
                 StoryImage = await _blobService.GetSafeImageUrlAsync(story.CoverImage),
                 LastUpdated = story.UpdatedAt,
                 StoryStatus = story.Status,
@@ -164,7 +164,8 @@ namespace PBL3.Service.Story
                 Chapters = await GetChapterForStoryAsync(storyID),
                 IsFollowed = await _context.FollowStories
                     .AnyAsync(f => f.StoryID == storyID && f.UserID == currentUserID),
-                Rating = await RatingStoryAsync(storyID)
+                Rating = await RatingStoryAsync(storyID),
+                LastReadAt = await LastReadAtAsync(currentUserID, storyID)
             };
 
             return viewModel;
@@ -186,7 +187,7 @@ namespace PBL3.Service.Story
         public async Task<List<ChapterInfo>> GetChapterForStoryAsync(int storyID)
         {
             var chapters = await _context.Chapters
-                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c=> c.ChapterOrder)
+                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active).OrderBy(c => c.ChapterOrder)
                 .Select(c => new ChapterInfo
                 {
                     ChapterID = c.ChapterID,
@@ -248,6 +249,14 @@ namespace PBL3.Service.Story
             rating = Math.Max(0, Math.Min(rating, 10)); // Giới hạn rating từ 0 đến 10
 
             return rating;
+        }
+        private async Task<int> LastReadAtAsync(int userID, int storyID)
+        {
+            var history = await _context.Set<HistoryModel>()
+                .Where(h => h.UserID == userID && h.StoryID == storyID)
+                .OrderByDescending(h => h.LastReadAt)
+                .FirstOrDefaultAsync();
+            return history?.ChapterID ?? 0; 
         }
     }
 }

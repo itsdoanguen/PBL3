@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -16,6 +17,9 @@ using PBL3.Service;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Service.Bookmark;
 using PBL3.Service.Follow;
+using PBL3.ViewModels.Account;
+using PBL3.Service.Email;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace PBL3.Controllers
 {
@@ -31,8 +35,9 @@ namespace PBL3.Controllers
         private readonly IImageService _imageService;
         private readonly IBookmarkService _bookmarkService;
         private readonly IFollowService _followService;
+        private readonly IEmailService _emailService;
 
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService)
+        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService, IEmailService emailService)
         {
             _context = context;
             _blobService = blobService;
@@ -40,6 +45,7 @@ namespace PBL3.Controllers
             _imageService = imageService;
             _bookmarkService = bookmarkService;
             _followService = followService;
+            _emailService = emailService;
         }
         //GET: User/Index
         [HttpGet]
@@ -185,30 +191,36 @@ namespace PBL3.Controllers
         [HttpGet]
         public IActionResult ChangePassword()
         {
-            return View();
+            var ChangePasswordViewModel = new ChangePasswordViewModel
+            {
+                OldPassword = string.Empty,
+                NewPassword = string.Empty,
+                ConfirmPassword = string.Empty
+            };
+            return View(ChangePasswordViewModel);
         }
 
         //POST: User/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(string oldPassword, string newPassword, string confirmPassword)
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(oldPassword) || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmPassword))
+            if (string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
                 ModelState.AddModelError(string.Empty, "Vui lòng nhập đầy đủ thông tin.");
-                return View();
+                return View(model);
             }
-            if (newPassword != confirmPassword)
+            if (model.NewPassword != model.ConfirmPassword)
             {
                 ModelState.AddModelError("", "Mật khẩu mới và xác nhận không khớp.");
-                return View();
+                return View(model);
             }
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var (isSuccess, errorMessage) = await _userService.ChangePasswordAsync(currentUserID, oldPassword, newPassword);
+            var (isSuccess, errorMessage) = await _userService.ChangePasswordAsync(currentUserID, model.OldPassword, model.NewPassword);
             if (!isSuccess)
             {
                 ModelState.AddModelError("", errorMessage);
-                return View();
+                return View(model);
             }
             TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
             return RedirectToAction("MyProfile");
@@ -226,6 +238,49 @@ namespace PBL3.Controllers
                 FollowerUsers = followers
             };
             return View(model);
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View(new ForgotPasswordViewModel());
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            var (isSuccess, message) = await _userService.ForgotPasswordAsync(
+                model.Email,
+                async (toEmail, newPassword, displayName) =>
+                {
+                    await SendResetPasswordEmail(toEmail, newPassword, displayName);
+                });
+            if (!isSuccess)
+            {
+                if (string.IsNullOrWhiteSpace(model.Email))
+                    ModelState.AddModelError("Email", message);
+                else
+                    TempData["ErrorMessage"] = message;
+                return View(model);
+            }
+            // Nếu người dùng đang đăng nhập, đăng xuất họ ra
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            TempData["SuccessMessage"] = message;
+            return RedirectToAction("Login", "Authentication");
+        }
+        
+        // Hàm gửi email
+        private async Task SendResetPasswordEmail(string toEmail, string newPassword, string? displayName = null)
+        {
+            var subject = "Mật khẩu mới cho tài khoản PBL3";
+            var body = _emailService.GetForgotPasswordEmailBody(displayName, newPassword);
+            await _emailService.SendEmailAsync(toEmail, subject, body, isHtml: true);
         }
     }
 }

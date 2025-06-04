@@ -1,34 +1,53 @@
 ﻿@model List<PBL3.ViewModels.Search.SearchByTitleStory>
-
 @{
     ViewData["Title"] = "Tìm kiếm truyện";
-    // Lấy query param để giữ lại từ khóa tìm kiếm khi submit
     var currentKeyword = Context.Request.Query["tenTruyen"].ToString();
+    int page = int.TryParse(Context.Request.Query["page"], out var p) ? p : 1;
+    int pageSize = 12;
+    int total = Model?.Count ?? 0;
+    int totalPages = (int)Math.Ceiling((double)total / pageSize);
+    var pagedStories = Model?.Skip((page - 1) * pageSize).Take(pageSize).ToList() ?? new List<PBL3.ViewModels.Search.SearchByTitleStory>();
 }
+<link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/util-search.css" asp-append-version="true" />
 
-<h2>@ViewData["Title"]</h2>
-
-<form method="get" asp-controller="Util" asp-action="Search">
-    <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="Nhập tên truyện..." />
-    <button type="submit">Tìm kiếm</button>
+<form method="get" asp-controller="Util" asp-action="Search" class="mb-4 mt-4 d-flex justify-content-center gap-2">
+    <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="Nhập tên truyện..." class="form-control w-auto" style="max-width:320px" />
+    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="Tìm kiếm nâng cao" style="border-radius: 50%; width: 42px; height: 42px; justify-content: center;">
+        <i class="bi bi-funnel" style="font-size: 1.3rem;"></i>
+    </a>
 </form>
 
 <hr />
 
-@if (Model == null || !Model.Any())
+@if (pagedStories == null || !pagedStories.Any())
 {
-    <p>Không tìm thấy truyện nào.</p>
+    <div class="alert alert-info text-center">Không tìm thấy truyện nào.</div>
 }
 else
 {
-    <ul>
-        @foreach (var story in Model)
+    <div class="search-card-grid mb-4">
+        @foreach (var story in pagedStories)
         {
-            <li>
-                <h3>@story.Title</h3>
-                <p><strong>Tác giả:</strong> @story.AuthorName</p>
-                <p><strong>Thể loại:</strong> @string.Join(", ", story.Genres)</p>
-            </li>
+            <div class="search-story-card">
+                <img src="@(story.CoverImage ?? "/image/default-cover.png")" class="search-story-cover" alt="@story.Title" />
+                <div class="search-story-title">@story.Title</div>
+                <div class="search-story-author"><i class="bi bi-person"></i> @story.AuthorName</div>
+                <div class="search-story-genre">@string.Join(", ", story.Genres)</div>
+                <div class="search-story-status">@story.Status</div>
+                <a href="/Story/View/@story.StoryID" class="btn btn-outline-primary btn-sm mt-2">Xem chi tiết</a>
+            </div>
         }
-    </ul>
+    </div>
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            @for (int i = 1; i <= totalPages; i++)
+            {
+                <li class="page-item @(i == page ? "active" : "")">
+                    <a class="page-link" href="?tenTruyen=@currentKeyword&page=@i">@i</a>
+                </li>
+            }
+        </ul>
+    </nav>
 }

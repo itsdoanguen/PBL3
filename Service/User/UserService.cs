@@ -176,5 +176,31 @@ namespace PBL3.Service.User
             await _context.SaveChangesAsync();
             return (true, "Đổi mật khẩu thành công.");
         }
+        public async Task<(bool isSuccess, string errorMessage)> ForgotPasswordAsync(string email, Func<string, string, string?, Task> sendEmailFunc)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return (false, "Vui lòng nhập email đã đăng ký.");
+            }
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null)
+            {
+                return (false, "Email không tồn tại trong hệ thống.");
+            }
+            // Random mật khẩu mới
+            var newPassword = GenerateRandomPassword(8);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+            await sendEmailFunc(user.Email, newPassword, user.DisplayName);
+            return (true, "Mật khẩu mới đã được gửi về email của bạn. Vui lòng đăng nhập lại.");
+        }
+
+        private string GenerateRandomPassword(int length = 8)
+        {
+            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+        }
     }
 }

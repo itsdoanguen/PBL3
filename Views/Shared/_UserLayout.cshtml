@@ -64,6 +64,15 @@
 
                     <!-- User Profile Dropdown -->
                     <ul class="navbar-nav ms-auto">
+                        <!-- Ô tìm kiếm nhanh tên truyện -->
+                        <form class="d-flex align-items-center me-3" method="get" action="/Util/Search" style="max-width: 260px;">
+                            <div class="input-group rounded-pill shadow-sm bg-white">
+                                <input type="text" class="form-control border-0 rounded-start-pill" name="tenTruyen" placeholder="Tìm truyện..." aria-label="Tìm truyện" style="background: transparent; min-width: 120px;">
+                                <button class="btn btn-outline-secondary border-0 rounded-end-pill" type="submit" style="background: transparent;">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
                         <li class="nav-item">
                             <a class="nav-link position-relative" asp-controller="Notification" asp-action="Index">
                                 <i class="bi bi-bell" style="font-size: 1.3rem;"></i>
