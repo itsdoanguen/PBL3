@@ -187,5 +187,17 @@ namespace PBL3.Service.Notification
                 .OrderByDescending(n => n.CreatedAt)
                 .ToListAsync();
         }
+
+        // Lấy số lượng thông báo chưa đọc cho user
+        public async Task<int> GetUnreadNotificationCountAsync(int userId)
+        {
+            return await _context.Notifications
+                .Where(n => n.UserID == userId && !n.IsRead && (n.Type == NotificationModel.NotificationType.NewStory || n.Type == NotificationModel.NotificationType.NewChapter 
+                    || n.Type == NotificationModel.NotificationType.NewComment 
+                    || n.Type == NotificationModel.NotificationType.NewReplyComment 
+                    || n.Type == NotificationModel.NotificationType.NewFollower 
+                    || n.Type == NotificationModel.NotificationType.WarningIssued))
+                .CountAsync();
+        }
     }
 }
