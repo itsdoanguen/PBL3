@@ -75,6 +75,10 @@ namespace PBL3.Service.Discovery
                 stories = await _context.Stories
                     .Where(s => s.Status == Models.StoryModel.StoryStatus.Active
                         || s.Status == Models.StoryModel.StoryStatus.Completed)
+                    .Include(s => s.Followers)
+                    .Include(s => s.Chapters)
+                    .ThenInclude(c => c.Likes)
+                    .Include(s => s.Genres)
                     .OrderByDescending(s => s.UpdatedAt)
                     .ToListAsync();
             }
@@ -86,10 +90,15 @@ namespace PBL3.Service.Discovery
                     .Select(sg => sg.GenreID)
                     .Distinct()
                     .ToListAsync();
-                stories = await _context.Stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active
-                    || s.Status == Models.StoryModel.StoryStatus.Completed)
+                stories = await _context.Stories
+                    .Where(s => s.Status == Models.StoryModel.StoryStatus.Active
+                        || s.Status == Models.StoryModel.StoryStatus.Completed)
                     .Where(s => s.Genres.Any(g => userLikedGenresId.Contains(g.GenreID))
                                 && !viewedStoryIds.Contains(s.StoryID))
+                    .Include(s => s.Followers)
+                    .Include(s => s.Chapters)
+                    .ThenInclude(c => c.Likes)
+                    .Include(s => s.Genres)
                     .OrderByDescending(s => s.UpdatedAt)
                     .ToListAsync();
             }
@@ -123,6 +132,8 @@ namespace PBL3.Service.Discovery
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
                 .Include(s => s.Followers)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
                 .ToListAsync();
             var sorted = stories.OrderByDescending(s => s.Followers != null ? s.Followers.Count : 0).ToList();
             var result = new List<UserStoryCardViewModel>();
@@ -167,6 +178,7 @@ namespace PBL3.Service.Discovery
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
                 .Include(s => s.Chapters)
                 .ThenInclude(c => c.Likes)
+                .Include(s => s.Followers)
                 .ToListAsync();
             var sorted = stories.OrderByDescending(s => s.Chapters.Sum(c => c.Likes != null ? c.Likes.Count : 0)).ToList();
             var result = new List<UserStoryCardViewModel>();
@@ -181,6 +193,23 @@ namespace PBL3.Service.Discovery
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+                .Include(s => s.Followers)
+                .Include(s => s.Chapters)
+                .ThenInclude(c => c.Likes)
+                .OrderByDescending(s => s.UpdatedAt)
+                .ToListAsync();
+            var result = new List<UserStoryCardViewModel>();
+            foreach (var s in stories)
+            {
+                result.Add(await ToUserStoryCardViewModel(s));
+            }
+            return result;
+        }
+
+        public async Task<List<UserStoryCardViewModel>> GetCompletedStoriesAsync()
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == Models.StoryModel.StoryStatus.Completed)
                 .Include(s => s.Followers)
                 .Include(s => s.Chapters)
                 .ThenInclude(c => c.Likes)

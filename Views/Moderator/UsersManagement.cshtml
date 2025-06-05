@@ -8,7 +8,7 @@
     var warning2Users = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 2).ToList();
     var bannedUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Banned).ToList();
 }
-<div class="container py-4">
+<div class="container py-4 mt-5">
     <h2 class="mb-4">Quản lý người dùng</h2>
     <h4 class="mt-4">Người dùng thông thường</h4>
     <div class="table-responsive mb-4">

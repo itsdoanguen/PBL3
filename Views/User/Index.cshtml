@@ -56,7 +56,7 @@
                             </div>
                             <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần này</div>
                         </div>
-                        <a asp-controller="Discovery" asp-action="TopWeek" class="btn-view-all">
+                        <a asp-controller="Story" asp-action="AllStories" asp-route-query="topweek" class="btn-view-all">
                             <span>Xem tất cả</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -137,7 +137,7 @@
                         </div>
                         <div class="container-subtitle">Những truyện có lượt thích cao nhất</div>
                     </div>
-                    <a asp-controller="Discovery" asp-action="MostLiked" class="btn-view-all">
+                    <a asp-controller="Story" asp-action="AllStories" asp-route-query="like" class="btn-view-all">
                         <span>Xem tất cả</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
@@ -343,7 +343,7 @@
                     </div>
                     <div class="container-subtitle">Những truyện được yêu thích nhất</div>
                 </div>
-                <a asp-controller="Discovery" asp-action="Hot" class="btn-view-all">
+                <a asp-controller="Story" asp-action="AllStories"  asp-route-query="view" class="btn-view-all">
                     <span>Xem tất cả</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -416,7 +416,7 @@
                     </div>
                     <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
                 </div>
-                <a asp-controller="Discovery" asp-action="New" class="btn-view-all">
+                <a asp-controller="Story" asp-action="AllStories" asp-route-query="updated" class="btn-view-all">
                     <span>Xem tất cả</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -486,7 +486,7 @@
                     </div>
                     <div class="container-subtitle">Những câu chuyện đã có kết thúc hoàn chỉnh</div>
                 </div>
-                <a asp-controller="Discovery" asp-action="Completed" class="btn-view-all">
+                <a asp-controller="Story" asp-action="AllStories" asp-route-query="completed" class="btn-view-all">
                     <span>Xem tất cả</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
@@ -538,7 +538,7 @@
             <div class="categories-grid">
                 @foreach (var category in Model.AllCategories)
                 {
-                    <a asp-controller="Category" asp-action="Details" asp-route-id="@category.Id" class="category-tag">
+                    <a asp-controller="Util" asp-action="AdvancedSearch" asp-route-GenreNames="@category.Name" class="category-tag">
                         @category.Name
                     </a>
                 }
@@ -733,4 +733,4 @@
             });
         });
     </script>
-} 
+}

@@ -71,7 +71,7 @@
                     }
                     <span class="ms-1"><button type="button" class="btn-add-genre" id="btnAddGenre" title="Thêm thể loại"><i class="bi bi-plus"></i></button></span>
                 </div>
-                <input type="hidden" name="GenreIDs" id="GenreIDsInput" value="@string.Join(",", Model.GenreIDs)" />
+                <input type="hidden" id="GenreIDsInput" />
                 <div id="genreDropdown" class="genre-dropdown">
                     @foreach (var genre in Model.AvailableGenres.Where(g => !Model.GenreIDs.Contains(g.GenreID)))
                     {

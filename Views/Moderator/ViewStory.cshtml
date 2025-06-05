@@ -1,9 +1,10 @@
 @model PBL3.ViewModels.Moderator.ViewStoryViewModel
 @{
     ViewData["Title"] = "Chi tiết truyện";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" href="~/css/ViewStory.css" />
-<div class="view-story-container">
+<div class="view-story-container mt-5">
     <!-- Section 1: Thông tin truyện -->
     <section class="section-card story-header-section mb-4">
         <img src="@(Model.StoryDetails.CoverImage ?? Url.Content("~/image/default-cover.png"))" class="story-cover-img" alt="Cover" />

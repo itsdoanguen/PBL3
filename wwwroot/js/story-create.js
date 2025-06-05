@@ -10,6 +10,19 @@ document.addEventListener('DOMContentLoaded', function() {
 	function updateGenreInput() {
 		const selected = Array.from(genreTagList.querySelectorAll('.genre-tag')).map(tag => tag.dataset.genreId);
 		genreInput.value = selected.join(',');
+
+		const oldInputs = document.querySelectorAll('input[name="GenreIDs"]');
+		oldInputs.forEach(input => {
+			if (input !== genreInput) input.parentNode.removeChild(input);
+		});
+		// Thêm input hidden mới cho từng genre đã chọn
+		selected.forEach(id => {
+			const input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'GenreIDs';
+			input.value = id;
+			genreInput.parentNode.insertBefore(input, genreInput.nextSibling);
+		});
 	}
 
 	if (addGenreBtn && genreDropdown) {

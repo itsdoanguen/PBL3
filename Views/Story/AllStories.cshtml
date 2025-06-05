@@ -1,6 +1,7 @@
 @model List<PBL3.ViewModels.UserProfile.UserStoryCardViewModel>
 @{
     ViewData["Title"] = "Tất cả truyện";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var currentQuery = ViewBag.CurrentQuery as string ?? "updated";
     int page = Context.Request.Query["page"].Count > 0 ? int.Parse(Context.Request.Query["page"]) : 1;
     int pageSize = 20;
@@ -11,11 +12,13 @@
     var filterOptions = new List<(string value, string label)>
     {
         ("updated", "Mới cập nhật"),
+        ("recommend", "Đề xuất cho bạn"),
         ("view", "Lượt xem"),
         ("follow", "Lượt theo dõi"),
         ("like", "Lượt thích"),
-        ("recommend", "Đề xuất cho bạn"),
-        ("wordcount", "Số lượng từ")
+        ("topweek", "Top tuần"),
+        ("wordcount", "Số lượng từ"),
+        ("completed", "Truyện hoàn thành")
     };
 
     var filterOptionsHtml = string.Join("\n", filterOptions.Select(opt => $"<option value=\"{opt.value}\"{(opt.value == currentQuery ? " selected" : "")}>{opt.label}</option>"));

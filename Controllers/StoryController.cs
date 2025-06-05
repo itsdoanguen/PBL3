@@ -59,7 +59,13 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                model.availbleGenres = GetAvailbleGenres();
+                // Cập nhật lại trạng thái IsSelected dựa vào GenreIDs
+                var allGenres = GetAvailbleGenres();
+                foreach (var genre in allGenres)
+                {
+                    genre.IsSelected = model.GenreIDs != null && model.GenreIDs.Contains(genre.GenreID);
+                }
+                model.availbleGenres = allGenres;
                 return View(model);
             }
 
@@ -69,8 +75,14 @@ namespace PBL3.Controllers
 
             if (!isSuccess)
             {
+                // Cập nhật lại trạng thái IsSelected dựa vào GenreIDs
+                var allGenres = GetAvailbleGenres();
+                foreach (var genre in allGenres)
+                {
+                    genre.IsSelected = model.GenreIDs != null && model.GenreIDs.Contains(genre.GenreID);
+                }
+                model.availbleGenres = allGenres;
                 TempData["ErrorMessage"] = errorMessage;
-                model.availbleGenres = GetAvailbleGenres();
                 return View(model);
             }
 
@@ -300,6 +312,14 @@ namespace PBL3.Controllers
                 case "updated":
                     // Lấy truyện mới cập nhật
                     stories = await _storyRankingService.GetStoriesByUpdatedAsync();
+                    break;
+                case "topweek":
+                    // Lấy truyện top tuần
+                    stories = await _storyRankingService.GetTopStoriesOfWeekAsync();
+                    break;
+                case "completed":
+                    // Lấy truyện đã hoàn thành
+                    stories = await _storyRankingService.GetCompletedStoriesAsync();
                     break;
                 default:
                     stories = await _storyRankingService.GetStoriesByUpdatedAsync();
