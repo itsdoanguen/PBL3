@@ -38,5 +38,14 @@ namespace PBL3.Controllers
             TempData[isSuccess ? "SuccessMessage" : "ErrorMessage"] = message;
             return RedirectToAction("Index");
         }
+
+        // GET: Notification/GetUnreadCount
+        [HttpGet]
+        public async Task<IActionResult> GetUnreadCount()
+        {
+            int userId = int.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+            var count = await _notificationService.GetUnreadNotificationCountAsync(userId);
+            return Json(new { count = count });
+        }
     }
 }

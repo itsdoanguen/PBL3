@@ -290,13 +290,14 @@ namespace PBL3.Controllers
 
                 return Json(errorInfo);
             }
+        }
         [AllowAnonymous]
         [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View(new ForgotPasswordViewModel());
         }
-
+        
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]

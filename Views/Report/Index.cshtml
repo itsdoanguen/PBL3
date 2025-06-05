@@ -1,8 +1,7 @@
 @model List<PBL3.Models.NotificationModel>
 @using PBL3.Models
 @{
-    ViewData["Title"] = "Quản lý báo cáo";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    ViewData["Title"] = "Báo Cáo";
     var reportGroups = Model.GroupBy(r => r.Type).ToDictionary(g => g.Key, g => g.ToList());
     string GetReportTypeName(NotificationModel.NotificationType type) => type switch {
         NotificationModel.NotificationType.ReportUser => "Báo cáo người dùng",

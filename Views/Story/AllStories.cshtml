@@ -1,7 +1,6 @@
 @model List<PBL3.ViewModels.UserProfile.UserStoryCardViewModel>
 @{
     ViewData["Title"] = "Tất cả truyện";
-    Layout = "~/Views/Shared/_UserLayout.cshtml";
     var currentQuery = ViewBag.CurrentQuery as string ?? "updated";
     int page = Context.Request.Query["page"].Count > 0 ? int.Parse(Context.Request.Query["page"]) : 1;
     int pageSize = 20;

@@ -336,6 +336,44 @@ namespace PBL3.Service.Dashboard
             return authors;
         }
 
+        public async Task<List<StoryViewModel>> GetTopFollowedStoriesAsync(int count = 20)
+        {
+            var stories = await _context.Stories
+                .Where(s => s.Status == StoryStatus.Active)
+                .Select(s => new
+                {
+                    Story = s,
+                    FollowCount = _context.FollowStories.Count(fs => fs.StoryID == s.StoryID)
+                })
+                .Where(s => s.FollowCount > 0)
+                .OrderByDescending(s => s.FollowCount)
+                .Take(count)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.Story.StoryID,
+                    Title = s.Story.Title,
+                    CoverImageUrl = s.Story.CoverImage ?? "/image/default-cover.jpg",
+                    IsHot = s.Story.Chapters.Sum(c => c.ViewCount) > 1000,
+                    IsNew = s.Story.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Story.Status == StoryStatus.Completed,
+                    ChapterCount = s.Story.Chapters.Count,
+                    LastUpdated = s.Story.UpdatedAt,
+                    AuthorName = s.Story.Author.DisplayName,
+                    ViewCount = s.Story.Chapters.Sum(c => c.ViewCount),
+                    LikeCount = s.Story.Chapters.SelectMany(c => c.Likes).Count(),
+                    FollowCount = s.FollowCount
+                })
+                .ToListAsync();
+
+            // Update image URLs
+            foreach (var story in stories)
+            {
+                story.CoverImageUrl = await _blobService.GetSafeImageUrlAsync(story.CoverImageUrl);
+            }
+
+            return stories;
+        }
+
         public async Task<IntroViewModel> GetDashboardDataAsync(int? userId = null)
         {
             var viewModel = new IntroViewModel
@@ -347,6 +385,7 @@ namespace PBL3.Service.Dashboard
                 CompletedStories = await GetCompletedStoriesAsync(),
                 AllCategories = await GetAllCategoriesAsync(),
                 TopStoriesOfWeek = await GetTopStoriesOfWeekAsync(),
+                TopFollowedStories = await GetTopFollowedStoriesAsync(),
                 IsAuthenticated = userId.HasValue
             };
 
@@ -354,12 +393,10 @@ namespace PBL3.Service.Dashboard
 
             if (userId.HasValue)
             {
-                viewModel.FollowedStories = await GetFollowedStoriesAsync(userId.Value);
                 viewModel.FollowedAuthors = await GetFollowedAuthorsAsync(userId.Value);
             }
             else
             {
-                viewModel.FollowedStories = new List<StoryViewModel>();
                 viewModel.FollowedAuthors = new List<AuthorViewModel>();
             }
 

@@ -29,8 +29,8 @@ namespace PBL3.ViewModels.User
         // Top stories of the week
         public List<StoryViewModel> TopStoriesOfWeek { get; set; }
 
-        // Followed stories (for authenticated users)
-        public List<StoryViewModel> FollowedStories { get; set; }
+        // Top followed stories (stories with most followers)
+        public List<StoryViewModel> TopFollowedStories { get; set; }
 
         // Followed authors (for authenticated users)
         public List<AuthorViewModel> FollowedAuthors { get; set; }
@@ -55,6 +55,7 @@ namespace PBL3.ViewModels.User
         public string AuthorName { get; set; }
         public int ViewCount { get; set; }
         public int LikeCount { get; set; }
+        public int FollowCount { get; set; } // Số lượt theo dõi của truyện
     }
 
     // View model for category items

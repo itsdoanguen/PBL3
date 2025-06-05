@@ -2,7 +2,6 @@
 @using System.Linq
 @{
     ViewData["Title"] = "Người dùng theo dõi";
-    Layout = "~/Views/Shared/_Layout.cshtml";
     var followingIds = Model.FollowingUsers.Select(u => u.UserID).ToHashSet();
 }
 <link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
