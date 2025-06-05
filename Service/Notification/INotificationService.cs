@@ -14,6 +14,7 @@ namespace PBL3.Service.Notification
         Task InitNewMessageFromModeratorAsync(int userId, string message, int moderatorId);
         Task InitNewWarningMessageAsync(int userId, string message, int moderatorId);
         Task<List<NotificationModel>> GetNotificationsForUserAsync(int userId);
+        Task<int> GetUnreadNotificationCountAsync(int userId);
         Task MarkAsReadAsync(int notificationId);
         Task<(bool isSuccess, string message)> DeleteNotificationAsync(int notificationId);        
         Task<NotificationModel?> GetNotificationByIdAsync(int notificationId);

@@ -4,12 +4,23 @@ document.addEventListener('DOMContentLoaded', function() {
 	const genreTagList = document.getElementById('genreTagList');
 	const addGenreBtn = document.getElementById('btnAddGenre');
 	const genreDropdown = document.getElementById('genreDropdown');
-	const genreDropdownItems = genreDropdown ? genreDropdown.querySelectorAll('.genre-dropdown-item') : [];
 	const genreInput = document.getElementById('GenreIDsInput');
 
 	function updateGenreInput() {
 		const selected = Array.from(genreTagList.querySelectorAll('.genre-tag')).map(tag => tag.dataset.genreId);
 		genreInput.value = selected.join(',');
+
+		const oldInputs = document.querySelectorAll('input[name="GenreIDs"]');
+		oldInputs.forEach(input => {
+			if (input !== genreInput) input.parentNode.removeChild(input);
+		});
+		selected.forEach(id => {
+			const input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'GenreIDs';
+			input.value = id;
+			genreInput.parentNode.insertBefore(input, genreInput.nextSibling);
+		});
 	}
 
 	if (addGenreBtn && genreDropdown) {
@@ -17,12 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			e.stopPropagation();
 			genreDropdown.classList.toggle('show');
 		});
+		// Hide dropdown when clicking outside
 		document.addEventListener('click', function(e) {
 			if (!genreDropdown.contains(e.target) && e.target !== addGenreBtn) {
 				genreDropdown.classList.remove('show');
 			}
 		});
-		genreDropdownItems.forEach(item => {
+		// Add genre from dropdown
+		genreDropdown.querySelectorAll('.genre-dropdown-item').forEach(item => {
 			item.addEventListener('click', function() {
 				const genreId = this.dataset.genreId;
 				const genreName = this.textContent;
@@ -42,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		});
 	}
+	// Remove genre tag
 	genreTagList.querySelectorAll('.remove-genre').forEach(btn => {
 		btn.onclick = function() {
 			btn.parentElement.remove();

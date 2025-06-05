@@ -13,7 +13,7 @@
 	@RenderSection("css", required: false)
 	@RenderSection("Styles", required: false)
 	<!-- Font Awesome -->
-	<link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" type="text/css">
 
 	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -62,16 +62,6 @@
 								<a class="nav-link" asp-controller="User" asp-action="Index">Khám phá</a>
 							</li>
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" role="button" href="#" data-bs-toggle="dropdown">
-									Thể loại
-								</a>
-								<ul class="dropdown-menu dropdown-menu-dark-custom">
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Story" asp-action="ByGenre" asp-route-genre="Ngôn tình">Ngôn tình</a></li>
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Story" asp-action="ByGenre" asp-route-genre="Hành động">Hành động</a></li>
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Story" asp-action="ByGenre" asp-route-genre="Phiêu lưu">Phiêu lưu</a></li>
-								</ul>
-							</li>
-							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
 									Bảng Xếp Hạng
 								</a>
@@ -88,16 +78,6 @@
 								<a class="nav-link" asp-controller="Authentication" asp-action="Login">Khám phá</a>
 							</li>
 							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" role="button" href="#" data-bs-toggle="dropdown">
-									Thể loại
-								</a>
-								<ul class="dropdown-menu dropdown-menu-dark-custom">
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Login">Ngôn tình</a></li>
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Login">Hành động</a></li>
-									<li><a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Login">Phiêu lưu</a></li>
-								</ul>
-							</li>
-							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
 									Bảng Xếp Hạng
 								</a>
@@ -110,107 +90,145 @@
 						}
 					</ul>
 
-					<!-- Search Form -->
-					@if (User.Identity.IsAuthenticated)
-					{
-						<form class="d-flex align-items-center me-3" method="get" action="/Util/Search" style="max-width: 260px;">
-							<div class="input-group rounded-pill shadow-sm bg-white">
-								<input type="text" class="form-control border-0 rounded-start-pill" name="tenTruyen" placeholder="Tìm truyện..." aria-label="Tìm truyện" style="background: transparent; min-width: 120px;">
-								<button class="btn btn-outline-secondary border-0 rounded-end-pill" type="submit" style="background: transparent;">
-									<i class="bi bi-search"></i>
-								</button>
-							</div>
-						</form>
-					}
-					else
-					{
-						<div class="d-flex header_form-search me-3">
-							<div class="input-group">
-								<input type="search" class="form-control" placeholder="Đăng nhập để tìm kiếm..." readonly>
-								<a class="btn" asp-controller="Authentication" asp-action="Login">
-									<svg xmlns="http://www.w3.org/2000/svg" height="1em"
-										 viewBox="0 0 512 512">
-										<path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z">
-										</path>
-									</svg>
-								</a>
-							</div>
-						</div>
-					}
+					<!-- Management and User Section -->
+					<ul class="navbar-nav ms-auto d-flex align-items-center">
+						<!-- Search Form -->
+						<li class="nav-item d-flex align-items-center me-2">
+							@if (User.Identity.IsAuthenticated)
+							{
+								<form class="d-flex align-items-center" method="get" action="/Util/Search" style="max-width: 260px;">
+									<div class="input-group rounded-pill shadow-sm bg-white">
+										<input type="text" class="form-control border-0 rounded-start-pill" name="tenTruyen" placeholder="Tìm truyện..." aria-label="Tìm truyện" style="background: transparent; min-width: 120px; border-radius: 25px 0 0 25px !important;">
+										<button class="btn btn-outline-secondary border-0 rounded-end-pill" type="submit" style="background: transparent; border-radius: 0 25px 25px 0 !important;">
+											<i class="bi bi-search"></i>
+										</button>
+									</div>
+								</form>
+							}
+							else
+							{
+								<div class="d-flex header_form-search">
+									<div class="input-group">
+										<input type="search" class="form-control" placeholder="Đăng nhập để tìm kiếm..." readonly style="border-radius: 25px 0 0 25px !important;">
+										<a class="btn" asp-controller="Authentication" asp-action="Login" style="border-radius: 0 25px 25px 0 !important;">
+											<svg xmlns="http://www.w3.org/2000/svg" height="1em"
+												 viewBox="0 0 512 512" style="fill: #666;">
+												<path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z">
+												</path>
+											</svg>
+										</a>
+									</div>
+								</div>
+							}
+						</li>
 
-					<!-- User Menu -->
-					@if (User.Identity.IsAuthenticated)
-					{
-						<div class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
-								<img src="~/image/default-avatar.png" alt="Avatar" class="rounded-circle me-2" width="32">
-								<span class="text-light">@User.Identity.Name</span>
-							</a>
-							<ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
-								<li>
-									<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyProfile">
-										<i class="fas fa-user me-2"></i>Hồ sơ
-									</a>
-								</li>
-								<li>
-									<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyStories">
-										<i class="fas fa-book me-2"></i>Truyện của tôi
-									</a>
-								</li>
-								@if (User.IsInRole("Admin"))
-								{
+						<!-- Notification Button (for authenticated users only) -->
+						@if (User.Identity.IsAuthenticated)
+						{
+							<li class="nav-item d-flex align-items-center me-2">
+								<a class="nav-link notification-btn position-relative d-flex align-items-center" asp-controller="Notification" asp-action="Index" title="Thông báo">
+									<i class="fas fa-bell text-light" style="font-size: 1.2rem;"></i>
+									<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notificationCount" style="font-size: 0.7rem; display: none;">
+										0
+									</span>
+								</a>
+							</li>
+						}
+						<!-- Quản lí nút cho Admin và Moderator -->
+						@if (User.IsInRole("Moderator") || User.IsInRole("Admin"))
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle text-warning fw-bold" href="#" data-bs-toggle="dropdown">
+									<i class="bi bi-shield-lock me-1" style="font-size:1.2rem;"></i>
+									<span class="d-none d-lg-inline">Quản lí</span>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="Moderator" asp-action="Index">
-											<i class="fas fa-cog me-2"></i>Quản trị nội dung
+											<i class="fas fa-cog me-2"></i>Quản lí nội dung
+										</a>
+									</li>
+									@if (User.IsInRole("Admin"))
+									{
+										<li><hr class="dropdown-divider"></li>
+										<li>
+											<a class="dropdown-item dropdown-item-dark" asp-controller="Admin" asp-action="Dashboard">
+												<i class="fas fa-tools me-2"></i>Quản lí hệ thống
+											</a>
+										</li>
+									}
+								</ul>
+							</li>
+						}
+						<!-- User Menu hoặc Login/Register buttons -->
+						@if (User.Identity.IsAuthenticated)
+						{
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+									<img src="~/image/default-avatar.png" alt="Avatar" class="rounded-circle me-2" width="32">
+									<span class="text-light">@User.Identity.Name</span>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
+									<li>
+										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyProfile">
+											<i class="fas fa-user me-2"></i>Hồ sơ
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyStories">
+											<i class="fas fa-book me-2"></i>Truyện của tôi
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item dropdown-item-dark" asp-controller="History" asp-action="Index">
+											<i class="fas fa-history me-2"></i>Lịch sử
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="Library">
+											<i class="fas fa-bookmark me-2"></i>Thư viện
+										</a>
+									</li>
+									<li>
+										<a class="dropdown-item dropdown-item-dark" asp-controller="Notification" asp-action="Index">
+											<i class="fas fa-bell me-2"></i>Thông báo
 										</a>
 									</li>
 									<li><hr class="dropdown-divider"></li>
 									<li>
-										<a class="dropdown-item dropdown-item-dark" asp-controller="Admin" asp-action="Dashboard">
-											<i class="fas fa-cog me-2"></i>Quản trị hệ thống
+										<a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Logout">
+											<i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
 										</a>
 									</li>
-								}
-								else if (User.IsInRole("Moderator"))
-								{
-									<li>
-										<a class="dropdown-item dropdown-item-dark" asp-controller="Moderator" asp-action="Index">
-											<i class="fas fa-cog me-2"></i>Quản trị nội dung
-										</a>
-									</li>
-								}
-								<li><hr class="dropdown-divider"></li>
-								<li>
-									<a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Logout">
-										<i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
-									</a>
-								</li>
-							</ul>
-						</div>
-					}
-					else
-					{
-						<div class="d-flex gap-2">
-							<a class="btn btn-dark-custom" asp-controller="Authentication" asp-action="Login">
-								Đăng Nhập
-							</a>
-							<a class="btn btn-outline-light" asp-controller="Authentication" asp-action="Register">
-								Đăng Ký
-							</a>
-						</div>
-					}
+								</ul>
+							</li>
+						}
+						else
+						{
+							<li class="nav-item">
+								<a class="btn btn-dark-custom me-2" asp-controller="Authentication" asp-action="Login">
+									<i class="fas fa-sign-in-alt me-1"></i>Đăng Nhập
+								</a>
+							</li>
+							<li class="nav-item">
+								<a class="btn btn-outline-light" asp-controller="Authentication" asp-action="Register">
+									<i class="fas fa-user-plus me-1"></i>Đăng Ký
+								</a>
+							</li>
+						}
+					</ul>
 				</div>
 			</div>
 		</nav>
 	</header>
 
 	<!-- Main Content -->
-	<main class="flex-grow-1 pt-5 mt-4">
+	<main class="flex-grow-1 pt-5 mb-5">
 		<!-- Notifications -->
-		<div class="container mt-3">
+		<div class="container">
 			@if (TempData["SuccessMessage"] != null)
 			{
-				<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<div class="mt-5 alert alert-success alert-dismissible fade show" role="alert">
 					<i class="fas fa-check-circle me-2"></i>
 					@TempData["SuccessMessage"]
 					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -218,7 +236,7 @@
 			}
 			@if (TempData["ErrorMessage"] != null)
 			{
-				<div class="alert alert-danger alert-dismissible fade show" role="alert">
+				<div class="mt-5 alert alert-danger alert-dismissible fade show" role="alert">
 					<i class="fas fa-exclamation-circle me-2"></i>
 					@TempData["ErrorMessage"]
 					<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -227,7 +245,7 @@
 		</div>
 
 		<!-- Content Area -->
-		<div class="container">
+		<div class="container mt-2">
 			@if (IsSectionDefined("Sidebar"))
 			{
 				<div class="row g-4">
@@ -287,6 +305,38 @@
 	<script src="~/lib/jquery/dist/jquery.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	@if (User.Identity.IsAuthenticated)
+	{
+		<script>
+			// Load notification count on page load
+			$(document).ready(function() {
+				loadNotificationCount();
+				
+				// Refresh notification count every 30 seconds
+				setInterval(loadNotificationCount, 30000);
+			});
+
+			function loadNotificationCount() {
+				$.get('/Notification/GetUnreadCount')
+					.done(function(data) {
+						var count = data.count || 0;
+						var badge = $('#notificationCount');
+						
+						if (count > 0) {
+							badge.text(count > 99 ? '99+' : count);
+							badge.show();
+						} else {
+							badge.hide();
+						}
+					})
+					.fail(function() {
+						console.log('Failed to load notification count');
+					});
+			}
+		</script>
+	}
+
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

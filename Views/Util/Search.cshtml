@@ -11,7 +11,8 @@
 <link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/util-search.css" asp-append-version="true" />
 
-<form method="get" asp-controller="Util" asp-action="Search" class="mb-4 mt-4 d-flex justify-content-center gap-2">
+<h2 class="text-center" style="margin-top:50px">Tìm kiếm</h2>
+<form method="get" asp-controller="Util" asp-action="Search" class="mb-4 d-flex justify-content-center gap-2">
     <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="Nhập tên truyện..." class="form-control w-auto" style="max-width:320px" />
     <button type="submit" class="btn btn-primary">Tìm kiếm</button>
     <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="Tìm kiếm nâng cao" style="border-radius: 50%; width: 42px; height: 42px; justify-content: center;">

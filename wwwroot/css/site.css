@@ -112,12 +112,15 @@ html, body {
     background-color: var(--dark-primary);
     color: var(--text-light);
     border: none;
+    border-radius: 25px !important;
     transition: all 0.3s ease;
+    padding: 8px 16px;
 }
 
     .btn-dark-custom:hover {
         background-color: var(--dark-secondary);
         color: var(--text-light);
+        transform: translateY(-1px);
     }
 
 .navbar-custom {
@@ -129,11 +132,14 @@ html, body {
 .dropdown-menu-dark-custom {
     background-color: var(--dark-secondary);
     border: none;
+    border-radius: 12px !important;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .dropdown-item-dark {
     color: var(--text-light);
+    border-radius: 8px;
+    margin: 2px 4px;
 }
 
     .dropdown-item-dark:hover {
@@ -360,3 +366,290 @@ html, body {
     .switch-theme-btn:hover .switch-slider {
         background-color: #212529;
     }
+
+/* ========== NAVBAR SPECIFIC STYLING ========== */
+/* Enhanced navbar styling for consistent appearance across all roles */
+.navbar-custom .navbar-nav .nav-link {
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 8px 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none !important;
+}
+
+.navbar-custom .navbar-nav .nav-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light) !important;
+    transform: translateY(-1px);
+}
+
+.navbar-custom .navbar-brand:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+/* Ensure all dropdowns are consistent */
+.navbar-custom .dropdown-toggle:after {
+    margin-left: 0.5rem;
+    border-top: 0.3rem solid;
+    border-right: 0.3rem solid transparent;
+    border-left: 0.3rem solid transparent;
+}
+
+/* User avatar consistent styling */
+.navbar-custom .nav-link img.rounded-circle {
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    transition: all 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover img.rounded-circle {
+    border-color: #ffd700;
+    transform: scale(1.05);
+}
+
+/* Notification Button Styles */
+.notification-btn {
+    padding: 8px 12px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    transition: all 0.3s ease !important;
+    background-color: transparent !important;
+    min-height: 40px !important;
+    min-width: 40px !important;
+    position: relative !important;
+}
+
+.notification-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(1.1) !important;
+    border-radius: 50% !important;
+}
+
+.notification-badge {
+    margin-left: -8px !important;
+    margin-top: -4px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    line-height: 16px !important;
+    padding: 0 4px !important;
+    border-radius: 50% !important;
+}
+
+/* Search Form Enhanced Styling */
+.input-group.rounded-pill {
+    border-radius: 25px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.input-group.rounded-pill .form-control {
+    border: none !important;
+    border-radius: 25px 0 0 25px !important;
+}
+
+.input-group.rounded-pill .btn {
+    border: none !important;
+    border-radius: 0 25px 25px 0 !important;
+    background-color: #f8f9fa !important;
+}
+
+.input-group.rounded-pill .btn:hover {
+    background-color: #ffd700 !important;
+    color: #333 !important;
+}
+
+/* Navbar Alignment Fixes */
+.navbar-custom .navbar-nav {
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+.navbar-custom .navbar-nav .nav-item {
+    display: flex !important;
+    align-items: center !important;
+}
+
+.navbar-custom .navbar-nav .nav-item .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 40px !important;
+}
+
+.navbar-custom .navbar-nav .dropdown-toggle {
+    display: flex !important;
+    align-items: center !important;
+    min-height: 40px !important;
+}
+
+/* Special styling for search and notification in navbar */
+.navbar-custom .navbar-nav .nav-item form {
+    margin: 0 !important;
+}
+
+.navbar-custom .navbar-nav .nav-item .input-group {
+    width: auto !important;
+    max-width: 260px !important;
+}
+
+/* Fix Management Button Alignment */
+.navbar-custom .text-warning {
+    display: flex !important;
+    align-items: center !important;
+    padding: 8px 15px !important;
+    min-height: 40px !important;
+}
+
+/* Search form styling */
+.header_form-search .form-control {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: var(--text-primary);
+    border-radius: 25px !important;
+}
+
+.header_form-search .form-control:focus {
+    background-color: white;
+    border-color: #ffd700;
+    box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    border-radius: 25px !important;
+}
+
+.header_form-search .input-group {
+    border-radius: 25px !important;
+}
+
+.header_form-search .btn {
+    border-radius: 25px !important;
+}
+
+/* Management dropdown styling */
+.navbar-custom .dropdown-menu-dark-custom {
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    margin-top: 0.5rem;
+}
+
+.navbar-custom .dropdown-toggle::after {
+    color: #ffd700;
+}
+
+/* User avatar styling */
+.navbar-custom .nav-link img {
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    transition: border-color 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover img {
+    border-color: #ffd700;
+}
+
+/* Management link special styling */
+.navbar-custom .text-warning {
+    color: #ffd700 !important;
+}
+
+.navbar-custom .text-warning:hover {
+    color: #ffed4e !important;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Button styling in navbar */
+.navbar-custom .btn {
+    margin: 0 0.25rem;
+    border-radius: 25px !important;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.navbar-custom .btn-outline-light {
+    border-radius: 25px !important;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+}
+
+.navbar-custom .btn-outline-light:hover {
+    background-color: #ffd700;
+    border-color: #ffd700;
+    color: var(--dark-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+}
+
+/* Dark mode toggle styling */
+.form-check-input.theme_mode:checked {
+    background-color: #ffd700;
+    border-color: #ffd700;
+}
+
+/* Responsive navbar adjustments */
+@media (max-width: 991.98px) {
+    .navbar-custom .navbar-collapse {
+        background-color: rgba(26, 26, 26, 0.95);
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 15px;
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    
+    .navbar-custom .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+        margin: 0.25rem 0;
+        border-radius: 8px;
+    }
+    
+    .navbar-custom .btn {
+        margin: 0.5rem 0;
+        width: 100%;
+        border-radius: 25px !important;
+    }
+    
+    /* Mobile search form styling */
+    .navbar-custom .navbar-nav .nav-item form,
+    .navbar-custom .navbar-nav .nav-item .header_form-search {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0.5rem 0 !important;
+    }
+    
+    .navbar-custom .navbar-nav .nav-item .input-group {
+        border-radius: 25px !important;
+        width: 100% !important;
+    }
+    
+    /* Mobile notification button */
+    .navbar-custom .navbar-nav .nav-item .notification-btn {
+        margin: 0.5rem 0 !important;
+        align-self: center !important;
+    }
+    
+    /* Mobile navbar nav layout */
+    .navbar-custom .navbar-nav {
+        flex-direction: column !important;
+        width: 100% !important;
+        gap: 0.5rem !important;
+    }
+    
+    .navbar-custom .navbar-nav .nav-item {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+/* Additional mobile optimization */
+@media (max-width: 576px) {
+    .input-group.rounded-pill {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-custom .container {
+        padding: 0 1rem;
+    }
+    
+    .form-check.form-switch {
+        margin-right: 1rem !important;
+    }
+}

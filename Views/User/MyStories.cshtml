@@ -1,20 +1,11 @@
 ﻿@using PBL3.ViewModels.UserProfile
 @model IEnumerable<UserStoryCardViewModel>
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = "Truyện của tôi";
 }
 
 <link rel="stylesheet" href="~/css/my-stories.css" asp-append-version="true" />
 <script src="~/js/my-stories.js" asp-append-version="true"></script>
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
 
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4 my-stories-header">
@@ -44,6 +35,18 @@
                                     @if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Active)
                                     {
                                         @:Đang thực hiện
+                                    }
+                                    else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Completed)
+                                    {
+                                        @:Hoàn thành
+                                    }
+                                    else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Locked)
+                                    {
+                                        @:Bị khóa
+                                    }
+                                    else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
+                                    {
+                                        @:Đang chờ duyệt
                                     }
                                     else
                                     {
