@@ -108,25 +108,6 @@
         color: #000;
         transform: translateY(-2px);
     }
-    
-    .btn-unfollow {
-        background: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .btn-unfollow:hover {
-        background: #c82333;
-        transform: scale(1.1);
-    }
 </style>
 
 <div class="discovery-header">
@@ -167,9 +148,6 @@
                             <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-view-profile">
                                 <i class="fas fa-user me-2"></i>Xem Profile
                             </a>
-                            <button class="btn-unfollow" data-author-id="@author.Id" title="Bỏ theo dõi">
-                                <i class="fas fa-user-minus"></i>
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -253,40 +231,5 @@
             easing: 'ease-in-out',
             once: true
         });
-
-        // Unfollow author functionality
-        document.querySelectorAll('.btn-unfollow').forEach(button => {
-            button.addEventListener('click', function() {
-                const authorId = this.getAttribute('data-author-id');
-                
-                if (confirm('Bạn có chắc chắn muốn bỏ theo dõi tác giả này?')) {
-                    fetch('/Follow/UnfollowUser', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        },
-                        body: `followingId=${authorId}`
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Remove the author card with animation
-                            const authorCard = this.closest('.author-card');
-                            authorCard.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-                            authorCard.style.opacity = '0';
-                            authorCard.style.transform = 'scale(0.8)';
-                            
-                            setTimeout(() => {
-                                authorCard.remove();
-                            }, 300);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Có lỗi xảy ra khi bỏ theo dõi');
-                    });
-                }
-            });
-        });
     </script>
-} 
+}

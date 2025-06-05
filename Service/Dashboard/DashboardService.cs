@@ -18,7 +18,7 @@ namespace PBL3.Service.Dashboard
             _blobService = blobService;
         }
 
-        public async Task<List<StoryViewModel>> GetTopStoriesOfWeekAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetTopStoriesOfWeekAsync(int count = 12)
         {
             DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
 
@@ -58,7 +58,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetHotStoriesAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetHotStoriesAsync(int count = 12)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -89,7 +89,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId, int count = 20)
+        public async Task<List<StoryViewModel>> GetHotStoriesByCategoryAsync(int categoryId, int count = 12)
         {
             if (categoryId == 0)
             {
@@ -126,7 +126,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetMostLikedStoriesAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetMostLikedStoriesAsync(int count = 12)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -163,7 +163,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetNewStoriesAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetNewStoriesAsync(int count = 12)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)
@@ -210,7 +210,7 @@ namespace PBL3.Service.Dashboard
             return stories;
         }
 
-        public async Task<List<StoryViewModel>> GetCompletedStoriesAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetCompletedStoriesAsync(int count = 12)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Completed)
@@ -252,62 +252,19 @@ namespace PBL3.Service.Dashboard
                 .ToListAsync();
         }
 
-        public async Task<List<StoryViewModel>> GetFollowedStoriesAsync(int userId, int count = 20)
+        public async Task<List<AuthorViewModel>> GetFollowedAuthorsAsync(int userId, int count = 12)
         {
-            var stories = await _context.FollowStories
-                .Where(fs => fs.UserID == userId)
-                .Select(fs => fs.Story)
-                .Where(s => s.Status == StoryStatus.Active)
-                .OrderByDescending(s => s.UpdatedAt)
-                .Take(count)
-                .Select(s => new StoryViewModel
-                {
-                    Id = s.StoryID,
-                    Title = s.Title,
-                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
-                    IsHot = s.Chapters.Sum(c => c.ViewCount) > 1000,
-                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
-                    IsCompleted = s.Status == StoryStatus.Completed,
-                    ChapterCount = s.Chapters.Count,
-                    LastUpdated = s.UpdatedAt,
-                    AuthorName = s.Author.DisplayName,
-                    ViewCount = s.Chapters.Sum(c => c.ViewCount),
-                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count(),
-                    LatestChapter = s.Chapters
-                        .OrderByDescending(c => c.ChapterOrder)
-                        .Select(c => new ChapterViewModel
-                        {
-                            Id = c.ChapterID,
-                            ChapterNumber = c.ChapterOrder,
-                            Title = c.Title
-                        })
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
-
-            // Update image URLs
-            foreach (var story in stories)
-            {
-                story.CoverImageUrl = await _blobService.GetSafeImageUrlAsync(story.CoverImageUrl);
-            }
-
-            return stories;
-        }
-
-        public async Task<List<AuthorViewModel>> GetFollowedAuthorsAsync(int userId, int count = 20)
-        {
-            var authors = await _context.FollowUsers
-                .Where(fu => fu.FollowerID == userId)
-                .Select(fu => fu.Following)
+            var authors = await _context.Users
+                .OrderByDescending(u => _context.FollowUsers.Count(f => f.FollowingID == u.UserID))
                 .Take(count)
                 .Select(u => new AuthorViewModel
                 {
                     Id = u.UserID,
                     Name = u.DisplayName,
                     Avatar = u.Avatar ?? "/image/default-avatar.png",
-                    TotalStories = u.Stories.Count(s => s.Status == StoryStatus.Active),
+                    TotalStories = u.Stories.Count(s => s.Status == Models.StoryModel.StoryStatus.Active),
                     TotalFollowers = _context.FollowUsers.Count(f => f.FollowingID == u.UserID),
-                    IsFollowed = true,
+                    IsFollowed = _context.FollowUsers.Any(f => f.FollowerID == userId && f.FollowingID == u.UserID),
                     RecentStories = u.Stories
                         .Where(s => s.Status == StoryStatus.Active)
                         .OrderByDescending(s => s.UpdatedAt)
@@ -336,7 +293,7 @@ namespace PBL3.Service.Dashboard
             return authors;
         }
 
-        public async Task<List<StoryViewModel>> GetTopFollowedStoriesAsync(int count = 20)
+        public async Task<List<StoryViewModel>> GetTopFollowedStoriesAsync(int count = 12)
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == StoryStatus.Active)

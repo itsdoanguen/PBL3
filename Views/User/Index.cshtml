@@ -232,9 +232,6 @@
                                                 <i class="fas fa-user"></i>
                                                 <span>Xem Profile</span>
                                             </a>
-                                            <button class="unfollow-story unfollow-author" data-author-id="@author.Id">
-                                                <i class="fas fa-user-minus"></i>
-                                            </button>
                                         </div>
                                         <div class="view-count">
                                             <i class="fas fa-users"></i>
@@ -274,7 +271,7 @@
                             </div>
                             <div class="container-subtitle">Những truyện được theo dõi nhiều nhất</div>
                         </div>
-                        <a asp-controller="Discovery" asp-action="TopFollowed" class="btn-view-all">
+                        <a asp-controller="Story" asp-action="AllStories" asp-route-query="follow" class="btn-view-all">
                             <span>Xem tất cả</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
