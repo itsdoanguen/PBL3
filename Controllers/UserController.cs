@@ -291,13 +291,22 @@ namespace PBL3.Controllers
                 return Json(errorInfo);
             }
         }
+
+
+        //GET: User/Settings
+        [HttpGet]
+        public IActionResult Settings()
+        {
+            return View();
+        }
+        //GET: User/ForgotPassword
         [AllowAnonymous]
         [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View(new ForgotPasswordViewModel());
         }
-        
+        //POST: User/ForgotPassword
         [AllowAnonymous]
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -431,7 +431,7 @@ html, body {
 
 .notification-badge {
     margin-left: -8px !important;
-    margin-top: -4px !important;
+    margin-top: 5px !important;
     min-width: 16px !important;
     height: 16px !important;
     line-height: 16px !important;

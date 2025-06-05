@@ -36,13 +36,13 @@ namespace PBL3.Controllers
             var history = histories.FirstOrDefault(h => h.HistoryID == historyId);
             if (history == null)
             {
-                TempData["Error"] = "Không tìm thấy lịch sử cần xóa.";
+                TempData["ErrorMessage"] = "Không tìm thấy lịch sử cần xóa.";
                 return RedirectToAction("Index");
             }
             // Xóa lịch sử đọc (theo storyId)
             await _historyService.DeleteHistoryAsync(userId, history.StoryID);
-            TempData["Message"] = "Đã xóa lịch sử đọc truyện thành công.";
-            return RedirectToAction("Index");
+            TempData["SuccessMessage"] = "Đã xóa lịch sử đọc truyện thành công.";
+            return RedirectToAction("Index","History");
         }
 
     }

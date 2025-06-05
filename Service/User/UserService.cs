@@ -114,10 +114,6 @@ namespace PBL3.Service.User
                 }
                 userInfo.Avatar = imageUrl;
             }
-            else
-            {
-                userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
-            }
 
             // Upload banner
             if (bannerUpload != null)
@@ -129,10 +125,6 @@ namespace PBL3.Service.User
                     return (false, errorMessage ?? string.Empty, currentProfile);
                 }
                 userInfo.Banner = imageUrl;
-            }
-            else
-            {
-                userInfo.Banner = profile.Banner ?? "/image/default-banner.png";
             }
 
             userInfo.DisplayName = profile.DisplayName;

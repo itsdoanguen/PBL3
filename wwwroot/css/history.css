@@ -1,0 +1,66 @@
+/* history.css - Hiển thị thẻ truyện đã đọc đẹp hơn và hiệu ứng hover */
+.card.history-card {
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    border: 1.5px solid #e3f2fd;
+    transition: box-shadow 0.22s, border 0.18s, transform 0.18s;
+    overflow: hidden;
+    background: #fff;
+    position: relative;
+}
+.card.history-card:hover {
+    box-shadow: 0 12px 32px rgba(33,150,243,0.18);
+    border: 1.5px solid #4fc3f7;
+    z-index: 3;
+    transform: translateY(-4px) scale(1.025);
+}
+.card.history-card .card-img-top {
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    height: 180px;
+    object-fit: cover;
+    transition: filter 0.18s;
+}
+.card.history-card:hover .card-img-top {
+    filter: brightness(0.97) saturate(1.1);
+}
+.card.history-card .card-img-overlay {
+    border-radius: 0 0 16px 16px;
+    background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 60%);
+}
+.card.history-card .fw-bold {
+    font-size: 1rem;
+    letter-spacing: 0.01em;
+}
+.card.history-card .btn-link {
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(33,150,243,0.18);
+}
+.card.history-card .btn-link:hover {
+    color: #ff5252;
+    text-decoration: underline;
+}
+.card.history-card .bi-x-circle {
+    font-size: 1.2rem;
+    vertical-align: middle;
+}
+.mt-2.text-center.fw-semibold {
+    font-size: 1rem;
+    color: #1976d2;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    transition: color 0.18s;
+}
+.card.history-card:hover ~ .mt-2.text-center.fw-semibold {
+    color: #4fc3f7;
+}
+@media (max-width: 768px) {
+    .card.history-card .card-img-top {
+        height: 120px;
+    }
+}
+@media (max-width: 576px) {
+    .card.history-card .card-img-top {
+        height: 80px;
+    }
+}

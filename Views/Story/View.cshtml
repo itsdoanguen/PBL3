@@ -35,21 +35,6 @@
     <link href="~/css/story-view.css" rel="stylesheet" />
 }
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show container" style="max-width:600px" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
- else if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger alert-dismissible fade show container" style="max-width:600px" role="alert">
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-
 @if (TempData["ScrollToComment"] != null)
 {
     <input type="hidden" id="scrollToComment" value="@TempData["ScrollToComment"]" />
