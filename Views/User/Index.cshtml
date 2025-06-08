@@ -18,20 +18,20 @@
             <h1 class="hero-title">@Model.HeaderMessage</h1>
             <div class="hero-stats">
                 <div class="stat-item">
-                    <span class="stat-number">@Model.HotStories?.Count</span>
-                    <span class="stat-label">Truyện Hot</span>
+                    <span class="stat-number">@Model.Statistics.TotalActiveStories.ToString("N0")</span>
+                    <span class="stat-label">Truyện Đang Tiến Hành</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">@Model.NewStories?.Count</span>
-                    <span class="stat-label">Truyện Mới</span>
+                    <span class="stat-number">@Model.Statistics.TotalNewStories.ToString("N0")</span>
+                    <span class="stat-label">Truyện Mới Tuần</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">@Model.CompletedStories?.Count</span>
+                    <span class="stat-number">@Model.Statistics.TotalCompletedStories.ToString("N0")</span>
                     <span class="stat-label">Hoàn Thành</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-number">@Model.AllCategories?.Count</span>
-                    <span class="stat-label">Thể Loại</span>
+                    <span class="stat-number">@Model.Statistics.TotalAuthors.ToString("N0")</span>
+                    <span class="stat-label">Tác Giả</span>
                 </div>
             </div>
         </div>
@@ -103,14 +103,15 @@
                                         </div>
                                         <div class="view-count">
                                             <i class="fas fa-eye"></i>
-                                            <span>@story.ViewCount.ToString("N0")</span>
+                                            <span>@story.ViewCount</span>
                                         </div>
                                     </div>
                                     <div class="story-info">
                                         <h4 class="story-title">@story.Title</h4>
                                         <p class="story-author">@story.AuthorName</p>
                                         <div class="story-stats">
-                                            <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                            <span><i class="fas fa-eye"></i> @story.ViewCount</span>
+                                            <span><i class="fas fa-users"></i> @story.FollowCount</span>
                                             <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                         </div>
                                     </div>
@@ -126,6 +127,149 @@
                     </div>
                 </div>
             }
+            <!-- Hot Stories Carousel -->
+            <div class="stories-container hot-stories-section" data-aos="fade-right" data-aos-duration="800">
+                <div class="container-header">
+                    <div class="container-title-section">
+                        <div class="container-title">
+                            <i class="fas fa-fire"></i>
+                            <h2>Truyện Hot</h2>
+                        </div>
+                        <div class="container-subtitle">Những truyện được yêu thích nhất</div>
+                    </div>
+                    <a asp-controller="Story" asp-action="AllStories" asp-route-query="view" class="btn-view-all">
+                        <span>Xem tất cả</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="filter-section">
+                    <label for="categoryFilter">Lọc theo thể loại:</label>
+                    <select class="form-select" id="categoryFilter" asp-items="@Model.CategorySelectList">
+                        <option value="0" selected>Tất cả thể loại</option>
+                    </select>
+                </div>
+                <div class="stories-slider" data-carousel="hot-stories">
+                    <div class="stories-track" id="hotStoriesContainer">
+                        @foreach (var story in Model.HotStories)
+                        {
+                            <div class="story-item">
+                                <div class="story-image">
+                                    <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                    <div class="story-badges">
+                                        @if (story.IsHot)
+                                        {
+                                            <span class="badge badge-hot">Hot</span>
+                                        }
+                                        @if (story.IsNew)
+                                        {
+                                            <span class="badge badge-new">New</span>
+                                        }
+                                        @if (story.IsCompleted)
+                                        {
+                                            <span class="badge badge-complete">Full</span>
+                                        }
+                                    </div>
+                                    <div class="story-overlay">
+                                        <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Đọc ngay</span>
+                                        </a>
+                                    </div>
+                                    <div class="view-count">
+                                        <i class="fas fa-eye"></i>
+                                        <span>@story.ViewCount</span>
+                                    </div>
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title">@story.Title</h4>
+                                    <p class="story-author">@story.AuthorName</p>
+                                    <div class="story-stats">
+                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
+                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
+                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="nav-arrow prev" data-direction="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow next" data-direction="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- New Stories Carousel -->
+            <div class="stories-container new-stories-section" data-aos="fade-left" data-aos-duration="800">
+                <div class="container-header">
+                    <div class="container-title-section">
+                        <div class="container-title">
+                            <i class="fas fa-sparkles"></i>
+                            <h2>Truyện Mới</h2>
+                        </div>
+                        <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
+                    </div>
+                    <a asp-controller="Story" asp-action="AllStories" asp-route-query="updated" class="btn-view-all">
+                        <span>Xem tất cả</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                <div class="stories-slider" data-carousel="new-stories">
+                    <div class="stories-track">
+                        @foreach (var story in Model.NewStories)
+                        {
+                            <div class="story-item new-story-item">
+                                <div class="story-image">
+                                    <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
+                                    <div class="story-badges">
+                                        @if (story.IsNew)
+                                        {
+                                            <span class="badge badge-new">New</span>
+                                        }
+                                        @if (story.IsCompleted)
+                                        {
+                                            <span class="badge badge-complete">Full</span>
+                                        }
+                                        @if (story.IsHot)
+                                        {
+                                            <span class="badge badge-hot">Hot</span>
+                                        }
+                                    </div>
+                                    <div class="story-overlay">
+                                        <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Đọc ngay</span>
+                                        </a>
+                                    </div>
+                                    @if (story.LatestChapter != null)
+                                    {
+                                        <div class="view-count">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Ch. @story.LatestChapter.ChapterNumber</span>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title">@story.Title</h4>
+                                    <p class="story-author">@story.AuthorName</p>
+                                    <div class="story-stats">
+                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
+                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
+                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <button class="nav-arrow prev" data-direction="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow next" data-direction="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
 
             <!-- Top Liked Stories Carousel -->
             <div class="stories-container liked-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
@@ -179,6 +323,8 @@
                                     <p class="story-author">@story.AuthorName</p>
                                     <div class="story-stats">
                                         <span><i class="fas fa-heart"></i> @story.LikeCount</span>
+                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
+                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
                                         <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                     </div>
                                 </div>
@@ -194,71 +340,6 @@
                 </div>
             </div>
 
-            <!-- Top Authors Carousel -->
-            @if (Model.FollowedAuthors != null && Model.FollowedAuthors.Any())
-            {
-                <div class="stories-container authors-carousel" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="400">
-                    <div class="container-header">
-                        <div class="container-title-section">
-                            <div class="container-title">
-                                <i class="fas fa-users"></i>
-                                <h2>Tác Giả Nổi Bật</h2>
-                            </div>
-                            <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
-                        </div>
-                        <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn-view-all">
-                            <span>Xem tất cả</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                    <div class="stories-slider" data-carousel="authors">
-                        <div class="stories-track">
-                            @foreach (var author in Model.FollowedAuthors)
-                            {
-                                var tierClass = author.TotalFollowers switch
-                                {
-                                    >= 5000 => "tier-diamond",
-                                    >= 1000 => "tier-gold",
-                                    >= 500 => "tier-silver",
-                                    >= 100 => "tier-bronze",
-                                    _ => "tier-basic"
-                                };
-
-                                <div class="story-item author-item @tierClass">
-                                    <div class="story-image">
-                                        <img src="@author.Avatar" alt="@author.Name" loading="lazy">
-                                        <div class="story-overlay">
-                                            <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-read">
-                                                <i class="fas fa-user"></i>
-                                                <span>Xem Profile</span>
-                                            </a>
-                                        </div>
-                                        <div class="view-count">
-                                            <i class="fas fa-users"></i>
-                                            <span>@author.TotalFollowers</span>
-                                        </div>
-                                    </div>
-                                    <div class="story-info">
-                                        <h4 class="story-title">@author.Name</h4>
-                                        <p class="story-author">@author.TotalStories truyện</p>
-                                        <div class="story-stats">
-                                            <span><i class="fas fa-heart"></i> @author.TotalFollowers</span>
-                                            <span><i class="fas fa-book"></i> @author.TotalStories</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <button class="nav-arrow prev" data-direction="prev">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="nav-arrow next" data-direction="next">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                </div>
-            }
-
             <!-- Top Followed Stories Carousel -->
             @if (Model.TopFollowedStories != null && Model.TopFollowedStories.Any())
             {
@@ -266,8 +347,8 @@
                     <div class="container-header">
                         <div class="container-title-section">
                             <div class="container-title">
-                                <i class="fas fa-star"></i>
-                                <h2>Top Truyện Theo Dõi</h2>
+                                <i class="fas fa-users"></i>
+                                <h2>Top Truyện Được Theo Dõi</h2>
                             </div>
                             <div class="container-subtitle">Những truyện được theo dõi nhiều nhất</div>
                         </div>
@@ -304,7 +385,7 @@
                                             </a>
                                         </div>
                                         <div class="view-count">
-                                            <i class="fas fa-heart"></i>
+                                            <i class="fas fa-users"></i>
                                             <span>@story.FollowCount</span>
                                         </div>
                                     </div>
@@ -312,7 +393,8 @@
                                         <h4 class="story-title">@story.Title</h4>
                                         <p class="story-author">@story.AuthorName</p>
                                         <div class="story-stats">
-                                            <span><i class="fas fa-heart"></i> @story.FollowCount</span>
+                                            <span><i class="fas fa-users"></i> @story.FollowCount</span>
+                                            <span><i class="fas fa-eye"></i> @story.ViewCount</span>
                                             <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                         </div>
                                     </div>
@@ -329,33 +411,84 @@
                 </div>
             }
         }
-
-        <!-- Hot Stories Carousel -->
-        <div class="stories-container hot-stories-section" data-aos="fade-right" data-aos-duration="800">
+            <!-- Recent Reading History -->
+            @if (Model.IsAuthenticated && Model.RecentlyRead != null && Model.RecentlyRead.Any())
+            {
+                <div class="stories-container recent-reads" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
             <div class="container-header">
                 <div class="container-title-section">
                     <div class="container-title">
-                        <i class="fas fa-fire"></i>
-                        <h2>Truyện Hot</h2>
+                                <i class="fas fa-history"></i>
+                                <h2>Đọc Gần Đây</h2>
+                            </div>
+                            <div class="container-subtitle">Tiếp tục hành trình đọc truyện của bạn</div>
+                        </div>
+                        <a asp-controller="User" asp-action="History" class="btn-view-all">
+                            <span>Xem tất cả</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
-                    <div class="container-subtitle">Những truyện được yêu thích nhất</div>
+                    <div class="stories-slider" data-carousel="recent-reads">
+                        <div class="stories-track">
+                            @foreach (var read in Model.RecentlyRead)
+                            {
+                                <div class="story-item recent-read-item">
+                                    <div class="story-image">
+                                        <img src="@read.CoverImage" alt="@read.StoryTitle" loading="lazy">
+                                        <div class="progress-overlay">
+                                            <div class="progress-bar" style="width: @read.ReadProgress%"></div>
+                                            <span class="progress-text">@read.ReadProgress%</span>
+                                        </div>
+                                                                <div class="story-overlay">
+                            <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@read.ChapterID" class="btn-read">
+                                <i class="fas fa-play"></i>
+                                <span>Tiếp tục đọc</span>
+                            </a>
+                        </div>
+                                    </div>
+                                    <div class="story-info">
+                                        <h4 class="story-title">@read.StoryTitle</h4>
+                                        <p class="story-author">Chương @read.ChapterID: @read.ChapterTitle</p>
+                                        <div class="story-stats">
+                                            <span><i class="fas fa-clock"></i> @read.LastRead.ToString("dd/MM/yyyy")</span>
+                                            <span><i class="fas fa-book"></i> @read.TotalChapters chương</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <button class="nav-arrow prev" data-direction="prev">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-arrow next" data-direction="next">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
                 </div>
-                <a asp-controller="Story" asp-action="AllStories"  asp-route-query="view" class="btn-view-all">
+            }
+
+            <!-- Following Stories -->
+            @if (Model.IsAuthenticated && Model.FollowingStories != null && Model.FollowingStories.Any())
+            {
+                <div class="stories-container following-stories" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="600">
+                    <div class="container-header">
+                        <div class="container-title-section">
+                            <div class="container-title">
+                                <i class="fas fa-rss"></i>
+                                <h2>Truyện Từ Tác Giả Theo Dõi</h2>
+                            </div>
+                            <div class="container-subtitle">Cập nhật mới nhất từ các tác giả bạn yêu thích</div>
+                        </div>
+                        <a asp-controller="User" asp-action="Following" class="btn-view-all">
                     <span>Xem tất cả</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-            <div class="filter-section">
-                <label for="categoryFilter">Lọc theo thể loại:</label>
-                <select class="form-select" id="categoryFilter" asp-items="@Model.CategorySelectList">
-                    <option value="0" selected>Tất cả thể loại</option>
-                </select>
-            </div>
-            <div class="stories-slider" data-carousel="hot-stories">
-                <div class="stories-track" id="hotStoriesContainer">
-                    @foreach (var story in Model.HotStories)
+                    <div class="stories-slider" data-carousel="following-stories">
+                        <div class="stories-track">
+                            @foreach (var story in Model.FollowingStories)
                     {
-                        <div class="story-item">
+                                <div class="story-item following-story-item">
                             <div class="story-image">
                                 <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
                                 <div class="story-badges">
@@ -380,14 +513,14 @@
                                 </div>
                                 <div class="view-count">
                                     <i class="fas fa-eye"></i>
-                                    <span>@story.ViewCount.ToString("N0")</span>
+                                            <span>@story.ViewCount</span>
                                 </div>
                             </div>
                             <div class="story-info">
                                 <h4 class="story-title">@story.Title</h4>
                                 <p class="story-author">@story.AuthorName</p>
                                 <div class="story-stats">
-                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                            <span><i class="fas fa-users"></i> @story.FollowCount</span>
                                     <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                 </div>
                             </div>
@@ -400,78 +533,9 @@
                 <button class="nav-arrow next" data-direction="next">
                     <i class="fas fa-chevron-right"></i>
                 </button>
-            </div>
-        </div>
-
-        <!-- New Stories Carousel -->
-        <div class="stories-container new-stories-section" data-aos="fade-left" data-aos-duration="800">
-            <div class="container-header">
-                <div class="container-title-section">
-                    <div class="container-title">
-                        <i class="fas fa-sparkles"></i>
-                        <h2>Truyện Mới</h2>
-                    </div>
-                    <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
-                </div>
-                <a asp-controller="Story" asp-action="AllStories" asp-route-query="updated" class="btn-view-all">
-                    <span>Xem tất cả</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            <div class="stories-slider" data-carousel="new-stories">
-                <div class="stories-track">
-                    @foreach (var story in Model.NewStories)
-                    {
-                        <div class="story-item new-story-item">
-                            <div class="story-image">
-                                <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
-                                <div class="story-badges">
-                                    @if (story.IsNew)
-                                    {
-                                        <span class="badge badge-new">New</span>
-                                    }
-                                    @if (story.IsCompleted)
-                                    {
-                                        <span class="badge badge-complete">Full</span>
-                                    }
-                                    @if (story.IsHot)
-                                    {
-                                        <span class="badge badge-hot">Hot</span>
-                                    }
-                                </div>
-                                <div class="story-overlay">
-                                    <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
-                                        <i class="fas fa-book-open"></i>
-                                        <span>Đọc ngay</span>
-                                    </a>
-                                </div>
-                                @if (story.LatestChapter != null)
-                                {
-                                    <div class="view-count">
-                                        <i class="fas fa-book-open"></i>
-                                        <span>Ch. @story.LatestChapter.ChapterNumber</span>
-                                    </div>
-                                }
-                            </div>
-                            <div class="story-info">
-                                <h4 class="story-title">@story.Title</h4>
-                                <p class="story-author">@story.AuthorName</p>
-                                <div class="story-stats">
-                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
-                                    <span><i class="fas fa-book"></i> @story.ChapterCount</span>
-                                </div>
                             </div>
                         </div>
                     }
-                </div>
-                <button class="nav-arrow prev" data-direction="prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button class="nav-arrow next" data-direction="next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
 
         <!-- Completed Stories Carousel -->
         <div class="stories-container completed-stories-section" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
@@ -513,7 +577,8 @@
                                 <h4 class="story-title">@story.Title</h4>
                                 <p class="story-author">@story.AuthorName</p>
                                 <div class="story-stats">
-                                    <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
+                                    <span><i class="fas fa-eye"></i> @story.ViewCount</span>
+                                    <span><i class="fas fa-users"></i> @story.FollowCount</span>
                                     <span><i class="fas fa-book"></i> @story.ChapterCount</span>
                                 </div>
                             </div>
@@ -529,18 +594,71 @@
             </div>
         </div>
 
-        <!-- Categories Sidebar -->
-        <div class="categories-sidebar">
-            <h3><i class="fas fa-tags"></i> Thể Loại</h3>
-            <div class="categories-grid">
-                @foreach (var category in Model.AllCategories)
-                {
-                    <a asp-controller="Util" asp-action="AdvancedSearch" asp-route-GenreNames="@category.Name" class="category-tag">
-                        @category.Name
+        <!-- Top Authors Carousel -->
+        @if (Model.FollowedAuthors != null && Model.FollowedAuthors.Any())
+        {
+            <div class="stories-container authors-carousel" data-aos="fade-up" data-aos-duration="1200" data-aos-delay="400">
+                <div class="container-header">
+                    <div class="container-title-section">
+                        <div class="container-title">
+                            <i class="fas fa-users"></i>
+                            <h2>Tác Giả Nổi Bật</h2>
+                        </div>
+                        <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
+                    </div>
+                    <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn-view-all">
+                        <span>Xem tất cả</span>
+                        <i class="fas fa-arrow-right"></i>
                     </a>
+                </div>
+                <div class="stories-slider" data-carousel="authors">
+                    <div class="stories-track">
+                        @foreach (var author in Model.FollowedAuthors)
+                        {
+                            var tierClass = author.TotalFollowers switch
+                            {
+                                >= 5000 => "tier-diamond",
+                                >= 1000 => "tier-gold",
+                                >= 500 => "tier-silver",
+                                >= 100 => "tier-bronze",
+                                _ => "tier-basic"
+                            };
+
+                            <div class="story-item author-item @tierClass">
+                                <div class="story-image">
+                                    <img src="@author.Avatar" alt="@author.Name" loading="lazy">
+                                    <div class="story-overlay">
+                                        <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-read">
+                                            <i class="fas fa-user"></i>
+                                            <span>Xem Profile</span>
+                                        </a>
+                                    </div>
+                                    <div class="view-count">
+                                        <i class="fas fa-users"></i>
+                                        <span>@author.TotalFollowers</span>
+                                    </div>
+                                </div>
+                                <div class="story-info">
+                                    <h4 class="story-title">@author.Name</h4>
+                                    <p class="story-author">@author.TotalStories truyện</p>
+                                    <div class="story-stats">
+                                        <span><i class="fas fa-users"></i> @author.TotalFollowers</span>
+                                        <span><i class="fas fa-book"></i> @author.TotalStories</span>
+                                    </div>
+                                </div>
+                            </div>
                 }
+                    </div>
+                    <button class="nav-arrow prev" data-direction="prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-arrow next" data-direction="next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
-        </div>
+        }
+
     </div>
 </main>
 
@@ -553,6 +671,9 @@
             'top-stories': { itemWidth: 260, visibleItems: { desktop: 5, tablet: 3, mobile: 2 } },
             'liked-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
             'authors': { itemWidth: 240, visibleItems: { desktop: 6, tablet: 4, mobile: 3 } },
+            'recent-reads': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'following-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
+            'recommended-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
             'top-followed-stories': { itemWidth: 320, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
             'hot-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
             'new-stories': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 2, mobile: 2 } },
@@ -731,3 +852,43 @@
         });
     </script>
 }
+
+@*
+    ===============================================================================
+    DEVELOPER NOTE: ViewModel Architecture Update
+    ===============================================================================
+    
+    This view uses the comprehensive IntroViewModel that supports both guest and 
+    authenticated user experiences. The IntroViewModel includes:
+    
+    ✅ CURRENT IMPLEMENTATION:
+    - Basic story collections (Hot, New, Completed, Most Liked)
+    - Top Stories of Week with ranking system
+    - Top Followed Stories and Authors
+    - Personalized content for authenticated users:
+      * Recent reading history with progress tracking
+      * Stories from followed authors
+      * AI-powered recommendations
+      * User activity statistics
+    
+    🔧 TECHNICAL DETAILS:
+    - Uses StoryViewModel for consistency across all story displays
+    - DashboardService provides comprehensive data population
+    - Supports both guest browsing and personalized user experience
+    - All carousels use unified JavaScript configuration
+    
+    📊 DATA SOURCES:
+    - DashboardService.GetDashboardDataAsync() - Main data provider
+    - StoryRankingService - For recommendations and rankings
+    - HistoryService - For reading progress and stats
+    - FollowService - For social features
+    
+    🎨 UI FEATURES:
+    - Responsive carousel system with mobile support
+    - Progress indicators for reading history
+    - Ranking badges for top stories
+    - Category filtering for hot stories
+    - Lazy loading for optimal performance
+    
+    ===============================================================================
+*@

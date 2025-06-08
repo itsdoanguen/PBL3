@@ -2,7 +2,6 @@
 using PBL3.Data;
 using PBL3.Service.Discovery;
 using PBL3.Service.Image;
-using PBL3.ViewModels.User;
 using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Service.User
@@ -81,19 +80,7 @@ namespace PBL3.Service.User
         }
 
 
-        public async Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId)
-        {
-            var userIndexViewModel = new UserIndexViewModel();
 
-            var topStory = await _storyRankingService.GetTopStoriesOfWeekAsync(10);
-
-            if (topStory != null)
-            {
-                userIndexViewModel.TopStoryInWeek = topStory;
-            }
-
-            return userIndexViewModel;
-        }
 
         public async Task<(bool isSuccess, string errorMessage, UserProfileViewModel? updatedProfile)> UpdateUserProfileAsync(int userId, UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload)
         {
