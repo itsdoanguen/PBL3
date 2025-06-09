@@ -666,18 +666,58 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        // Carousel Configuration
+        // Carousel Configuration - SYNCED WITH CSS
         const carouselConfig = {
-            'top-stories': { itemWidth: 260, visibleItems: { desktop: 5, tablet: 3, mobile: 2 } },
-            'liked-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
-            'authors': { itemWidth: 240, visibleItems: { desktop: 6, tablet: 4, mobile: 3 } },
-            'recent-reads': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
-            'following-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
-            'recommended-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
-            'top-followed-stories': { itemWidth: 320, visibleItems: { desktop: 3, tablet: 2, mobile: 1 } },
-            'hot-stories': { itemWidth: 280, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } },
-            'new-stories': { itemWidth: 300, visibleItems: { desktop: 4, tablet: 2, mobile: 2 } },
-            'completed-stories': { itemWidth: 260, visibleItems: { desktop: 4, tablet: 3, mobile: 2 } }
+            'top-stories': { 
+                itemWidth: { desktop: 260, tablet: 220, mobile: 180 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 5, tablet: 3, mobile: 2 } 
+            },
+            'liked-stories': { 
+                itemWidth: { desktop: 280, tablet: 240, mobile: 200 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            },
+            'authors': { 
+                itemWidth: { desktop: 240, tablet: 200, mobile: 160 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 6, tablet: 4, mobile: 3 } 
+            },
+            'recent-reads': { 
+                itemWidth: { desktop: 300, tablet: 260, mobile: 220 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            },
+            'following-stories': { 
+                itemWidth: { desktop: 300, tablet: 260, mobile: 220 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            },
+            'recommended-stories': { 
+                itemWidth: { desktop: 280, tablet: 240, mobile: 200 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            },
+            'top-followed-stories': { 
+                itemWidth: { desktop: 320, tablet: 280, mobile: 240 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 3, tablet: 2, mobile: 1 } 
+            },
+            'hot-stories': { 
+                itemWidth: { desktop: 280, tablet: 240, mobile: 200 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            },
+            'new-stories': { 
+                itemWidth: { desktop: 300, tablet: 260, mobile: 220 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 2, mobile: 2 } 
+            },
+            'completed-stories': { 
+                itemWidth: { desktop: 260, tablet: 220, mobile: 180 }, 
+                gap: { desktop: 24, tablet: 16, mobile: 12 },
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
+            }
         };
 
         // Initialize Carousel Function
@@ -692,17 +732,33 @@
             const config = carouselConfig[carouselType] || carouselConfig['hot-stories'];
             let currentIndex = 0;
             let visibleItems = getVisibleItems(config);
-            let itemWidth = config.itemWidth;
+            let itemWidth = getItemWidth(config);
+            let gap = getGap(config);
+
+            function getBreakpoint() {
+                const width = window.innerWidth;
+                if (width >= 1200) return 'desktop';
+                if (width >= 768) return 'tablet';
+                return 'mobile';
+            }
 
             function getVisibleItems(config) {
-                const width = window.innerWidth;
-                if (width >= 1200) return config.visibleItems.desktop;
-                if (width >= 768) return config.visibleItems.tablet;
-                return config.visibleItems.mobile;
+                const breakpoint = getBreakpoint();
+                return config.visibleItems[breakpoint];
+            }
+
+            function getItemWidth(config) {
+                const breakpoint = getBreakpoint();
+                return config.itemWidth[breakpoint];
+            }
+
+            function getGap(config) {
+                const breakpoint = getBreakpoint();
+                return config.gap[breakpoint];
             }
 
             function updateCarousel() {
-                const translateX = -(currentIndex * (itemWidth + 24)); // 24px for gap
+                const translateX = -(currentIndex * (itemWidth + gap));
                 track.style.transform = `translateX(${translateX}px)`;
                 
                 // Update button states
@@ -738,6 +794,8 @@
 
             function handleResize() {
                 visibleItems = getVisibleItems(config);
+                itemWidth = getItemWidth(config);
+                gap = getGap(config);
                 currentIndex = Math.min(currentIndex, Math.max(0, items.length - visibleItems));
                 updateCarousel();
             }

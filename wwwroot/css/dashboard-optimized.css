@@ -245,33 +245,37 @@ body {
     transform: translateX(3px);
 }
 
-/*  SLIDER MECHANICS  */
+/* STORIES SLIDER - FIXED VERSION */
 .stories-slider {
     position: relative;
     padding: 2rem;
     overflow: hidden;
     background: var(--pure-white);
+    width: 100%;
+    max-width: 100%;
 }
 
 .stories-track {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.5rem; /* 24px gap - consistent with JS */
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
-    overflow-x: auto;
+    overflow: visible; /* Changed from overflow-x: auto */
     scrollbar-width: none;
     -ms-overflow-style: none;
+    width: fit-content; /* Ensure proper width calculation */
 }
 
 .stories-track::-webkit-scrollbar {
     display: none;
 }
 
+/* DEFAULT DESKTOP STORY ITEMS */
 .story-item {
-    flex: 0 0 256px;
-    width: 256px;
-    min-width: 256px;
-    max-width: 256px;
+    flex: 0 0 280px; /* Default to hot-stories config */
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
     background: var(--pure-white);
     border-radius: 15px;
     overflow: hidden;
@@ -490,10 +494,12 @@ body {
 
 .nav-arrow.prev {
     left: 1.5rem;
+    z-index: 10;
 }
 
 .nav-arrow.next {
     right: 1.5rem;
+    z-index: 10;
 }
 
 .nav-arrow:disabled,
@@ -513,72 +519,100 @@ body {
     color: var(--medium-gray);
 }
 
-/*  SPECIAL COMPONENTS  */
+/*  CAROUSEL-SPECIFIC STORY ITEMS - SYNCED WITH JS CONFIG  */
 
-/* Top Stories Ranking */
+/* Top Stories Ranking - itemWidth: 260 */
 .top-stories .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 260px;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
 }
 
 .top-stories .story-image {
     height: 300px;
 }
 
-/* Liked Stories */
+/* Liked Stories - itemWidth: 280 */
 .liked-stories .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 280px;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
 }
 
 .liked-stories .story-image {
     height: 300px;
 }
 
-/* Authors Carousel */
+/* Authors Carousel - itemWidth: 240 */
 .authors-carousel .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 240px;
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
 }
 
 .authors-carousel .story-image {
     height: 300px;
 }
 
-/* Followed Stories */
-.followed-stories .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+/* Recent Reads & Following Stories - itemWidth: 300 */
+.recent-reads .story-item,
+.following-stories .story-item {
+    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
 }
 
-.followed-stories .story-image {
+.recent-reads .story-image,
+.following-stories .story-image {
     height: 300px;
 }
 
-/* Hot Stories */
+/* Top Followed Stories - itemWidth: 320 */
+.top-followed-stories .story-item {
+    flex: 0 0 320px;
+    width: 320px;
+    min-width: 320px;
+    max-width: 320px;
+}
+
+.top-followed-stories .story-image {
+    height: 300px;
+}
+
+/* Hot Stories - itemWidth: 280 (default) */
 .hot-stories-section .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 280px;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
 }
 
 .hot-stories-section .story-image {
     height: 300px;
 }
 
-/* New Stories */
+/* New Stories - itemWidth: 300 */
 .new-stories-section .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 300px;
+    width: 300px;
+    min-width: 300px;
+    max-width: 300px;
 }
 
 .new-stories-section .story-image {
     height: 300px;
 }
 
-/* Completed Stories */
+/* Completed Stories - itemWidth: 260 */
 .completed-stories-section .story-item {
-    flex: 0 0 256px;
-    width: 256px;
+    flex: 0 0 260px;
+    width: 260px;
+    min-width: 260px;
+    max-width: 260px;
 }
 
 .completed-stories-section .story-image {
@@ -755,6 +789,7 @@ body {
 }
 
 /*  RESPONSIVE DESIGN  */
+/* TABLET RESPONSIVE - REDUCE ITEM SIZES */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -778,84 +813,94 @@ body {
         font-size: 2rem;
     }
 
-    /* Default story item for tablet */
+    /* Reduce gap for tablet */
+    .stories-track {
+        gap: 1rem; /* 16px gap for tablet */
+    }
+
+    /* Default story item for tablet - proportionally smaller */
     .story-item {
-        flex: 0 0 213px;
-        width: 213px;
-        min-width: 213px;
-        max-width: 213px;
+        flex: 0 0 240px;
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
     }
 
     .story-image {
-        height: 250px;
+        height: 280px;
     }
 
-    /* Specific carousel adjustments for tablet */
+    /* Specific carousel adjustments for tablet - maintain proportions */
     .top-stories .story-item {
-        flex: 0 0 213px;
-        width: 213px;
+        flex: 0 0 220px;
+        width: 220px;
+        min-width: 220px;
+        max-width: 220px;
     }
 
     .top-stories .story-image {
-        height: 250px;
+        height: 280px;
     }
 
-    .liked-stories .story-item {
-        flex: 0 0 213px;
-        width: 213px;
+    .liked-stories .story-item,
+    .hot-stories-section .story-item {
+        flex: 0 0 240px;
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
     }
 
-    .liked-stories .story-image {
-        height: 250px;
+    .liked-stories .story-image,
+    .hot-stories-section .story-image {
+        height: 280px;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 213px;
-        width: 213px;
+        flex: 0 0 200px;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
     }
 
     .authors-carousel .story-image {
-        height: 250px;
+        height: 280px;
     }
 
-    .followed-stories .story-item {
-        flex: 0 0 213px;
-        width: 213px;
-    }
-
-    .followed-stories .story-image {
-        height: 250px;
-    }
-
-    .hot-stories-section .story-item {
-        flex: 0 0 213px;
-        width: 213px;
-    }
-
-    .hot-stories-section .story-image {
-        height: 250px;
-    }
-
+    .recent-reads .story-item,
+    .following-stories .story-item,
     .new-stories-section .story-item {
-        flex: 0 0 213px;
-        width: 213px;
+        flex: 0 0 260px;
+        width: 260px;
+        min-width: 260px;
+        max-width: 260px;
     }
 
+    .recent-reads .story-image,
+    .following-stories .story-image,
     .new-stories-section .story-image {
-        height: 250px;
+        height: 280px;
+    }
+
+    .top-followed-stories .story-item {
+        flex: 0 0 280px;
+        width: 280px;
+        min-width: 280px;
+        max-width: 280px;
+    }
+
+    .top-followed-stories .story-image {
+        height: 280px;
     }
 
     .completed-stories-section .story-item {
-        flex: 0 0 213px;
-        width: 213px;
+        flex: 0 0 220px;
+        width: 220px;
+        min-width: 220px;
+        max-width: 220px;
     }
 
     .completed-stories-section .story-image {
-        height: 250px;
-    }
-
-    .stories-track {
-        gap: 1rem;
+        height: 280px;
     }
 
     .nav-arrow {
@@ -903,83 +948,90 @@ body {
     }
 }
 
+/* MOBILE RESPONSIVE - FURTHER SIZE REDUCTION */
 @media (max-width: 576px) {
-    /* Default story item for mobile */
+    /* Smaller gap for mobile */
+    .stories-track {
+        gap: 0.75rem; /* 12px gap for mobile */
+    }
+
+    /* Default story item for mobile - smaller than tablet */
     .story-item {
-        flex: 0 0 256px;
-        width: 256px;
-        min-width: 256px;
-        max-width: 256px;
+        flex: 0 0 200px;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
     }
 
     .story-image {
-        height: 300px;
+        height: 240px;
     }
 
-    /* Specific carousel adjustments for mobile */
-    .top-stories .story-item {
-        flex: 0 0 256px;
-        width: 256px;
+    /* Specific carousel adjustments for mobile - all smaller */
+    .top-stories .story-item,
+    .completed-stories-section .story-item {
+        flex: 0 0 180px;
+        width: 180px;
+        min-width: 180px;
+        max-width: 180px;
     }
 
-    .top-stories .story-image {
-        height: 300px;
+    .top-stories .story-image,
+    .completed-stories-section .story-image {
+        height: 240px;
     }
 
-    .liked-stories .story-item {
-        flex: 0 0 256px;
-        width: 256px;
+    .liked-stories .story-item,
+    .hot-stories-section .story-item {
+        flex: 0 0 200px;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
     }
 
-    .liked-stories .story-image {
-        height: 300px;
+    .liked-stories .story-image,
+    .hot-stories-section .story-image {
+        height: 240px;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 256px;
-        width: 256px;
+        flex: 0 0 160px;
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
     }
 
     .authors-carousel .story-image {
-        height: 300px;
+        height: 240px;
     }
 
-    .followed-stories .story-item {
-        flex: 0 0 256px;
-        width: 256px;
-    }
-
-    .followed-stories .story-image {
-        height: 300px;
-    }
-
-    .hot-stories-section .story-item {
-        flex: 0 0 256px;
-        width: 256px;
-    }
-
-    .hot-stories-section .story-image {
-        height: 300px;
-    }
-
+    .recent-reads .story-item,
+    .following-stories .story-item,
     .new-stories-section .story-item {
-        flex: 0 0 256px;
-        width: 256px;
+        flex: 0 0 220px;
+        width: 220px;
+        min-width: 220px;
+        max-width: 220px;
     }
 
+    .recent-reads .story-image,
+    .following-stories .story-image,
     .new-stories-section .story-image {
-        height: 300px;
+        height: 240px;
     }
 
-    .completed-stories-section .story-item {
-        flex: 0 0 256px;
-        width: 256px;
+    .top-followed-stories .story-item {
+        flex: 0 0 240px;
+        width: 240px;
+        min-width: 240px;
+        max-width: 240px;
     }
 
-    .completed-stories-section .story-image {
-        height: 300px;
+    .top-followed-stories .story-image {
+        height: 240px;
     }
 
+    /* Navigation arrows for mobile */
     .nav-arrow {
         width: 45px;
         height: 45px;
