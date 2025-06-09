@@ -1,4 +1,4 @@
-/* ========== MODERN MAIN STYLESHEET ========== */
+/*  MODERN MAIN STYLESHEET  */
 /* Unified Black & White Theme - Based on dashboard-optimized.css */
 
 :root {
@@ -71,7 +71,7 @@
     --z-header: 1080;
 }
 
-/* ========== RESET & BASE STYLES ========== */
+/*  RESET & BASE STYLES  */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -93,7 +93,7 @@ body {
     overflow-x: hidden;
 }
 
-/* ========== LAYOUT SYSTEM ========== */
+/*  LAYOUT SYSTEM  */
 .layout-container {
     display: flex;
     flex-direction: column;
@@ -112,7 +112,7 @@ body {
     padding: 0 var(--spacing-md);
 }
 
-/* ========== TYPOGRAPHY ========== */
+/*  TYPOGRAPHY  */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     line-height: 1.2;
@@ -141,7 +141,7 @@ a:hover {
     color: var(--accent-gold);
 }
 
-/* ========== BUTTONS ========== */
+/*  BUTTONS  */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -205,7 +205,7 @@ a:hover {
     font-size: var(--font-size-lg);
 }
 
-/* ========== CARDS ========== */
+/*  CARDS  */
 .card {
     background: var(--pure-white);
     border-radius: var(--radius-lg);
@@ -241,7 +241,7 @@ a:hover {
     margin: var(--spacing-lg) calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg)) calc(-1 * var(--spacing-lg));
 }
 
-/* ========== FORMS ========== */
+/*  FORMS  */
 .form-group {
     margin-bottom: var(--spacing-lg);
 }
@@ -277,7 +277,7 @@ a:hover {
     padding-right: 2.5rem;
 }
 
-/* ========== UTILITIES ========== */
+/*  UTILITIES  */
 .text-center { text-align: center; }
 .text-left { text-align: left; }
 .text-right { text-align: right; }
@@ -332,7 +332,7 @@ a:hover {
 .opacity-50 { opacity: 0.5; }
 .opacity-75 { opacity: 0.75; }
 
-/* ========== ANIMATIONS ========== */
+/*  ANIMATIONS  */
 .fade-in {
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
@@ -357,7 +357,7 @@ a:hover {
     }
 }
 
-/* ========== LOADING STATES ========== */
+/*  LOADING STATES  */
 .loading {
     position: relative;
     pointer-events: none;
@@ -384,7 +384,7 @@ a:hover {
     }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 768px) {
     .container {
         padding: 0 var(--spacing-sm);
@@ -422,7 +422,7 @@ a:hover {
     }
 }
 
-/* ========== ACCESSIBILITY ========== */
+/*  ACCESSIBILITY  */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;

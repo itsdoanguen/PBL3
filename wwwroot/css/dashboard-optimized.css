@@ -1,4 +1,4 @@
-﻿/* ========== OPTIMIZED DASHBOARD STYLES ========== */
+﻿/*  OPTIMIZED DASHBOARD STYLES  */
 /* Modern Black & White Theme - Only Used Components */
 
 :root {
@@ -39,7 +39,7 @@ body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
 }
-/* ========== HERO SECTION ========== */
+/* HERO SECTION */
 .hero-section {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -124,13 +124,13 @@ body {
     font-weight: 600;
 }
 
-/* ========== MAIN DASHBOARD ========== */
+/* MAIN DASHBOARD */
 .dashboard-main {
     padding: 2rem 0;
     min-height: 100vh;
 }
 
-/* ========== STORIES CONTAINERS ========== */
+/* STORIES CONTAINERS */
 .stories-container {
     background: var(--pure-white);
     border-radius: 20px;
@@ -245,7 +245,7 @@ body {
     transform: translateX(3px);
 }
 
-/* ========== SLIDER MECHANICS ========== */
+/*  SLIDER MECHANICS  */
 .stories-slider {
     position: relative;
     padding: 2rem;
@@ -258,10 +258,20 @@ body {
     gap: 1.5rem;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.stories-track::-webkit-scrollbar {
+    display: none;
 }
 
 .story-item {
-    flex: 0 0 280px;
+    flex: 0 0 256px;
+    width: 256px;
+    min-width: 256px;
+    max-width: 256px;
     background: var(--pure-white);
     border-radius: 15px;
     overflow: hidden;
@@ -281,7 +291,7 @@ body {
 
 .story-image {
     position: relative;
-    height: 200px;
+    height: 300px;
     overflow: hidden;
     flex-shrink: 0;
 }
@@ -297,7 +307,7 @@ body {
     transform: scale(1.08);
 }
 
-/* ========== STORY OVERLAYS & BADGES ========== */
+/*  STORY OVERLAYS & BADGES  */
 .story-badges {
     position: absolute;
     top: 0.75rem;
@@ -397,7 +407,7 @@ body {
         box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
     }
 
-/* ========== STORY INFO ========== */
+/*  STORY INFO  */
 .story-info {
     padding: 1.25rem;
     background: var(--pure-white);
@@ -450,7 +460,7 @@ body {
     color: var(--accent-gold);
 }
 
-/* ========== NAVIGATION ARROWS ========== */
+/*  NAVIGATION ARROWS  */
 .nav-arrow {
     position: absolute;
     top: 50%;
@@ -503,69 +513,76 @@ body {
     color: var(--medium-gray);
 }
 
-/* ========== SPECIAL COMPONENTS ========== */
+/*  SPECIAL COMPONENTS  */
 
 /* Top Stories Ranking */
 .top-stories .story-item {
-    flex: 0 0 260px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .top-stories .story-image {
-    height: 180px;
+    height: 300px;
 }
 
 /* Liked Stories */
 .liked-stories .story-item {
-    flex: 0 0 280px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .liked-stories .story-image {
-    height: 200px;
+    height: 300px;
 }
 
 /* Authors Carousel */
 .authors-carousel .story-item {
-    flex: 0 0 240px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .authors-carousel .story-image {
-    height: 160px;
+    height: 300px;
 }
 
 /* Followed Stories */
 .followed-stories .story-item {
-    flex: 0 0 320px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .followed-stories .story-image {
-    height: 220px;
+    height: 300px;
 }
 
 /* Hot Stories */
 .hot-stories-section .story-item {
-    flex: 0 0 280px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .hot-stories-section .story-image {
-    height: 200px;
+    height: 300px;
 }
 
 /* New Stories */
 .new-stories-section .story-item {
-    flex: 0 0 300px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .new-stories-section .story-image {
-    height: 210px;
+    height: 300px;
 }
 
 /* Completed Stories */
 .completed-stories-section .story-item {
-    flex: 0 0 260px;
+    flex: 0 0 256px;
+    width: 256px;
 }
 
 .completed-stories-section .story-image {
-    height: 180px;
+    height: 300px;
 }
 
 .rank-badge {
@@ -621,7 +638,7 @@ body {
     color: var(--accent-gold);
 }
 
-/* ========== FILTER SECTION ========== */
+/*  FILTER SECTION  */
 .filter-section {
     background: var(--off-white);
     padding: 1.5rem 2rem;
@@ -653,7 +670,7 @@ body {
     outline: none;
 }
 
-/* ========== CATEGORIES SIDEBAR ========== */
+/*  CATEGORIES SIDEBAR  */
 .categories-sidebar {
     background: var(--pure-white);
     border-radius: 20px;
@@ -709,7 +726,7 @@ body {
     border-color: var(--primary-black);
 }
 
-/* ========== LOADING STATES ========== */
+/*  LOADING STATES  */
 .loading {
     opacity: 0.6;
     pointer-events: none;
@@ -737,7 +754,7 @@ body {
     }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -763,68 +780,78 @@ body {
 
     /* Default story item for tablet */
     .story-item {
-        flex: 0 0 280px;
+        flex: 0 0 213px;
+        width: 213px;
+        min-width: 213px;
+        max-width: 213px;
     }
 
     .story-image {
-        height: 200px;
+        height: 250px;
     }
 
     /* Specific carousel adjustments for tablet */
     .top-stories .story-item {
-        flex: 0 0 260px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .top-stories .story-image {
-        height: 180px;
+        height: 250px;
     }
 
     .liked-stories .story-item {
-        flex: 0 0 280px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .liked-stories .story-image {
-        height: 200px;
+        height: 250px;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 240px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .authors-carousel .story-image {
-        height: 160px;
+        height: 250px;
     }
 
     .followed-stories .story-item {
-        flex: 0 0 320px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .followed-stories .story-image {
-        height: 220px;
+        height: 250px;
     }
 
     .hot-stories-section .story-item {
-        flex: 0 0 280px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .hot-stories-section .story-image {
-        height: 200px;
+        height: 250px;
     }
 
     .new-stories-section .story-item {
-        flex: 0 0 300px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .new-stories-section .story-image {
-        height: 210px;
+        height: 250px;
     }
 
     .completed-stories-section .story-item {
-        flex: 0 0 260px;
+        flex: 0 0 213px;
+        width: 213px;
     }
 
     .completed-stories-section .story-image {
-        height: 180px;
+        height: 250px;
     }
 
     .stories-track {
@@ -879,68 +906,78 @@ body {
 @media (max-width: 576px) {
     /* Default story item for mobile */
     .story-item {
-        flex: 0 0 220px;
+        flex: 0 0 256px;
+        width: 256px;
+        min-width: 256px;
+        max-width: 256px;
     }
 
     .story-image {
-        height: 160px;
+        height: 300px;
     }
 
     /* Specific carousel adjustments for mobile */
     .top-stories .story-item {
-        flex: 0 0 200px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .top-stories .story-image {
-        height: 140px;
+        height: 300px;
     }
 
     .liked-stories .story-item {
-        flex: 0 0 220px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .liked-stories .story-image {
-        height: 160px;
+        height: 300px;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 180px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .authors-carousel .story-image {
-        height: 120px;
+        height: 300px;
     }
 
     .followed-stories .story-item {
-        flex: 0 0 260px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .followed-stories .story-image {
-        height: 180px;
+        height: 300px;
     }
 
     .hot-stories-section .story-item {
-        flex: 0 0 220px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .hot-stories-section .story-image {
-        height: 160px;
+        height: 300px;
     }
 
     .new-stories-section .story-item {
-        flex: 0 0 240px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .new-stories-section .story-image {
-        height: 170px;
+        height: 300px;
     }
 
     .completed-stories-section .story-item {
-        flex: 0 0 200px;
+        flex: 0 0 256px;
+        width: 256px;
     }
 
     .completed-stories-section .story-image {
-        height: 140px;
+        height: 300px;
     }
 
     .nav-arrow {
@@ -996,7 +1033,7 @@ body {
     }
 }
 
-/* ========== ACCESSIBILITY ========== */
+/*  ACCESSIBILITY  */
 .btn-read:focus,
 .nav-arrow:focus,
 .category-tag:focus,
@@ -1005,7 +1042,7 @@ body {
     outline-offset: 2px;
 }
 
-/* ========== REDUCED MOTION ========== */
+/*  REDUCED MOTION  */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -1014,7 +1051,7 @@ body {
     }
 }
 
-/* ========== TOUCH OPTIMIZATION ========== */
+/*  TOUCH OPTIMIZATION  */
 @media (hover: none) and (pointer: coarse) {
     .story-overlay {
         opacity: 0.9;

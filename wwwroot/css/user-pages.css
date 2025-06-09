@@ -1,7 +1,7 @@
-/* ========== USER PAGES MODULE ========== */
+/*  USER PAGES MODULE  */
 /* User-related pages & components - Modern Black & White Theme */
 
-/* ========== USER PROFILE ========== */
+/*  USER PROFILE  */
 .profile-header {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -104,7 +104,7 @@
     font-weight: 600;
 }
 
-/* ========== USER LIBRARY ========== */
+/*  USER LIBRARY  */
 .library-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -253,7 +253,7 @@
     letter-spacing: 0.5px;
 }
 
-/* ========== USER SETTINGS ========== */
+/*  USER SETTINGS  */
 .settings-container {
     max-width: 800px;
     margin: 0 auto;
@@ -377,7 +377,7 @@
     cursor: pointer;
 }
 
-/* ========== BOOKMARKS & FOLLOWED STORIES ========== */
+/*  BOOKMARKS & FOLLOWED STORIES  */
 .bookmarks-header {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -500,7 +500,7 @@
     flex-shrink: 0;
 }
 
-/* ========== READING HISTORY ========== */
+/*  READING HISTORY  */
 .history-header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -650,7 +650,7 @@
     font-size: var(--font-size-sm);
 }
 
-/* ========== NOTIFICATIONS ========== */
+/*  NOTIFICATIONS  */
 .notifications-header {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -743,7 +743,7 @@
     flex-shrink: 0;
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 768px) {
     .profile-stats {
         grid-template-columns: repeat(2, 1fr);

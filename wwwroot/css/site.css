@@ -1,4 +1,4 @@
-﻿/* ========== ROOT VARIABLES ========== */
+﻿/*  ROOT VARIABLES  */
 :root {
     /* Monochromatic Colors */
     --dark-primary: #1a1a1a;
@@ -23,7 +23,7 @@
     --info: #17a2b8;
 }
 
-/* ========== RESET & BASE STYLES ========== */
+/*  RESET & BASE STYLES  */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -39,7 +39,7 @@ html, body {
     background: var(--bg-secondary);
 }
 
-/* ========== LAYOUT COMPONENTS ========== */
+/*  LAYOUT COMPONENTS  */
 /* Main Layout Container */
 .layout-container {
     display: flex;
@@ -97,7 +97,7 @@ html, body {
     gap: var(--spacing-xl);
 }
 
-/* ========== CONTENT COMPONENTS ========== */
+/*  CONTENT COMPONENTS  */
 /* Main Content Area - For child views */
 .main-content {
     margin-top: 60px; /* Header height */
@@ -154,7 +154,7 @@ html, body {
     box-shadow: 0 2px 15px rgba(0,0,0,0.05);
 }
 
-/* ========== UTILITY CLASSES ========== */
+/*  UTILITY CLASSES  */
 /* Containers */
 .container {
     width: 100%;
@@ -256,7 +256,7 @@ html, body {
     margin-bottom: var(--spacing-lg);
 }
 
-/* ========== ANIMATIONS ========== */
+/*  ANIMATIONS  */
 .fade-in {
     animation: fadeIn 0.3s ease-out;
 }
@@ -287,7 +287,7 @@ html, body {
     }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 768px) {
     .grid-2, .grid-3, .grid-4 {
         grid-template-columns: 1fr;
@@ -367,7 +367,7 @@ html, body {
         background-color: #212529;
     }
 
-/* ========== NAVBAR SPECIFIC STYLING ========== */
+/*  NAVBAR SPECIFIC STYLING  */
 /* Enhanced navbar styling for consistent appearance across all roles */
 .navbar-custom .navbar-nav .nav-link {
     color: var(--text-light);
@@ -511,19 +511,51 @@ html, body {
     border-radius: 25px !important;
 }
 
+.header_form-search .form-control:hover {
+    background-color: white;
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: none;
+}
+
 .header_form-search .form-control:focus {
     background-color: white;
     border-color: #ffd700;
     box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
     border-radius: 25px !important;
+    transform: none;
 }
 
 .header_form-search .input-group {
     border-radius: 25px !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header_form-search .input-group:hover {
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.2);
+    transform: translateY(-1px);
 }
 
 .header_form-search .btn {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 25px !important;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 0.75rem;
+}
+
+.header_form-search .btn:hover {
+    background-color: #ffd700 !important;
+    border-color: #ffd700 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(255, 215, 0, 0.3);
+}
+
+.header_form-search .btn:hover svg {
+    fill: #333 !important;
 }
 
 /* Management dropdown styling */
