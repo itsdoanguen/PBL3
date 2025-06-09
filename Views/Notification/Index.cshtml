@@ -3,7 +3,8 @@
     ViewBag.Title = "Thông báo";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="notifications-container">
+<div class="notifications-container" style="margin-top:60px">
+    <h2 class="text-center mb-4">Thông báo</h2>
     <!-- Tabs -->
     <div class="notifications-tabs">
         <button class="tab-button active" data-type="all">
@@ -54,17 +55,6 @@
             </div>
         }
     </div>
-</div>
-
-<div class="container" style="max-width: 600px; margin: 0 auto;">
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-}
 </div>
 
 @section Styles {

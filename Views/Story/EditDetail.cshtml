@@ -13,6 +13,13 @@
     </div>
 }
 
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
 <div class="container py-5">
     <div class="row mb-4 align-items-center">
         <div class="col-md-3 text-center">
@@ -31,6 +38,10 @@
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
                 {
                     <span class="badge bg-secondary">Bản nháp</span>
+                }
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Completed)
+                {
+                    <span class="badge bg-primary">Đã hoàn thành</span>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)
                 {
@@ -74,10 +85,16 @@
 
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về bản nháp?');">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về bản nháp?');" style="display:inline;">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Inactive" />
                         <button type="submit" class="btn btn-warning btn-modern">📝 Chuyển về bản nháp</button>
+                    </form>
+
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đánh dấu truyện này hoàn thành? Lưu ý: Truyện cần có ít nhất 3 chương đã xuất bản.');" style="display:inline;">
+                        <input type="hidden" name="StoryID" value="@Model.StoryID" />
+                        <input type="hidden" name="NewStatus" value="Completed" />
+                        <button type="submit" class="btn btn-primary btn-modern">✅ Đánh dấu hoàn thành</button>
                     </form>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
@@ -86,6 +103,14 @@
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Active" />
                         <button type="submit" class="btn btn-success btn-modern">🚀 Xuất bản</button>
+                    </form>
+                }
+                else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Completed)
+                {
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về trạng thái đang xuất bản?');" style="display:inline;">
+                        <input type="hidden" name="StoryID" value="@Model.StoryID" />
+                        <input type="hidden" name="NewStatus" value="Active" />
+                        <button type="submit" class="btn btn-success btn-modern">🔄 Chuyển về đang xuất bản</button>
                     </form>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)

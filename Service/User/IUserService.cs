@@ -1,5 +1,4 @@
-﻿using PBL3.ViewModels.User;
-using PBL3.ViewModels.UserProfile;
+﻿using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Service.User
 {
@@ -7,8 +6,6 @@ namespace PBL3.Service.User
     {
         Task<UserProfileViewModel> GetUserProfile(int userId);
         Task<List<UserStoryCardViewModel>> GetUserStoryCard(int userId);
-
-        Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId);
         Task<(bool isSuccess, string errorMessage, UserProfileViewModel? updatedProfile)> UpdateUserProfileAsync(int userId, UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload);
         Task ToggleUpdateUserRoleAsync(int userId);
         Task<(bool isSuccess, string errorMessage)> ChangePasswordAsync(int userId, string oldPassword, string newPassword);

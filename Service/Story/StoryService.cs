@@ -206,6 +206,19 @@ namespace PBL3.Service.Story
                 return (false, "Trạng thái không hợp lệ", 0);
             }
 
+            // Kiểm tra điều kiện để đánh dấu truyện hoàn thành
+            if (parsedStatus == StoryModel.StoryStatus.Completed)
+            {
+                var activeChapterCount = await _context.Chapters
+                    .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active)
+                    .CountAsync();
+                
+                if (activeChapterCount < 3)
+                {
+                    return (false, "Truyện phải có ít nhất 3 chương đã xuất bản mới có thể đánh dấu hoàn thành", 0);
+                }
+            }
+
             var oldStatus = story.Status;
             story.Status = parsedStatus;
             story.UpdatedAt = DateTime.Now;

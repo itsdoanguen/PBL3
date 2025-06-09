@@ -32,6 +32,13 @@ namespace PBL3.Service.Discovery
             {
                 totalWords += _chapterService.CountWordsInChapter(chapter.Content);
             }
+            
+            // Get author information
+            var author = await _context.Users
+                .Where(u => u.UserID == s.AuthorID)
+                .Select(u => u.DisplayName ?? u.Email)
+                .FirstOrDefaultAsync();
+
             return new UserStoryCardViewModel
             {
                 StoryID = s.StoryID,
@@ -41,10 +48,12 @@ namespace PBL3.Service.Discovery
                 LastUpdated = s.UpdatedAt,
                 Status = s.Status,
                 Discription = s.Description,
-                TotalViews = s.Chapters.Sum(c => c.ViewCount),
-                TotalLikes = s.Chapters.Sum(c => c.Likes != null ? c.Likes.Count : 0),
-                TotalFollowers = s.Followers != null ? s.Followers.Count : 0,
-                TotalWords = totalWords
+                TotalViews = await _context.Chapters.Where(c => c.StoryID == s.StoryID).SumAsync(c => (int?)c.ViewCount) ?? 0,
+                TotalLikes = await _context.LikeChapters.Where(l => l.Chapter.StoryID == s.StoryID).CountAsync(),
+                TotalFollowers = await _context.FollowStories.CountAsync(f => f.StoryID == s.StoryID),
+                TotalWords = totalWords,
+                AuthorName = author ?? "Unknown Author",
+                CreatedAt = s.CreatedAt
             };
         }
 
@@ -55,8 +64,16 @@ namespace PBL3.Service.Discovery
                 .Where(s => s.Chapters.Any(c => c.CreatedAt >= oneWeekAgo)
                     && (s.Status == Models.StoryModel.StoryStatus.Active
                         || s.Status == Models.StoryModel.StoryStatus.Completed))
-                .OrderByDescending(s => s.Chapters.Where(c => c.CreatedAt >= oneWeekAgo).Sum(c => c.ViewCount))
+                .Select(s => new
+                {
+                    Story = s,
+                    WeeklyViews = _context.Chapters
+                        .Where(c => c.StoryID == s.StoryID && c.CreatedAt >= oneWeekAgo)
+                        .Sum(c => (int?)c.ViewCount) ?? 0
+                })
+                .OrderByDescending(s => s.WeeklyViews)
                 .Take(topCount)
+                .Select(s => s.Story)
                 .ToListAsync();
             var result = new List<UserStoryCardViewModel>();
             foreach (var s in stories)
@@ -114,13 +131,16 @@ namespace PBL3.Service.Discovery
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
-                .Include(s => s.Followers)
-                .Include(s => s.Chapters)
-                .ThenInclude(c => c.Likes)
+                .Select(s => new
+                {
+                    Story = s,
+                    TotalViews = _context.Chapters.Where(c => c.StoryID == s.StoryID).Sum(c => (int?)c.ViewCount) ?? 0
+                })
+                .OrderByDescending(s => s.TotalViews)
+                .Select(s => s.Story)
                 .ToListAsync();
-            var sorted = stories.OrderByDescending(s => s.Chapters.Sum(c => c.ViewCount)).ToList();
             var result = new List<UserStoryCardViewModel>();
-            foreach (var s in sorted)
+            foreach (var s in stories)
             {
                 result.Add(await ToUserStoryCardViewModel(s));
             }
@@ -131,13 +151,16 @@ namespace PBL3.Service.Discovery
         {
             var stories = await _context.Stories
                 .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
-                .Include(s => s.Followers)
-                .Include(s => s.Chapters)
-                .ThenInclude(c => c.Likes)
+                .Select(s => new
+                {
+                    Story = s,
+                    TotalFollowers = _context.FollowStories.Count(f => f.StoryID == s.StoryID)
+                })
+                .OrderByDescending(s => s.TotalFollowers)
+                .Select(s => s.Story)
                 .ToListAsync();
-            var sorted = stories.OrderByDescending(s => s.Followers != null ? s.Followers.Count : 0).ToList();
             var result = new List<UserStoryCardViewModel>();
-            foreach (var s in sorted)
+            foreach (var s in stories)
             {
                 result.Add(await ToUserStoryCardViewModel(s));
             }

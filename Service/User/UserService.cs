@@ -2,7 +2,6 @@
 using PBL3.Data;
 using PBL3.Service.Discovery;
 using PBL3.Service.Image;
-using PBL3.ViewModels.User;
 using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Service.User
@@ -81,19 +80,7 @@ namespace PBL3.Service.User
         }
 
 
-        public async Task<UserIndexViewModel> GetUserIndexViewModelAsync(int userId)
-        {
-            var userIndexViewModel = new UserIndexViewModel();
 
-            var topStory = await _storyRankingService.GetTopStoriesOfWeekAsync(10);
-
-            if (topStory != null)
-            {
-                userIndexViewModel.TopStoryInWeek = topStory;
-            }
-
-            return userIndexViewModel;
-        }
 
         public async Task<(bool isSuccess, string errorMessage, UserProfileViewModel? updatedProfile)> UpdateUserProfileAsync(int userId, UserProfileViewModel profile, IFormFile? avatarUpload, IFormFile? bannerUpload)
         {
@@ -114,10 +101,6 @@ namespace PBL3.Service.User
                 }
                 userInfo.Avatar = imageUrl;
             }
-            else
-            {
-                userInfo.Avatar = profile.Avatar ?? "/image/default-avatar.png";
-            }
 
             // Upload banner
             if (bannerUpload != null)
@@ -129,10 +112,6 @@ namespace PBL3.Service.User
                     return (false, errorMessage ?? string.Empty, currentProfile);
                 }
                 userInfo.Banner = imageUrl;
-            }
-            else
-            {
-                userInfo.Banner = profile.Banner ?? "/image/default-banner.png";
             }
 
             userInfo.DisplayName = profile.DisplayName;
@@ -162,15 +141,12 @@ namespace PBL3.Service.User
             if (user == null)
                 return (false, "Không tìm thấy người dùng.");
 
-            // Giả sử user.PasswordHash là trường lưu hash mật khẩu
             if (!BCrypt.Net.BCrypt.Verify(oldPassword, user.PasswordHash))
                 return (false, "Mật khẩu cũ không đúng.");
 
-            // Kiểm tra độ mạnh mật khẩu mới (ví dụ: ít nhất 6 ký tự)
             if (string.IsNullOrWhiteSpace(newPassword) || newPassword.Length < 6)
                 return (false, "Mật khẩu mới phải có ít nhất 6 ký tự.");
 
-            // Có thể thêm kiểm tra phức tạp hơn nếu cần
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
             _context.Users.Update(user);
             await _context.SaveChangesAsync();

@@ -256,7 +256,12 @@ namespace PBL3.Service.Story
                 .Where(h => h.UserID == userID && h.StoryID == storyID)
                 .OrderByDescending(h => h.LastReadAt)
                 .FirstOrDefaultAsync();
-            return history?.ChapterID ?? 0; 
+            var firstChapter = await _context.Chapters
+                .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active)
+                .OrderBy(c => c.ChapterOrder)
+                .Select(c => c.ChapterID)
+                .FirstOrDefaultAsync();
+            return history?.ChapterID ?? firstChapter; 
         }
     }
 }

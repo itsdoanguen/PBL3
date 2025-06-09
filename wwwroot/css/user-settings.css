@@ -1,0 +1,69 @@
+/* user-settings.css - Giao diện trang cài đặt tài khoản hiện đại */
+.settings-card {
+    max-width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px rgba(33,150,243,0.13);
+    padding: 38px 32px 32px 32px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    border: 1.5px solid #e3f2fd;
+    text-align: center;
+}
+.settings-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1976d2;
+    margin-bottom: 28px;
+    letter-spacing: 0.01em;
+}
+.settings-options {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+.settings-option {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 18px 22px;
+    border-radius: 12px;
+    background: linear-gradient(90deg,#e3f2fd 60%,#fafdff 100%);
+    color: #1976d2;
+    font-size: 1.18rem;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 1px 6px rgba(33,150,243,0.07);
+    transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+    border: 1.5px solid #e3f2fd;
+}
+.settings-option i {
+    font-size: 1.7rem;
+    color: #4fc3f7;
+    transition: color 0.18s;
+}
+.settings-option:hover {
+    background: linear-gradient(90deg,#4fc3f7 60%,#1976d2 100%);
+    color: #fff;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 8px 24px rgba(33,150,243,0.13);
+    border: 1.5px solid #4fc3f7;
+}
+.settings-option:hover i {
+    color: #fff;
+}
+@media (max-width: 576px) {
+    .settings-card {
+        padding: 18px 6px 18px 6px;
+    }
+    .settings-title {
+        font-size: 1.3rem;
+    }
+    .settings-option {
+        font-size: 1rem;
+        padding: 12px 8px;
+    }
+    .settings-option i {
+        font-size: 1.2rem;
+    }
+}
