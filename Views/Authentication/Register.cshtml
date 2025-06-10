@@ -29,8 +29,22 @@
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label">Password</label>
-                <input asp-for="Password" type="password" class="form-control" required />
+                <input asp-for="Password" type="password" class="form-control" required id="passwordInput" oninput="updatePasswordStrength()" />
                 <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="mt-2">
+                    <div id="passwordStrengthBar" style="height: 8px; border-radius: 4px; background: #e9ecef;">
+                        <div id="passwordStrengthFill" style="height: 100%; width: 0%; background: #ff4d4f; border-radius: 4px; transition: width 0.3s, background 0.3s;"></div>
+                    </div>
+                    <small id="passwordStrengthText" class="text-muted"></small>
+                </div>
+                <ul class="mt-2 mb-0 ps-3 small text-muted" id="passwordRequirements">
+                    <li>Mật khẩu dài 6-18 ký tự</li>
+                    <li>Chứa ít nhất 1 chữ hoa (A-Z)</li>
+                    <li>Chứa ít nhất 1 chữ thường (a-z)</li>
+                    <li>Chứa ít nhất 1 số (0-9)</li>
+                    <li>Chứa ít nhất 1 ký tự đặc biệt</li>
+                    <li>Không chứa khoảng trắng</li>
+                </ul>
             </div>
 
             <div class="mb-3">
@@ -50,4 +64,50 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function updatePasswordStrength() {
+            const password = document.getElementById('passwordInput').value;
+            const fill = document.getElementById('passwordStrengthFill');
+            const text = document.getElementById('passwordStrengthText');
+            let score = 0;
+            if (password.length >= 6) score++;
+            if (password.length >= 10) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            let percent = Math.min((score / 6) * 100, 100);
+            let color = '#ff4d4f';
+            let label = 'Yếu';
+            if (score >= 5) { color = '#52c41a'; label = 'Mạnh'; }
+            else if (score >= 3) { color = '#faad14'; label = 'Trung bình'; }
+            fill.style.width = percent + '%';
+            fill.style.background = color;
+            text.textContent = password ? `Độ mạnh mật khẩu: ${label}` : '';
+
+            const requirements = [
+                { id: 'len', test: p => p.length >= 6 && p.length <= 18 },
+                { id: 'upper', test: p => /[A-Z]/.test(p) },
+                { id: 'lower', test: p => /[a-z]/.test(p) },
+                { id: 'digit', test: p => /[0-9]/.test(p) },
+                { id: 'special', test: p => /[^A-Za-z0-9]/.test(p) },
+                { id: 'space', test: p => !/\s/.test(p) }
+            ];
+            const reqList = document.getElementById('passwordRequirements');
+            if (reqList) {
+                for (const li of reqList.children) {
+                    li.style.display = '';
+                }
+                if (requirements[0].test(password)) reqList.children[0].style.display = 'none'; // length
+                if (requirements[1].test(password)) reqList.children[1].style.display = 'none'; // upper
+                if (requirements[2].test(password)) reqList.children[2].style.display = 'none'; // lower
+                if (requirements[3].test(password)) reqList.children[3].style.display = 'none'; // digit
+                if (requirements[4].test(password)) reqList.children[4].style.display = 'none'; // special
+                if (requirements[5].test(password)) reqList.children[5].style.display = 'none'; // no space
+            }
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePasswordStrength();
+        });
+    </script>
 }
