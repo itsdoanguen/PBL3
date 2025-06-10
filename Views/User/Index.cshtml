@@ -669,9 +669,9 @@
         // Carousel Configuration - SYNCED WITH CSS
         const carouselConfig = {
             'top-stories': { 
-                itemWidth: { desktop: 260, tablet: 220, mobile: 180 }, 
+                itemWidth: { desktop: 280, tablet: 240, mobile: 200 }, 
                 gap: { desktop: 24, tablet: 16, mobile: 12 },
-                visibleItems: { desktop: 5, tablet: 3, mobile: 2 } 
+                visibleItems: { desktop: 4, tablet: 3, mobile: 2 } 
             },
             'liked-stories': { 
                 itemWidth: { desktop: 280, tablet: 240, mobile: 200 }, 
@@ -720,20 +720,21 @@
             }
         };
 
-        // Initialize Carousel Function
+        // Initialize Carousel Function - ENHANCED
         function initCarousel(slider, carouselType) {
             const track = slider.querySelector('.stories-track');
             const prevBtn = slider.querySelector('.nav-arrow.prev');
             const nextBtn = slider.querySelector('.nav-arrow.next');
             const items = track.querySelectorAll('.story-item');
             
-            if (!track || !prevBtn || !nextBtn || items.length === 0) return;
+            if (!track || !prevBtn || !nextBtn || items.length === 0) {
+                return;
+            }
 
             const config = carouselConfig[carouselType] || carouselConfig['hot-stories'];
+            
             let currentIndex = 0;
-            let visibleItems = getVisibleItems(config);
-            let itemWidth = getItemWidth(config);
-            let gap = getGap(config);
+            let visibleItems, itemWidth, gap;
 
             function getBreakpoint() {
                 const width = window.innerWidth;
@@ -742,44 +743,37 @@
                 return 'mobile';
             }
 
-            function getVisibleItems(config) {
+            function updateConfig() {
                 const breakpoint = getBreakpoint();
-                return config.visibleItems[breakpoint];
-            }
-
-            function getItemWidth(config) {
-                const breakpoint = getBreakpoint();
-                return config.itemWidth[breakpoint];
-            }
-
-            function getGap(config) {
-                const breakpoint = getBreakpoint();
-                return config.gap[breakpoint];
+                visibleItems = config.visibleItems[breakpoint];
+                itemWidth = config.itemWidth[breakpoint];
+                gap = config.gap[breakpoint];
             }
 
             function updateCarousel() {
-                const translateX = -(currentIndex * (itemWidth + gap));
-                track.style.transform = `translateX(${translateX}px)`;
+                updateConfig();
                 
-                // Update button states
+                // Calculate safe translateX to prevent overflow
+                const maxTranslate = Math.max(0, (items.length - visibleItems) * (itemWidth + gap));
+                const targetTranslate = currentIndex * (itemWidth + gap);
+                const translateX = Math.min(targetTranslate, maxTranslate);
+                
+                track.style.transform = `translateX(-${translateX}px)`;
+                
+                // Update button states with safety checks
+                const maxIndex = Math.max(0, items.length - visibleItems);
                 prevBtn.disabled = currentIndex === 0;
-                nextBtn.disabled = currentIndex >= items.length - visibleItems;
+                nextBtn.disabled = currentIndex >= maxIndex;
                 
-                if (prevBtn.disabled) {
-                    prevBtn.classList.add('disabled');
-                } else {
-                    prevBtn.classList.remove('disabled');
-                }
-                
-                if (nextBtn.disabled) {
-                    nextBtn.classList.add('disabled');
-                } else {
-                    nextBtn.classList.remove('disabled');
-                }
+                // Apply visual states
+                prevBtn.classList.toggle('disabled', prevBtn.disabled);
+                nextBtn.classList.toggle('disabled', nextBtn.disabled);
             }
 
             function moveToNext() {
-                if (currentIndex < items.length - visibleItems) {
+                updateConfig();
+                const maxIndex = Math.max(0, items.length - visibleItems);
+                if (currentIndex < maxIndex) {
                     currentIndex++;
                     updateCarousel();
                 }
@@ -793,10 +787,31 @@
             }
 
             function handleResize() {
-                visibleItems = getVisibleItems(config);
-                itemWidth = getItemWidth(config);
-                gap = getGap(config);
-                currentIndex = Math.min(currentIndex, Math.max(0, items.length - visibleItems));
+                updateConfig();
+                
+                // Force re-apply styles after resize
+                items.forEach(item => {
+                    item.style.flex = `0 0 ${itemWidth}px`;
+                    item.style.width = `${itemWidth}px`;
+                    item.style.minWidth = `${itemWidth}px`;
+                    item.style.maxWidth = `${itemWidth}px`;
+                    
+                    const img = item.querySelector('.story-image');
+                    if (img) {
+                        const breakpoint = getBreakpoint();
+                        const height = breakpoint === 'desktop' ? '320px' : 
+                                      breakpoint === 'tablet' ? '300px' : '280px';
+                        img.style.height = height;
+                    }
+                });
+                
+                // Update track width
+                const totalWidth = items.length * (itemWidth + gap) - gap;
+                track.style.width = `${totalWidth}px`;
+                
+                // Ensure currentIndex doesn't exceed bounds after resize
+                const maxIndex = Math.max(0, items.length - visibleItems);
+                currentIndex = Math.min(currentIndex, maxIndex);
                 updateCarousel();
             }
 
@@ -805,7 +820,29 @@
             prevBtn.addEventListener('click', moveToPrev);
             window.addEventListener('resize', handleResize);
 
-            // Initialize
+            // Initialize with proper container setup
+            updateConfig();
+            
+            // Force apply correct styles to all items
+            items.forEach(item => {
+                item.style.flex = `0 0 ${itemWidth}px`;
+                item.style.width = `${itemWidth}px`;
+                item.style.minWidth = `${itemWidth}px`;
+                item.style.maxWidth = `${itemWidth}px`;
+                
+                const img = item.querySelector('.story-image');
+                if (img) {
+                    const breakpoint = getBreakpoint();
+                    const height = breakpoint === 'desktop' ? '320px' : 
+                                  breakpoint === 'tablet' ? '300px' : '280px';
+                    img.style.height = height;
+                }
+            });
+            
+            // Ensure track has correct width
+            const totalWidth = items.length * (itemWidth + gap) - gap;
+            track.style.width = `${totalWidth}px`;
+            
             updateCarousel();
 
             // Return cleanup function
