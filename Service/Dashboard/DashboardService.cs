@@ -650,5 +650,46 @@ namespace PBL3.Service.Dashboard
                 TotalAuthors = await _context.Stories.Select(s => s.AuthorID).Distinct().CountAsync()
             };
         }
+
+        public async Task<List<StoryViewModel>> GetStoriesFromFollowedAuthorsAsync(int userId, int count = 100)
+        {
+            var followingAuthors = await _context.FollowUsers
+                .Where(f => f.FollowerID == userId)
+                .Select(f => f.FollowingID)
+                .ToListAsync();
+
+            var stories = await _context.Stories
+                .Where(s => followingAuthors.Contains(s.AuthorID) &&
+                            (s.Status == StoryStatus.Active || s.Status == StoryStatus.Completed))
+                .Include(s => s.Author)
+                .OrderByDescending(s => s.UpdatedAt)
+                .Take(count)
+                .Select(s => new StoryViewModel
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    CoverImageUrl = s.CoverImage ?? "/image/default-cover.jpg",
+                    IsHot = _context.Chapters.Where(c => c.StoryID == s.StoryID).Sum(c => (int?)c.ViewCount) > 1000,
+                    IsNew = s.CreatedAt > DateTime.Now.AddDays(-7),
+                    IsCompleted = s.Status == StoryStatus.Completed,
+                    ChapterCount = s.Chapters.Count,
+                    LastUpdated = s.UpdatedAt,
+                    AuthorName = s.Author != null ? (s.Author.DisplayName ?? s.Author.Email) : "Unknown",
+                    ViewCount = _context.Chapters.Where(c => c.StoryID == s.StoryID).Sum(c => (int?)c.ViewCount) ?? 0,
+                    LikeCount = s.Chapters.SelectMany(c => c.Likes).Count(),
+                    FollowCount = _context.FollowStories.Count(fs => fs.StoryID == s.StoryID),
+                    Description = s.Description,
+                    CreatedAt = s.CreatedAt
+                })
+                .ToListAsync();
+
+            // Update image URLs
+            foreach (var story in stories)
+            {
+                story.CoverImageUrl = await _blobService.GetSafeImageUrlAsync(story.CoverImageUrl);
+            }
+
+            return stories;
+        }
     }
 }
