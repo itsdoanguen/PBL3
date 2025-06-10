@@ -1,6 +1,6 @@
 ﻿/* =====================
     OVERLAY & MODAL
-===================== */
+=========== */
 #overlay {
     position: fixed;
     top: 0;
@@ -14,7 +14,7 @@
 
 /* =====================
     SIDEBAR CHAPTER LIST
-===================== */
+=========== */
 #chapterSidebar {
     position: fixed;
     top: 40px;
@@ -44,7 +44,7 @@
 
 /* =====================
     FLOATING NAVIGATION
-===================== */
+=========== */
 #floatingNav {
     position: fixed;
     bottom: 20px;
@@ -62,7 +62,7 @@
 
 /* =====================
     GENERAL LAYOUT
-===================== */
+=========== */
 .center-cl {
     max-width: 100%;
     margin-left: 20%;
@@ -75,7 +75,7 @@
 
 /* =====================
     CHAPTER CARD
-===================== */
+=========== */
 .card.borderless {
     border: none;
     box-shadow: none;
@@ -83,7 +83,7 @@
 
 /* =====================
     COMMENT SECTION
-===================== */
+=========== */
 .chapter-comments h5 {
     font-weight: 600;
     border-bottom: 2px solid #eee;
@@ -200,7 +200,7 @@
 }
 /* =====================
     AVATAR STYLES
-===================== */
+=========== */
 .avatar-circle,
 .avatar-circle-sm {
     background-color: #007bff;
@@ -227,7 +227,7 @@
 
 /* =====================
     CHAPTER LIST STYLING
-===================== */
+=========== */
 #chap_list {
     list-style-type: none;
     padding-left: 0;

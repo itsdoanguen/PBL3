@@ -1,4 +1,4 @@
-﻿/* ========== OPTIMIZED DASHBOARD STYLES ========== */
+﻿/*  OPTIMIZED DASHBOARD STYLES  */
 /* Modern Black & White Theme - Only Used Components */
 
 :root {
@@ -39,7 +39,7 @@ body {
     font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
 }
-/* ========== HERO SECTION ========== */
+/* HERO SECTION */
 .hero-section {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -124,13 +124,13 @@ body {
     font-weight: 600;
 }
 
-/* ========== MAIN DASHBOARD ========== */
+/* MAIN DASHBOARD */
 .dashboard-main {
     padding: 2rem 0;
     min-height: 100vh;
 }
 
-/* ========== STORIES CONTAINERS ========== */
+/* STORIES CONTAINERS */
 .stories-container {
     background: var(--pure-white);
     border-radius: 20px;
@@ -245,23 +245,41 @@ body {
     transform: translateX(3px);
 }
 
-/* ========== SLIDER MECHANICS ========== */
+/* STORIES SLIDER - PERFECT CONTAINER CONTROL */
 .stories-slider {
     position: relative;
-    padding: 2rem;
+    padding: 2rem 1rem;
     overflow: hidden;
     background: var(--pure-white);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .stories-track {
-    display: flex;
-    gap: 1.5rem;
+    display: flex !important;
+    gap: 1.5rem !important; /* 24px gap - consistent with JS */
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
+    overflow: visible !important;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    width: max-content !important;
+    min-width: 100% !important;
+    align-items: stretch !important;
+    flex-wrap: nowrap !important;
 }
 
+.stories-track::-webkit-scrollbar {
+    display: none;
+}
+
+/* DEFAULT DESKTOP STORY ITEMS - FALLBACK FOR ALL CAROUSELS */
 .story-item {
-    flex: 0 0 280px;
+    flex: 0 0 280px; /* Default to hot-stories config */
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
     background: var(--pure-white);
     border-radius: 15px;
     overflow: hidden;
@@ -273,6 +291,73 @@ body {
     flex-direction: column;
 }
 
+/* ENSURE ALL CAROUSELS WORK - HIGH SPECIFICITY RULES */
+.stories-slider[data-carousel] .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+
+.stories-slider[data-carousel] .story-image {
+    height: 320px !important;
+}
+
+/* FORCE OVERRIDE ANY CONFLICTING STYLES */
+[data-carousel] .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+
+[data-carousel] .story-image {
+    height: 320px !important;
+}
+
+/* ULTIMATE OVERRIDE - ENSURE NOTHING CAN BREAK OUR LAYOUT */
+.stories-container .stories-slider[data-carousel] .stories-track .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.stories-container .stories-slider[data-carousel] .stories-track .story-image {
+    height: 320px !important;
+    width: 100% !important;
+}
+
+/* RESPONSIVE ULTIMATE OVERRIDES */
+@media (max-width: 768px) {
+    .stories-container .stories-slider[data-carousel] .stories-track .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
+    }
+    
+    .stories-container .stories-slider[data-carousel] .stories-track .story-image {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .stories-container .stories-slider[data-carousel] .stories-track .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .stories-container .stories-slider[data-carousel] .stories-track .story-image {
+        height: 280px !important;
+    }
+}
+
 .story-item:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-heavy);
@@ -281,7 +366,7 @@ body {
 
 .story-image {
     position: relative;
-    height: 200px;
+    height: 300px;
     overflow: hidden;
     flex-shrink: 0;
 }
@@ -297,7 +382,7 @@ body {
     transform: scale(1.08);
 }
 
-/* ========== STORY OVERLAYS & BADGES ========== */
+/*  STORY OVERLAYS & BADGES  */
 .story-badges {
     position: absolute;
     top: 0.75rem;
@@ -397,7 +482,7 @@ body {
         box-shadow: 0 4px 12px rgba(255, 71, 87, 0.4);
     }
 
-/* ========== STORY INFO ========== */
+/*  STORY INFO  */
 .story-info {
     padding: 1.25rem;
     background: var(--pure-white);
@@ -450,7 +535,7 @@ body {
     color: var(--accent-gold);
 }
 
-/* ========== NAVIGATION ARROWS ========== */
+/*  NAVIGATION ARROWS  */
 .nav-arrow {
     position: absolute;
     top: 50%;
@@ -479,11 +564,13 @@ body {
 }
 
 .nav-arrow.prev {
-    left: 1.5rem;
+    left: 0.5rem;
+    z-index: 10;
 }
 
 .nav-arrow.next {
-    right: 1.5rem;
+    right: 0.5rem;
+    z-index: 10;
 }
 
 .nav-arrow:disabled,
@@ -503,69 +590,111 @@ body {
     color: var(--medium-gray);
 }
 
-/* ========== SPECIAL COMPONENTS ========== */
+/*  CAROUSEL-SPECIFIC STORY ITEMS - PERFECTLY SYNCED WITH JS CONFIG  */
 
-/* Top Stories Ranking */
+/* Top Stories Ranking - Desktop: 280px - FORCED */
 .top-stories .story-item {
-    flex: 0 0 260px;
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
 .top-stories .story-image {
-    height: 180px;
+    height: 320px !important;
 }
 
-/* Liked Stories */
+/* Liked Stories - Desktop: 280px - FORCED */
 .liked-stories .story-item {
-    flex: 0 0 280px;
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
 .liked-stories .story-image {
-    height: 200px;
+    height: 320px !important;
 }
 
-/* Authors Carousel */
+/* Authors Carousel - Desktop: 240px - FORCED */
 .authors-carousel .story-item {
-    flex: 0 0 240px;
+    flex: 0 0 240px !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
 }
 
 .authors-carousel .story-image {
-    height: 160px;
+    height: 320px !important;
+    border-radius: 50%;
 }
 
-/* Followed Stories */
-.followed-stories .story-item {
-    flex: 0 0 320px;
+/* Recent Reads & Following Stories - Desktop: 300px - FORCED */
+.recent-reads .story-item,
+.following-stories .story-item {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
 }
 
-.followed-stories .story-image {
-    height: 220px;
+.recent-reads .story-image,
+.following-stories .story-image {
+    height: 320px !important;
 }
 
-/* Hot Stories */
-.hot-stories-section .story-item {
-    flex: 0 0 280px;
+/* Top Followed Stories - Desktop: 320px - FORCED */
+.top-followed-stories .story-item {
+    flex: 0 0 320px !important;
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
 }
 
-.hot-stories-section .story-image {
-    height: 200px;
+.top-followed-stories .story-image {
+    height: 320px !important;
 }
 
-/* New Stories */
-.new-stories-section .story-item {
-    flex: 0 0 300px;
+/* Hot Stories - Desktop: 280px - FORCED */
+.hot-stories-section .story-item,
+.hot-stories .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
-.new-stories-section .story-image {
-    height: 210px;
+.hot-stories-section .story-image,
+.hot-stories .story-image {
+    height: 320px !important;
 }
 
-/* Completed Stories */
-.completed-stories-section .story-item {
-    flex: 0 0 260px;
+/* New Stories - Desktop: 300px - FORCED */
+.new-stories-section .story-item,
+.new-stories .story-item {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
 }
 
-.completed-stories-section .story-image {
-    height: 180px;
+.new-stories-section .story-image,
+.new-stories .story-image {
+    height: 320px !important;
+}
+
+/* Completed Stories - Desktop: 260px - FORCED */
+.completed-stories-section .story-item,
+.completed-stories .story-item {
+    flex: 0 0 260px !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
+}
+
+.completed-stories-section .story-image,
+.completed-stories .story-image {
+    height: 320px !important;
 }
 
 .rank-badge {
@@ -621,7 +750,7 @@ body {
     color: var(--accent-gold);
 }
 
-/* ========== FILTER SECTION ========== */
+/*  FILTER SECTION  */
 .filter-section {
     background: var(--off-white);
     padding: 1.5rem 2rem;
@@ -653,7 +782,7 @@ body {
     outline: none;
 }
 
-/* ========== CATEGORIES SIDEBAR ========== */
+/*  CATEGORIES SIDEBAR  */
 .categories-sidebar {
     background: var(--pure-white);
     border-radius: 20px;
@@ -709,7 +838,7 @@ body {
     border-color: var(--primary-black);
 }
 
-/* ========== LOADING STATES ========== */
+/*  LOADING STATES  */
 .loading {
     opacity: 0.6;
     pointer-events: none;
@@ -737,7 +866,8 @@ body {
     }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
+/* TABLET RESPONSIVE - REDUCE ITEM SIZES */
 @media (max-width: 768px) {
     .hero-title {
         font-size: 2.5rem;
@@ -761,74 +891,93 @@ body {
         font-size: 2rem;
     }
 
-    /* Default story item for tablet */
-    .story-item {
-        flex: 0 0 280px;
+    /* Reduce gap for tablet */
+    .stories-track {
+        gap: 1rem; /* 16px gap for tablet */
     }
 
-    .story-image {
-        height: 200px;
+    /* Default story item for tablet - proportionally smaller - FORCED */
+    .story-item,
+    [data-carousel] .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
-    /* Specific carousel adjustments for tablet */
-    .top-stories .story-item {
-        flex: 0 0 260px;
+    .story-image,
+    [data-carousel] .story-image {
+        height: 300px !important;
     }
 
-    .top-stories .story-image {
-        height: 180px;
+    /* Specific carousel adjustments for tablet - EXACT JS CONFIG MATCH - FORCED */
+    .top-stories .story-item,
+    .liked-stories .story-item,
+    .hot-stories-section .story-item,
+    .hot-stories .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
-    .liked-stories .story-item {
-        flex: 0 0 280px;
-    }
-
-    .liked-stories .story-image {
-        height: 200px;
+    .top-stories .story-image,
+    .liked-stories .story-image,
+    .hot-stories-section .story-image,
+    .hot-stories .story-image {
+        height: 300px !important;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 240px;
+        flex: 0 0 200px;
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
     }
 
     .authors-carousel .story-image {
-        height: 160px;
+        height: 300px;
     }
 
-    .followed-stories .story-item {
-        flex: 0 0 320px;
+    .recent-reads .story-item,
+    .following-stories .story-item,
+    .new-stories-section .story-item,
+    .new-stories .story-item {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
     }
 
-    .followed-stories .story-image {
-        height: 220px;
+    .recent-reads .story-image,
+    .following-stories .story-image,
+    .new-stories-section .story-image,
+    .new-stories .story-image {
+        height: 300px !important;
     }
 
-    .hot-stories-section .story-item {
-        flex: 0 0 280px;
+    .top-followed-stories .story-item {
+        flex: 0 0 280px !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
     }
 
-    .hot-stories-section .story-image {
-        height: 200px;
+    .top-followed-stories .story-image {
+        height: 300px !important;
     }
 
-    .new-stories-section .story-item {
-        flex: 0 0 300px;
+    .completed-stories-section .story-item,
+    .completed-stories .story-item {
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        min-width: 220px !important;
+        max-width: 220px !important;
     }
 
-    .new-stories-section .story-image {
-        height: 210px;
-    }
-
-    .completed-stories-section .story-item {
-        flex: 0 0 260px;
-    }
-
-    .completed-stories-section .story-image {
-        height: 180px;
-    }
-
-    .stories-track {
-        gap: 1rem;
+    .completed-stories-section .story-image,
+    .completed-stories .story-image {
+        height: 300px !important;
     }
 
     .nav-arrow {
@@ -876,73 +1025,98 @@ body {
     }
 }
 
+/* MOBILE RESPONSIVE - FURTHER SIZE REDUCTION */
 @media (max-width: 576px) {
-    /* Default story item for mobile */
-    .story-item {
-        flex: 0 0 220px;
+    /* Smaller gap for mobile */
+    .stories-track {
+        gap: 0.75rem; /* 12px gap for mobile */
     }
 
-    .story-image {
-        height: 160px;
+    /* Default story item for mobile - smaller than tablet - FORCED */
+    .story-item,
+    [data-carousel] .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
     }
 
-    /* Specific carousel adjustments for mobile */
-    .top-stories .story-item {
-        flex: 0 0 200px;
+    .story-image,
+    [data-carousel] .story-image {
+        height: 280px !important;
     }
 
-    .top-stories .story-image {
-        height: 140px;
+    /* Specific carousel adjustments for mobile - EXACT JS CONFIG MATCH - FORCED */
+    .top-stories .story-item,
+    .liked-stories .story-item,
+    .hot-stories-section .story-item,
+    .hot-stories .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
     }
 
-    .liked-stories .story-item {
-        flex: 0 0 220px;
-    }
-
-    .liked-stories .story-image {
-        height: 160px;
+    .top-stories .story-image,
+    .liked-stories .story-image,
+    .hot-stories-section .story-image,
+    .hot-stories .story-image {
+        height: 280px !important;
     }
 
     .authors-carousel .story-item {
-        flex: 0 0 180px;
+        flex: 0 0 160px;
+        width: 160px;
+        min-width: 160px;
+        max-width: 160px;
     }
 
     .authors-carousel .story-image {
-        height: 120px;
+        height: 280px;
     }
 
-    .followed-stories .story-item {
-        flex: 0 0 260px;
+    .recent-reads .story-item,
+    .following-stories .story-item,
+    .new-stories-section .story-item,
+    .new-stories .story-item {
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        min-width: 220px !important;
+        max-width: 220px !important;
     }
 
-    .followed-stories .story-image {
-        height: 180px;
+    .recent-reads .story-image,
+    .following-stories .story-image,
+    .new-stories-section .story-image,
+    .new-stories .story-image {
+        height: 280px !important;
     }
 
-    .hot-stories-section .story-item {
-        flex: 0 0 220px;
+    .top-followed-stories .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
-    .hot-stories-section .story-image {
-        height: 160px;
+    .top-followed-stories .story-image {
+        height: 280px !important;
     }
 
-    .new-stories-section .story-item {
-        flex: 0 0 240px;
+    .completed-stories-section .story-item,
+    .completed-stories .story-item {
+        flex: 0 0 180px !important;
+        width: 180px !important;
+        min-width: 180px !important;
+        max-width: 180px !important;
     }
 
-    .new-stories-section .story-image {
-        height: 170px;
+    .completed-stories-section .story-image,
+    .completed-stories .story-image {
+        height: 280px !important;
     }
 
-    .completed-stories-section .story-item {
-        flex: 0 0 200px;
-    }
-
-    .completed-stories-section .story-image {
-        height: 140px;
-    }
-
+    /* Navigation arrows for mobile */
     .nav-arrow {
         width: 45px;
         height: 45px;
@@ -996,7 +1170,7 @@ body {
     }
 }
 
-/* ========== ACCESSIBILITY ========== */
+/*  ACCESSIBILITY  */
 .btn-read:focus,
 .nav-arrow:focus,
 .category-tag:focus,
@@ -1005,7 +1179,7 @@ body {
     outline-offset: 2px;
 }
 
-/* ========== REDUCED MOTION ========== */
+/*  REDUCED MOTION  */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -1014,7 +1188,7 @@ body {
     }
 }
 
-/* ========== TOUCH OPTIMIZATION ========== */
+/*  TOUCH OPTIMIZATION  */
 @media (hover: none) and (pointer: coarse) {
     .story-overlay {
         opacity: 0.9;

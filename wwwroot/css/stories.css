@@ -1,7 +1,7 @@
-/* ========== STORIES MODULE ========== */
+/*  STORIES MODULE  */
 /* Story-related pages & components - Modern Black & White Theme */
 
-/* ========== STORY VIEW PAGE ========== */
+/*  STORY VIEW PAGE  */
 .series-cover {
     position: relative;
     margin-bottom: var(--spacing-lg);
@@ -214,7 +214,7 @@
     box-shadow: var(--shadow-medium);
 }
 
-/* ========== STORY CREATION & EDITING ========== */
+/*  STORY CREATION & EDITING  */
 .story-form-container {
     background: var(--pure-white);
     border-radius: var(--radius-lg);
@@ -291,7 +291,7 @@
     border-bottom: 1px solid var(--light-gray);
 }
 
-/* ========== ALL STORIES PAGE ========== */
+/*  ALL STORIES PAGE  */
 .stories-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -373,7 +373,7 @@
     font-weight: 500;
 }
 
-/* ========== CHAPTER READING ========== */
+/*  CHAPTER READING  */
 .chapter-reader {
     background: var(--pure-white);
     min-height: 100vh;
@@ -506,7 +506,7 @@
     backdrop-filter: blur(5px);
 }
 
-/* ========== COMMENTS SECTION ========== */
+/*  COMMENTS SECTION  */
 .chapter-comments h5 {
     font-weight: 700;
     color: var(--primary-black);
@@ -639,7 +639,7 @@
     height: 35px;
 }
 
-/* ========== STORY MANAGEMENT ========== */
+/*  STORY MANAGEMENT  */
 .story-management-header {
     background: var(--gradient-primary);
     color: var(--pure-white);
@@ -737,7 +737,7 @@
     flex-shrink: 0;
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 768px) {
     .chapter-content {
         padding: 0 var(--spacing-md);

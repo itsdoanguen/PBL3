@@ -1,4 +1,4 @@
-﻿/* ========== INTRODUCTION PAGE - ELEGANT BLACK & WHITE THEME ========== */
+﻿/*  INTRODUCTION PAGE - ELEGANT BLACK & WHITE THEME  */
 /* Sophisticated Landing Page Design */
 
 :root {
@@ -26,7 +26,7 @@
     --transition-slow: 0.8s ease;
 }
 
-/* ========== GLOBAL STYLES ========== */
+/*  GLOBAL STYLES  */
 * {
     margin: 0;
     padding: 0;
@@ -46,7 +46,7 @@ body {
     padding: 0 2rem;
 }
 
-/* ========== HERO SECTION ========== */
+/*  HERO SECTION  */
 .hero-section {
     min-height: 100vh;
     position: relative;
@@ -226,7 +226,7 @@ body {
     }
 }
 
-/* ========== BUTTONS ========== */
+/*  BUTTONS  */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -296,7 +296,7 @@ body {
     font-size: 1.1rem;
 }
 
-/* ========== FEATURES SECTION ========== */
+/*  FEATURES SECTION  */
 .features-section {
     padding: 8rem 0;
     background: var(--pure-white);
@@ -420,7 +420,7 @@ body {
     font-size: 1rem;
 }
 
-/* ========== STATISTICS SECTION ========== */
+/*  STATISTICS SECTION  */
 .stats-section {
     padding: 6rem 0;
     background: var(--primary-black);
@@ -478,7 +478,7 @@ body {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* ========== CTA SECTION ========== */
+/*  CTA SECTION  */
 .cta-section {
     padding: 8rem 0;
     background: var(--off-white);
@@ -529,7 +529,7 @@ body {
             border-bottom-color: var(--primary-black);
         }
 
-/* ========== RESPONSIVE DESIGN ========== */
+/*  RESPONSIVE DESIGN  */
 @media (max-width: 1024px) {
     .hero-title {
         font-size: 3rem;
@@ -635,7 +635,7 @@ body {
     }
 }
 
-/* ========== ANIMATIONS ========== */
+/*  ANIMATIONS  */
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -646,7 +646,7 @@ body {
     }
 }
 
-/* ========== HIGH CONTRAST MODE ========== */
+/*  HIGH CONTRAST MODE  */
 @media (prefers-contrast: high) {
     :root {
         --shadow-light: 0 4px 16px rgba(0, 0, 0, 0.3);
