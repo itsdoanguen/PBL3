@@ -285,7 +285,11 @@ namespace PBL3.Service.Story
             {
                 return (false, "AccessDenied");
             }
-            var isSubmited = await _context.Notifications.FindAsync(storyID);
+            var isSubmited = await _context.Notifications
+                .FirstOrDefaultAsync(n => n.Type == NotificationModel.NotificationType.ReportStory
+                    && n.StoryID == storyID
+                    && n.FromUserID == currentUserId);
+
             if (isSubmited != null)
             {
                 return (false, "Truyện đã được gửi yêu cầu duyệt trước đó");
@@ -293,7 +297,7 @@ namespace PBL3.Service.Story
             story.Status = StoryModel.StoryStatus.ReviewPending;
             story.UpdatedAt = DateTime.Now;
             _context.Stories.Update(story);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             await _reportService.InitReportStoryNotificationAsync(storyID, currentUserId, "Yêu cầu duyệt truyện đăng trở lại");
             return (true, "Đã gửi yêu câu duyệt thành công");
         }

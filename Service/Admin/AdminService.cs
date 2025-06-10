@@ -189,6 +189,32 @@ namespace PBL3.Service.Admin
                 })
                 .ToListAsync();
 
+            // Lấy danh sách truyện bị khóa
+            var lockedStories = await _context.Stories
+                .Where(s => s.Status == StoryModel.StoryStatus.Locked)
+                .Select(s => new StoryInfo
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    Author = s.Author != null ? s.Author.DisplayName ?? "[]" : "[]",
+                    ChapterCount = _context.Chapters.Count(c => c.StoryID == s.StoryID),
+                    Status = s.Status.ToString()
+                })
+                .ToListAsync();
+
+            // Lấy danh sách truyện chờ duyệt
+            var reviewPendingStories = await _context.Stories
+                .Where(s => s.Status == StoryModel.StoryStatus.ReviewPending)
+                .Select(s => new StoryInfo
+                {
+                    Id = s.StoryID,
+                    Title = s.Title,
+                    Author = s.Author != null ? s.Author.DisplayName ?? "[]" : "[]",
+                    ChapterCount = _context.Chapters.Count(c => c.StoryID == s.StoryID),
+                    Status = s.Status.ToString()
+                })
+                .ToListAsync();
+
             // Lấy danh sách thể loại
             var genres = await _context.Genres
                 .Select(g => new GenreInfo
@@ -204,6 +230,8 @@ namespace PBL3.Service.Admin
                 Users = users,
                 ActiveStories = activeStories,
                 CompletedStories = completedStories,
+                LockedStories = lockedStories,
+                ReviewPendingStories = reviewPendingStories,
                 Genres = genres
             };
         }

@@ -1,7 +1,6 @@
 // admin-system.js
 // Simple client-side pagination for tables
-function paginateTable(tableSelector, pageSize) {
-    const $table = $(tableSelector);
+function paginateTable($table, pageSize) {
     const $rows = $table.find('tbody tr');
     const $pagination = $table.next('nav').find('.pagination');
     let currentPage = 1;
@@ -17,7 +16,7 @@ function paginateTable(tableSelector, pageSize) {
         }
     }
 
-    $pagination.on('click', 'a', function (e) {
+    $pagination.off('click').on('click', 'a', function (e) {
         e.preventDefault();
         const page = parseInt($(this).text());
         if (!isNaN(page)) {
@@ -30,14 +29,16 @@ function paginateTable(tableSelector, pageSize) {
 }
 
 $(document).ready(function () {
-    paginateTable('.user-table', 10);
-    paginateTable('.story-table', 10);
-    paginateTable('.genre-table', 10);
-    // Re-paginate on tab shown
+    // Chỉ phân trang cho bảng đang hiển thị trên mỗi tab khi load trang
+    $('.user-table:visible').each(function () { paginateTable($(this), 10); });
+    $('.story-table:visible').each(function () { paginateTable($(this), 10); });
+    $('.genre-table:visible').each(function () { paginateTable($(this), 10); });
+
+    // Re-paginate on tab shown, chỉ cho bảng trong tab vừa được hiển thị
     $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         setTimeout(function () {
-            paginateTable('.user-table:visible', 10);
-            paginateTable('.story-table:visible', 10);
+            $('.user-table:visible').each(function () { paginateTable($(this), 10); });
+            $('.story-table:visible').each(function () { paginateTable($(this), 10); });
         }, 100);
     });
 });

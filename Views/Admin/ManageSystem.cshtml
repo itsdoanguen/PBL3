@@ -77,10 +77,10 @@
                 @Html.Partial("_StoryTablePartial", Model.CompletedStories)
             </div>
             <div class="tab-pane fade" id="locked-stories" role="tabpanel">
-                @Html.Partial("_StoryTablePartial", new List<PBL3.ViewModels.Admin.StoryInfo>())
+                <partial name="_StoryTablePartial" model="@Model.LockedStories" />
             </div>
             <div class="tab-pane fade" id="pendingreview-stories" role="tabpanel">
-                @Html.Partial("_StoryTablePartial", new List<PBL3.ViewModels.Admin.StoryInfo>())
+                <partial name="_StoryTablePartial" model="@Model.ReviewPendingStories" />
             </div>
         </div>
     </section>
