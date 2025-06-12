@@ -168,10 +168,10 @@ namespace PBL3.Controllers
                 }).ToList();
                 return View(model);
             }
-            
+
             int currentAuthorID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             var (isSuccess, errorMessage) = await _storyService.UpdateStoryAsync(model, currentAuthorID);
-            
+
             if (!isSuccess)
             {
                 TempData["ErrorMessage"] = errorMessage;
@@ -183,7 +183,7 @@ namespace PBL3.Controllers
                 }).ToList();
                 return View(model);
             }
-            
+
             TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
             return RedirectToAction("EditDetail", new { id = model.StoryID });
         }

@@ -1,13 +1,10 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using PBL3.ViewModels.Moderator;
-using PBL3.ViewModels.UserProfile;
-using PBL3.ViewModels.Story;
+using PBL3.Models;
 using PBL3.Service.Chapter;
 using PBL3.Service.Comment;
-using PBL3.Models;
+using PBL3.ViewModels.Moderator;
+using PBL3.ViewModels.Story;
 
 namespace PBL3.Service.Story
 {
@@ -261,7 +258,7 @@ namespace PBL3.Service.Story
                 .OrderBy(c => c.ChapterOrder)
                 .Select(c => c.ChapterID)
                 .FirstOrDefaultAsync();
-            return history?.ChapterID ?? firstChapter; 
+            return history?.ChapterID ?? firstChapter;
         }
     }
 }

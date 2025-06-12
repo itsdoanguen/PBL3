@@ -1,7 +1,4 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using PBL3.ViewModels.Moderator;
-using PBL3.ViewModels.UserProfile;
 using PBL3.ViewModels.Story;
 
 namespace PBL3.Service.Story

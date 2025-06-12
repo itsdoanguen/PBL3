@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PBL3.Service.Search;
-using PBL3.ViewModels.Search;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
+using PBL3.Service.Search;
+using PBL3.ViewModels.Search;
 
 namespace PBL3.Controllers
 {
@@ -39,7 +37,7 @@ namespace PBL3.Controllers
                 .OrderBy(g => g.Name)
                 .Select(g => new SelectListItem
                 {
-                    Value = g.Name,       // Hoặc g.GenreID nếu bạn lọc theo ID
+                    Value = g.Name,      
                     Text = g.Name
                 })
                 .ToListAsync();

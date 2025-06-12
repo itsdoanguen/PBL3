@@ -27,29 +27,37 @@ namespace PBL3.Service.Discovery
                 .Where(c => c.StoryID == s.StoryID)
                 .OrderByDescending(c => c.CreatedAt)
                 .ToListAsync();
+            if (chapters == null)
+            {
+                chapters = new List<Models.ChapterModel>();
+            }
             var totalWords = 0;
             foreach (var chapter in chapters)
             {
                 totalWords += _chapterService.CountWordsInChapter(chapter.Content);
             }
-            
-            // Get author information
             var author = await _context.Users
                 .Where(u => u.UserID == s.AuthorID)
                 .Select(u => u.DisplayName ?? u.Email)
                 .FirstOrDefaultAsync();
 
+            int totalLikes = 0;
+            if (chapters.Count > 0)
+            {
+                var chapterIds = chapters.Select(c => c.ChapterID).ToList();
+                totalLikes = await _context.LikeChapters.CountAsync(l => chapterIds.Contains(l.ChapterID));
+            }
             return new UserStoryCardViewModel
             {
                 StoryID = s.StoryID,
                 Title = s.Title,
                 Cover = coverUrl,
-                TotalChapters = s.Chapters.Count,
+                TotalChapters = chapters.Count,
                 LastUpdated = s.UpdatedAt,
                 Status = s.Status,
                 Discription = s.Description,
                 TotalViews = await _context.Chapters.Where(c => c.StoryID == s.StoryID).SumAsync(c => (int?)c.ViewCount) ?? 0,
-                TotalLikes = await _context.LikeChapters.Where(l => l.Chapter.StoryID == s.StoryID).CountAsync(),
+                TotalLikes = totalLikes,
                 TotalFollowers = await _context.FollowStories.CountAsync(f => f.StoryID == s.StoryID),
                 TotalWords = totalWords,
                 AuthorName = author ?? "Unknown Author",

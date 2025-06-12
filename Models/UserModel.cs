@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PBL3.Models
 {
@@ -7,9 +6,9 @@ namespace PBL3.Models
     {
         [Key]
         public int UserID { get; set; }
-        [Required,StringLength(255),EmailAddress]
+        [Required, StringLength(255), EmailAddress]
         public string Email { get; set; }
-        [Required,StringLength(255)]
+        [Required, StringLength(255)]
         public string PasswordHash { get; set; }
         [StringLength(100)]
         public string? DisplayName { get; set; }

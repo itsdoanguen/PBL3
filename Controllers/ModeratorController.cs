@@ -82,7 +82,7 @@ namespace PBL3.Controllers
             var (isSuccess, errorMessage) = await _moderatorService.WarnUserAsync(id, message, moderatorId);
             if (!isSuccess)
             {
-                TempData["ErrorMessage"] = errorMessage;    
+                TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewUser", new { id });
             }
             TempData["SuccessMessage"] = "Cảnh cáo người dùng thành công!";

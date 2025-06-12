@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
-using PBL3.Service.Image;
 using PBL3.ViewModels.History;
 
 namespace PBL3.Service.History
@@ -78,7 +77,7 @@ namespace PBL3.Service.History
         public async Task DeleteHistoryAsync(int userId, int? storyId = null)
         {
             var query = _context.Set<HistoryModel>().Where(h => h.UserID == userId);
-            
+
             if (storyId.HasValue)
             {
                 query = query.Where(h => h.StoryID == storyId.Value);

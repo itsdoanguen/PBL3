@@ -21,7 +21,8 @@ namespace PBL3.Controllers
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Dữ liệu không hợp lệ";
-            } else
+            }
+            else
             {
                 var (isSuccess, message, commentId) = await _commentService.PostCommentAsync(model, type);
 

@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Dashboard;
-using System.Security.Claims;
 
 namespace PBL3.Controllers
 {
@@ -12,7 +12,7 @@ namespace PBL3.Controllers
         {
             _dashboardService = dashboardService;
         }
-        
+
         // GET: Discovery/FollowedAuthors
         public async Task<IActionResult> FollowedAuthors(int page = 1, int pageSize = 8)
         {
@@ -39,5 +39,32 @@ namespace PBL3.Controllers
 
             return View("AuthorsList", pagedAuthors);
         }
+
+        //GET: Discovery/StoryFromFollowedAuthors
+        public async Task<IActionResult> StoryFromFollowedAuthors(int page = 1, int pageSize = 8)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Authentication");
+            }
+
+            int userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var allStories = await _dashboardService.GetStoriesFromFollowedAuthorsAsync(userId, 1000);
+            var totalCount = allStories.Count;
+            var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            var pagedStories = allStories
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalCount = totalCount;
+            ViewBag.PageTitle = "Truyện từ tác giả bạn theo dõi";
+            ViewBag.PageDescription = "Những truyện mới nhất từ các tác giả bạn theo dõi";
+
+            return View("StoryList", pagedStories);
+        }
     }
-} 
+}

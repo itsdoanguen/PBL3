@@ -35,7 +35,7 @@ namespace PBL3.Controllers
 
             var updatedStyle = await _styleService.UpdateStyleAsync(model);
 
-            return RedirectToAction("ReadChapter","Chapter",new {id = ReturnChapterID });
+            return RedirectToAction("ReadChapter", "Chapter", new { id = ReturnChapterID });
         }
     }
 }

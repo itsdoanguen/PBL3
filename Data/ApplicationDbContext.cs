@@ -82,7 +82,6 @@ namespace PBL3.Data
                 .OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<StoryGenreModel>().HasKey(sg => new { sg.StoryID, sg.GenreID });
 
-            // NotificationModel relations
             modelBuilder.Entity<NotificationModel>()
                 .HasOne(n => n.User)
                 .WithMany()
@@ -113,7 +112,6 @@ namespace PBL3.Data
                 .HasForeignKey(n => n.CommentID)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // HistoryModel relations
             modelBuilder.Entity<HistoryModel>()
                 .HasOne(h => h.User)
                 .WithMany()

@@ -1,6 +1,6 @@
-@model List<PBL3.ViewModels.User.AuthorViewModel>
+@model List<PBL3.ViewModels.User.StoryViewModel>
 @{
-    ViewData["Title"] = ViewBag.PageTitle;
+    ViewData["Title"] = ViewBag.PageTitle ?? "Truyện từ tác giả bạn theo dõi";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -19,15 +19,13 @@
         margin-bottom: 2rem;
         border-radius: 0 0 30px 30px;
     }
-    
-    .authors-grid {
+    .stories-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 2rem;
         margin-bottom: 3rem;
     }
-    
-    .author-card {
+    .story-card {
         background: white;
         border-radius: 15px;
         overflow: hidden;
@@ -36,80 +34,76 @@
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
+        min-height: 420px;
     }
-    
-    .author-card:hover {
+    .story-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         border-color: #ffd700;
     }
-    
-    .author-avatar {
-        position: relative;
-        height: 200px;
-        overflow: hidden;
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-    }
-    
-    .author-avatar img {
+    .story-cover {
         width: 100%;
-        height: 100%;
+        height: 200px;
         object-fit: cover;
-        transition: transform 0.3s ease;
+        background: #f8f9fa;
+        border-bottom: 1px solid #eee;
     }
-    
-    .author-card:hover .author-avatar img {
-        transform: scale(1.05);
-    }
-    
-    .author-info {
-        padding: 1.5rem;
+    .story-info {
+        padding: 1.2rem 1.2rem 0.8rem 1.2rem;
         flex: 1;
         display: flex;
         flex-direction: column;
     }
-    
-    .author-name {
-        font-size: 1.2rem;
+    .story-title {
+        font-size: 1.1rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
         color: #000;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
     }
-    
-    .author-stats {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-        font-size: 0.9rem;
+    .story-author {
+        font-size: 0.95rem;
         color: #666;
+        margin-bottom: 0.5rem;
     }
-    
-    .author-actions {
+    .story-stats {
         display: flex;
-        gap: 0.5rem;
-        margin-top: auto;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #888;
+        margin-bottom: 0.5rem;
     }
-    
-    .btn-view-profile {
+    .story-description {
+        font-size: 0.95rem;
+        color: #444;
+        margin-bottom: 0.5rem;
         flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+    .btn-view-story {
         background: #000;
         color: #ffd700;
         border: none;
-        padding: 0.75rem;
+        padding: 0.6rem 1rem;
         border-radius: 10px;
         text-decoration: none;
         text-align: center;
         font-weight: 600;
         transition: all 0.3s ease;
+        margin-top: auto;
     }
-    
-    .btn-view-profile:hover {
+    .btn-view-story:hover {
         background: #ffd700;
         color: #000;
         transform: translateY(-2px);
     }
-
-    /* Phân trang tùy chỉnh */
+    /* Pagination styles (reuse from AuthorsList) */
     .pagination-wrapper {
         display: flex;
         justify-content: center;
@@ -167,8 +161,8 @@
         <p class="discovery-description">@ViewBag.PageDescription</p>
         <div class="discovery-stats">
             <div class="stat-badge">
-                <i class="fas fa-users me-2"></i>
-                <strong>@ViewBag.TotalCount</strong> tác giả
+                <i class="fas fa-book me-2"></i>
+                <strong>@ViewBag.TotalCount</strong> truyện
             </div>
             <div class="stat-badge">
                 <i class="fas fa-file-alt me-2"></i>
@@ -181,49 +175,42 @@
 <div class="container">
     @if (Model != null && Model.Any())
     {
-        <div class="authors-grid" data-aos="fade-up">
-            @foreach (var author in Model)
+        <div class="stories-grid" data-aos="fade-up">
+            @foreach (var story in Model)
             {
-                <div class="author-card" data-aos="zoom-in" data-aos-delay="@(Model.IndexOf(author) * 100)">
-                    <div class="author-avatar">
-                        <img src="@author.Avatar" alt="@author.Name" loading="lazy" 
-                             onerror="this.src='/image/default-avatar.png';">
-                    </div>
-                    <div class="author-info">
-                        <h4 class="author-name">@author.Name</h4>
-                        <div class="author-stats">
-                            <span><i class="fas fa-book me-1"></i> @author.TotalStories truyện</span>
-                            <span><i class="fas fa-users me-1"></i> @author.TotalFollowers followers</span>
+                <div class="story-card" data-aos="zoom-in" data-aos-delay="@(Model.IndexOf(story) * 100)">
+                    <img src="@story.CoverImageUrl" alt="@story.Title" class="story-cover" loading="lazy" onerror="this.src='/image/default-cover.jpg';" />
+                    <div class="story-info">
+                        <div class="story-title">@story.Title</div>
+                        <div class="story-author"><i class="fas fa-user me-1"></i> @story.AuthorName</div>
+                        <div class="story-stats">
+                            <span><i class="fas fa-eye me-1"></i> @story.ViewCount</span>
+                            <span><i class="fas fa-heart me-1"></i> @story.LikeCount</span>
+                            <span><i class="fas fa-users me-1"></i> @story.FollowCount</span>
+                            <span><i class="fas fa-book me-1"></i> @story.ChapterCount</span>
                         </div>
-                        <div class="author-actions">
-                            <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-view-profile">
-                                <i class="fas fa-user me-2"></i>Xem Profile
-                            </a>
-                        </div>
+                        <div class="story-description">@story.Description</div>
+                        <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-view-story mt-2">
+                            <i class="fas fa-book-open me-2"></i>Đọc truyện
+                        </a>
                     </div>
                 </div>
             }
         </div>
-
-        @* Pagination *@
         @if (ViewBag.TotalPages > 1)
         {
             <div class="pagination-wrapper">
                 <div class="custom-pagination">
-                    @* Previous Button *@
                     @if (ViewBag.CurrentPage > 1)
                     {
                         <a href="?page=@(ViewBag.CurrentPage - 1)" class="page-link">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     }
-
-                    @* Page Numbers *@
                     @{
                         int startPage = Math.Max(1, ViewBag.CurrentPage - 2);
                         int endPage = Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2);
                     }
-
                     @if (startPage > 1)
                     {
                         <a href="?page=1" class="page-link">1</a>
@@ -232,12 +219,10 @@
                             <span class="page-link disabled">...</span>
                         }
                     }
-
                     @for (int i = startPage; i <= endPage; i++)
                     {
                         <a href="?page=@i" class="page-link @(i == ViewBag.CurrentPage ? "active" : "")">@i</a>
                     }
-
                     @if (endPage < ViewBag.TotalPages)
                     {
                         @if (endPage < ViewBag.TotalPages - 1)
@@ -246,8 +231,6 @@
                         }
                         <a href="?page=@ViewBag.TotalPages" class="page-link">@ViewBag.TotalPages</a>
                     }
-
-                    @* Next Button *@
                     @if (ViewBag.CurrentPage < ViewBag.TotalPages)
                     {
                         <a href="?page=@(ViewBag.CurrentPage + 1)" class="page-link">
@@ -262,12 +245,12 @@
     {
         <div class="text-center py-5">
             <div class="mb-4">
-                <i class="fas fa-users fa-5x text-muted"></i>
+                <i class="fas fa-book fa-5x text-muted"></i>
             </div>
-            <h3 class="text-muted">Không có tác giả nào</h3>
-            <p class="text-muted">Hãy thử theo dõi một số tác giả hoặc khám phá những tác giả khác.</p>
-            <a asp-controller="User" asp-action="Index" class="btn btn-primary">
-                <i class="fas fa-home me-2"></i>Về trang chủ
+            <h3 class="text-muted">Không có truyện nào từ tác giả bạn theo dõi</h3>
+            <p class="text-muted">Hãy theo dõi thêm tác giả để cập nhật truyện mới nhất.</p>
+            <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn btn-primary">
+                <i class="fas fa-users me-2"></i>Khám phá tác giả
             </a>
         </div>
     }

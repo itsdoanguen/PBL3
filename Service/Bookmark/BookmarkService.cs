@@ -1,7 +1,6 @@
-using PBL3.Models;
-using PBL3.Data;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
+using PBL3.Models;
 using PBL3.ViewModels.Bookmark;
 
 namespace PBL3.Service.Bookmark
@@ -71,7 +70,7 @@ namespace PBL3.Service.Bookmark
             var items = await (from b in _context.Bookmarks
                                join c in _context.Chapters on b.ChapterID equals c.ChapterID
                                join s in _context.Stories on c.StoryID equals s.StoryID
-                               where b.UserID == userId && (s.Status == StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.Completed) 
+                               where b.UserID == userId && (s.Status == StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.Completed)
                                select new BookmarkItemViewModel
                                {
                                    StoryID = s.StoryID,

@@ -11,17 +11,20 @@
     <section class="report-section card mb-4">
         <div class="card-header"><h4>Bộ lọc thời gian</h4></div>
         <div class="card-body">
-            <form method="get" asp-action="Report" class="row g-3 align-items-end">
+            <form method="get" asp-action="Report" class="row g-3 align-items-end" id="dateFilterForm">
                 <div class="col-md-4">
                     <label for="from" class="form-label">Từ ngày</label>
-                    <input type="date" class="form-control" id="from" name="from" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+                    <input type="date" class="form-control" id="from" name="from" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" max="@(Model.EndDate?.ToString("yyyy-MM-dd") ?? DateTime.Now.ToString("yyyy-MM-dd"))" />
                 </div>
                 <div class="col-md-4">
                     <label for="to" class="form-label">Đến ngày</label>
-                    <input type="date" class="form-control" id="to" name="to" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+                    <input type="date" class="form-control" id="to" name="to" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" min="@(Model.StartDate?.ToString("yyyy-MM-dd"))" max="@DateTime.Now.ToString("yyyy-MM-dd")" />
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">Lọc dữ liệu</button>
+                    <button type="submit" class="btn btn-primary w-100" id="dateFilterBtn">Lọc dữ liệu</button>
+                </div>
+                <div class="col-12">
+                    <span id="dateErrorMsg" class="text-danger small" style="display:none"></span>
                 </div>
             </form>
         </div>
@@ -107,5 +110,36 @@
             reportTypeLabels: @Html.Raw(JsonSerializer.Serialize(Model.ReportTypeCounts.Select(x => x.Type))),
             reportTypeData: @Html.Raw(JsonSerializer.Serialize(Model.ReportTypeCounts.Select(x => x.Count)))
         };
+        // Date validation logic
+        const fromInput = document.getElementById('from');
+        const toInput = document.getElementById('to');
+        const errorMsg = document.getElementById('dateErrorMsg');
+        const submitBtn = document.getElementById('dateFilterBtn');
+        function validateDates() {
+            const from = fromInput.value;
+            const to = toInput.value;
+            let valid = true;
+            if (from && to && from > to) {
+                errorMsg.textContent = 'Ngày bắt đầu không được lớn hơn ngày kết thúc.';
+                errorMsg.style.display = '';
+                submitBtn.disabled = true;
+                valid = false;
+            } else if (to && to > new Date().toISOString().slice(0,10)) {
+                errorMsg.textContent = 'Không được chọn ngày kết thúc trong tương lai.';
+                errorMsg.style.display = '';
+                submitBtn.disabled = true;
+                valid = false;
+            } else {
+                errorMsg.textContent = '';
+                errorMsg.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+            return valid;
+        }
+        fromInput.addEventListener('change', validateDates);
+        toInput.addEventListener('change', validateDates);
+        document.getElementById('dateFilterForm').addEventListener('submit', function(e) {
+            if (!validateDates()) e.preventDefault();
+        });
     </script>
 }

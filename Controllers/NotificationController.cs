@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Notification;
-using System.Threading.Tasks;
 
 namespace PBL3.Controllers
 {

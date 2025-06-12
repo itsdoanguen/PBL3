@@ -122,7 +122,7 @@
                 @if (Model.Stories.Any())
                 {
                     <div class="row">
-                        @foreach (var story in Model.Stories.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active))
+                        @foreach (var story in Model.Stories.Where(s => s.Status == PBL3.Models.StoryModel.StoryStatus.Active || s.Status == StoryModel.StoryStatus.Completed))
                         {
                             <div class="col-md-6">
                                 <a href="@Url.Action("View", "Story", new { id = story.StoryID })" class="story-card text-decoration-none">

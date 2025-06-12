@@ -1,12 +1,10 @@
 ﻿using System.Security.Claims;
-using AspNetCoreGeneratedDocument;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
 using PBL3.Service.Chapter;
 using PBL3.Service.Comment;
 using PBL3.Service.History;
-using PBL3.Service.Notification;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Controllers

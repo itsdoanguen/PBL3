@@ -1,8 +1,8 @@
 ﻿using PBL3.Data;
 using PBL3.Models;
+using PBL3.Service.Notification;
 using PBL3.ViewModels.Chapter;
 using PBL3.ViewModels.Comment;
-using PBL3.Service.Notification;
 
 namespace PBL3.Service.Comment
 {

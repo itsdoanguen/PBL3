@@ -1,7 +1,6 @@
-﻿using PBL3.Models;
-using PBL3.ViewModels;
+﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
-using Microsoft.EntityFrameworkCore;
+using PBL3.Models;
 using PBL3.ViewModels.LikeChapter;
 
 namespace PBL3.Service.Like
@@ -20,8 +19,8 @@ namespace PBL3.Service.Like
         {
             var existingLike = await _context.LikeChapters
                 .FirstOrDefaultAsync(l => l.UserID == userId && l.ChapterID == chapterId);
-            
-            if(existingLike != null)
+
+            if (existingLike != null)
             {
                 _context.LikeChapters.Remove(existingLike);
                 await _context.SaveChangesAsync();
@@ -65,7 +64,7 @@ namespace PBL3.Service.Like
                                    StoryTitle = s.Title,
                                    StoryCoverImageUrl = s.CoverImage
                                }).ToListAsync();
-            
+
             foreach (var item in liked)
             {
                 item.StoryCoverImageUrl = await _blobService.GetSafeImageUrlAsync(item.StoryCoverImageUrl ?? string.Empty);

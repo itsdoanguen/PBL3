@@ -7,6 +7,8 @@ namespace PBL3.ViewModels.Admin
         public List<UserInfo> Users { get; set; }
         public List<StoryInfo> ActiveStories { get; set; }
         public List<StoryInfo> CompletedStories { get; set; }
+        public List<StoryInfo> LockedStories { get; set; }
+        public List<StoryInfo> ReviewPendingStories { get; set; }
         public List<GenreInfo> Genres { get; set; }
     }
 

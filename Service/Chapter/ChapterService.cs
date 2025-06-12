@@ -4,8 +4,8 @@ using PBL3.Models;
 using PBL3.Service.Bookmark;
 using PBL3.Service.Comment;
 using PBL3.Service.Like;
-using PBL3.Service.Style;
 using PBL3.Service.Notification;
+using PBL3.Service.Style;
 using PBL3.ViewModels.Chapter;
 
 namespace PBL3.Service.Chapter
@@ -98,7 +98,7 @@ namespace PBL3.Service.Chapter
                 StoryTitle = chapter.Story?.Title ?? "Không rõ",
                 StoryID = chapter.StoryID,
 
-    
+
                 Comments = await _commentService.GetCommentsAsync("chapter", chapter.ChapterID),
                 NextChapterID = await GetNextChapter(chapter.ChapterID, chapter.StoryID),
                 PreviousChapterID = await GetPreviousChapter(chapter.ChapterID, chapter.StoryID),

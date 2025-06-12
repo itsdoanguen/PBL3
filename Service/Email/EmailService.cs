@@ -1,7 +1,5 @@
-using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using MimeKit;
 using MailKit.Net.Smtp;
+using MimeKit;
 
 namespace PBL3.Service.Email
 {

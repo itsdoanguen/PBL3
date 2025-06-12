@@ -245,32 +245,36 @@ body {
     transform: translateX(3px);
 }
 
-/* STORIES SLIDER - FIXED VERSION */
+/* STORIES SLIDER - PERFECT CONTAINER CONTROL */
 .stories-slider {
     position: relative;
-    padding: 2rem;
+    padding: 2rem 1rem;
     overflow: hidden;
     background: var(--pure-white);
     width: 100%;
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 .stories-track {
-    display: flex;
-    gap: 1.5rem; /* 24px gap - consistent with JS */
+    display: flex !important;
+    gap: 1.5rem !important; /* 24px gap - consistent with JS */
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     will-change: transform;
-    overflow: visible; /* Changed from overflow-x: auto */
+    overflow: visible !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    width: fit-content; /* Ensure proper width calculation */
+    width: max-content !important;
+    min-width: 100% !important;
+    align-items: stretch !important;
+    flex-wrap: nowrap !important;
 }
 
 .stories-track::-webkit-scrollbar {
     display: none;
 }
 
-/* DEFAULT DESKTOP STORY ITEMS */
+/* DEFAULT DESKTOP STORY ITEMS - FALLBACK FOR ALL CAROUSELS */
 .story-item {
     flex: 0 0 280px; /* Default to hot-stories config */
     width: 280px;
@@ -285,6 +289,73 @@ body {
     border: 1px solid var(--light-gray);
     display: flex;
     flex-direction: column;
+}
+
+/* ENSURE ALL CAROUSELS WORK - HIGH SPECIFICITY RULES */
+.stories-slider[data-carousel] .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+
+.stories-slider[data-carousel] .story-image {
+    height: 320px !important;
+}
+
+/* FORCE OVERRIDE ANY CONFLICTING STYLES */
+[data-carousel] .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+}
+
+[data-carousel] .story-image {
+    height: 320px !important;
+}
+
+/* ULTIMATE OVERRIDE - ENSURE NOTHING CAN BREAK OUR LAYOUT */
+.stories-container .stories-slider[data-carousel] .stories-track .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+}
+
+.stories-container .stories-slider[data-carousel] .stories-track .story-image {
+    height: 320px !important;
+    width: 100% !important;
+}
+
+/* RESPONSIVE ULTIMATE OVERRIDES */
+@media (max-width: 768px) {
+    .stories-container .stories-slider[data-carousel] .stories-track .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
+    }
+    
+    .stories-container .stories-slider[data-carousel] .stories-track .story-image {
+        height: 300px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    .stories-container .stories-slider[data-carousel] .stories-track .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+    }
+    
+    .stories-container .stories-slider[data-carousel] .stories-track .story-image {
+        height: 280px !important;
+    }
 }
 
 .story-item:hover {
@@ -493,12 +564,12 @@ body {
 }
 
 .nav-arrow.prev {
-    left: 1.5rem;
+    left: 0.5rem;
     z-index: 10;
 }
 
 .nav-arrow.next {
-    right: 1.5rem;
+    right: 0.5rem;
     z-index: 10;
 }
 
@@ -519,104 +590,111 @@ body {
     color: var(--medium-gray);
 }
 
-/*  CAROUSEL-SPECIFIC STORY ITEMS - SYNCED WITH JS CONFIG  */
+/*  CAROUSEL-SPECIFIC STORY ITEMS - PERFECTLY SYNCED WITH JS CONFIG  */
 
-/* Top Stories Ranking - itemWidth: 260 */
+/* Top Stories Ranking - Desktop: 280px - FORCED */
 .top-stories .story-item {
-    flex: 0 0 260px;
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
 .top-stories .story-image {
-    height: 300px;
+    height: 320px !important;
 }
 
-/* Liked Stories - itemWidth: 280 */
+/* Liked Stories - Desktop: 280px - FORCED */
 .liked-stories .story-item {
-    flex: 0 0 280px;
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
 .liked-stories .story-image {
-    height: 300px;
+    height: 320px !important;
 }
 
-/* Authors Carousel - itemWidth: 240 */
+/* Authors Carousel - Desktop: 240px - FORCED */
 .authors-carousel .story-item {
-    flex: 0 0 240px;
-    width: 240px;
-    min-width: 240px;
-    max-width: 240px;
+    flex: 0 0 240px !important;
+    width: 240px !important;
+    min-width: 240px !important;
+    max-width: 240px !important;
 }
 
 .authors-carousel .story-image {
-    height: 300px;
+    height: 320px !important;
+    border-radius: 50%;
 }
 
-/* Recent Reads & Following Stories - itemWidth: 300 */
+/* Recent Reads & Following Stories - Desktop: 300px - FORCED */
 .recent-reads .story-item,
 .following-stories .story-item {
-    flex: 0 0 300px;
-    width: 300px;
-    min-width: 300px;
-    max-width: 300px;
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
 }
 
 .recent-reads .story-image,
 .following-stories .story-image {
-    height: 300px;
+    height: 320px !important;
 }
 
-/* Top Followed Stories - itemWidth: 320 */
+/* Top Followed Stories - Desktop: 320px - FORCED */
 .top-followed-stories .story-item {
-    flex: 0 0 320px;
-    width: 320px;
-    min-width: 320px;
-    max-width: 320px;
+    flex: 0 0 320px !important;
+    width: 320px !important;
+    min-width: 320px !important;
+    max-width: 320px !important;
 }
 
 .top-followed-stories .story-image {
-    height: 300px;
+    height: 320px !important;
 }
 
-/* Hot Stories - itemWidth: 280 (default) */
-.hot-stories-section .story-item {
-    flex: 0 0 280px;
-    width: 280px;
-    min-width: 280px;
-    max-width: 280px;
+/* Hot Stories - Desktop: 280px - FORCED */
+.hot-stories-section .story-item,
+.hot-stories .story-item {
+    flex: 0 0 280px !important;
+    width: 280px !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
 }
 
-.hot-stories-section .story-image {
-    height: 300px;
+.hot-stories-section .story-image,
+.hot-stories .story-image {
+    height: 320px !important;
 }
 
-/* New Stories - itemWidth: 300 */
-.new-stories-section .story-item {
-    flex: 0 0 300px;
-    width: 300px;
-    min-width: 300px;
-    max-width: 300px;
+/* New Stories - Desktop: 300px - FORCED */
+.new-stories-section .story-item,
+.new-stories .story-item {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
 }
 
-.new-stories-section .story-image {
-    height: 300px;
+.new-stories-section .story-image,
+.new-stories .story-image {
+    height: 320px !important;
 }
 
-/* Completed Stories - itemWidth: 260 */
-.completed-stories-section .story-item {
-    flex: 0 0 260px;
-    width: 260px;
-    min-width: 260px;
-    max-width: 260px;
+/* Completed Stories - Desktop: 260px - FORCED */
+.completed-stories-section .story-item,
+.completed-stories .story-item {
+    flex: 0 0 260px !important;
+    width: 260px !important;
+    min-width: 260px !important;
+    max-width: 260px !important;
 }
 
-.completed-stories-section .story-image {
-    height: 300px;
+.completed-stories-section .story-image,
+.completed-stories .story-image {
+    height: 320px !important;
 }
 
 .rank-badge {
@@ -818,41 +896,36 @@ body {
         gap: 1rem; /* 16px gap for tablet */
     }
 
-    /* Default story item for tablet - proportionally smaller */
-    .story-item {
-        flex: 0 0 240px;
-        width: 240px;
-        min-width: 240px;
-        max-width: 240px;
+    /* Default story item for tablet - proportionally smaller - FORCED */
+    .story-item,
+    [data-carousel] .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
-    .story-image {
-        height: 280px;
+    .story-image,
+    [data-carousel] .story-image {
+        height: 300px !important;
     }
 
-    /* Specific carousel adjustments for tablet - maintain proportions */
-    .top-stories .story-item {
-        flex: 0 0 220px;
-        width: 220px;
-        min-width: 220px;
-        max-width: 220px;
-    }
-
-    .top-stories .story-image {
-        height: 280px;
-    }
-
+    /* Specific carousel adjustments for tablet - EXACT JS CONFIG MATCH - FORCED */
+    .top-stories .story-item,
     .liked-stories .story-item,
-    .hot-stories-section .story-item {
-        flex: 0 0 240px;
-        width: 240px;
-        min-width: 240px;
-        max-width: 240px;
+    .hot-stories-section .story-item,
+    .hot-stories .story-item {
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
+    .top-stories .story-image,
     .liked-stories .story-image,
-    .hot-stories-section .story-image {
-        height: 280px;
+    .hot-stories-section .story-image,
+    .hot-stories .story-image {
+        height: 300px !important;
     }
 
     .authors-carousel .story-item {
@@ -863,44 +936,48 @@ body {
     }
 
     .authors-carousel .story-image {
-        height: 280px;
+        height: 300px;
     }
 
     .recent-reads .story-item,
     .following-stories .story-item,
-    .new-stories-section .story-item {
-        flex: 0 0 260px;
-        width: 260px;
-        min-width: 260px;
-        max-width: 260px;
+    .new-stories-section .story-item,
+    .new-stories .story-item {
+        flex: 0 0 260px !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        max-width: 260px !important;
     }
 
     .recent-reads .story-image,
     .following-stories .story-image,
-    .new-stories-section .story-image {
-        height: 280px;
+    .new-stories-section .story-image,
+    .new-stories .story-image {
+        height: 300px !important;
     }
 
     .top-followed-stories .story-item {
-        flex: 0 0 280px;
-        width: 280px;
-        min-width: 280px;
-        max-width: 280px;
+        flex: 0 0 280px !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        max-width: 280px !important;
     }
 
     .top-followed-stories .story-image {
-        height: 280px;
+        height: 300px !important;
     }
 
-    .completed-stories-section .story-item {
-        flex: 0 0 220px;
-        width: 220px;
-        min-width: 220px;
-        max-width: 220px;
+    .completed-stories-section .story-item,
+    .completed-stories .story-item {
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        min-width: 220px !important;
+        max-width: 220px !important;
     }
 
-    .completed-stories-section .story-image {
-        height: 280px;
+    .completed-stories-section .story-image,
+    .completed-stories .story-image {
+        height: 300px !important;
     }
 
     .nav-arrow {
@@ -955,43 +1032,36 @@ body {
         gap: 0.75rem; /* 12px gap for mobile */
     }
 
-    /* Default story item for mobile - smaller than tablet */
-    .story-item {
-        flex: 0 0 200px;
-        width: 200px;
-        min-width: 200px;
-        max-width: 200px;
+    /* Default story item for mobile - smaller than tablet - FORCED */
+    .story-item,
+    [data-carousel] .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
     }
 
-    .story-image {
-        height: 240px;
+    .story-image,
+    [data-carousel] .story-image {
+        height: 280px !important;
     }
 
-    /* Specific carousel adjustments for mobile - all smaller */
+    /* Specific carousel adjustments for mobile - EXACT JS CONFIG MATCH - FORCED */
     .top-stories .story-item,
-    .completed-stories-section .story-item {
-        flex: 0 0 180px;
-        width: 180px;
-        min-width: 180px;
-        max-width: 180px;
+    .liked-stories .story-item,
+    .hot-stories-section .story-item,
+    .hot-stories .story-item {
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
     }
 
     .top-stories .story-image,
-    .completed-stories-section .story-image {
-        height: 240px;
-    }
-
-    .liked-stories .story-item,
-    .hot-stories-section .story-item {
-        flex: 0 0 200px;
-        width: 200px;
-        min-width: 200px;
-        max-width: 200px;
-    }
-
     .liked-stories .story-image,
-    .hot-stories-section .story-image {
-        height: 240px;
+    .hot-stories-section .story-image,
+    .hot-stories .story-image {
+        height: 280px !important;
     }
 
     .authors-carousel .story-item {
@@ -1002,33 +1072,48 @@ body {
     }
 
     .authors-carousel .story-image {
-        height: 240px;
+        height: 280px;
     }
 
     .recent-reads .story-item,
     .following-stories .story-item,
-    .new-stories-section .story-item {
-        flex: 0 0 220px;
-        width: 220px;
-        min-width: 220px;
-        max-width: 220px;
+    .new-stories-section .story-item,
+    .new-stories .story-item {
+        flex: 0 0 220px !important;
+        width: 220px !important;
+        min-width: 220px !important;
+        max-width: 220px !important;
     }
 
     .recent-reads .story-image,
     .following-stories .story-image,
-    .new-stories-section .story-image {
-        height: 240px;
+    .new-stories-section .story-image,
+    .new-stories .story-image {
+        height: 280px !important;
     }
 
     .top-followed-stories .story-item {
-        flex: 0 0 240px;
-        width: 240px;
-        min-width: 240px;
-        max-width: 240px;
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        min-width: 240px !important;
+        max-width: 240px !important;
     }
 
     .top-followed-stories .story-image {
-        height: 240px;
+        height: 280px !important;
+    }
+
+    .completed-stories-section .story-item,
+    .completed-stories .story-item {
+        flex: 0 0 180px !important;
+        width: 180px !important;
+        min-width: 180px !important;
+        max-width: 180px !important;
+    }
+
+    .completed-stories-section .story-image,
+    .completed-stories .story-image {
+        height: 280px !important;
     }
 
     /* Navigation arrows for mobile */
