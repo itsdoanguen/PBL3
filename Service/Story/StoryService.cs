@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PBL3.Data;
 using PBL3.Models;
 using PBL3.Service.Chapter;
@@ -212,7 +211,7 @@ namespace PBL3.Service.Story
                 var activeChapterCount = await _context.Chapters
                     .Where(c => c.StoryID == storyID && c.Status == ChapterStatus.Active)
                     .CountAsync();
-                
+
                 if (activeChapterCount < 3)
                 {
                     return (false, "Truyện phải có ít nhất 3 chương đã xuất bản mới có thể đánh dấu hoàn thành", 0);
@@ -332,7 +331,7 @@ namespace PBL3.Service.Story
             {
                 return (false, "Thể loại không tồn tại");
             }
-            
+
             var relatedStoryGenres = _context.StoryGenres.Where(sg => sg.GenreID == genreId);
             _context.StoryGenres.RemoveRange(relatedStoryGenres);
             _context.Genres.Remove(genre);

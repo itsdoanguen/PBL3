@@ -27,7 +27,7 @@
                 // Validate file extension
                 var fileExtension = Path.GetExtension(imageFile.FileName)?.ToLower();
                 var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                
+
                 if (string.IsNullOrEmpty(fileExtension) || !allowedExtensions.Contains(fileExtension))
                 {
                     return (false, "Ảnh phải thuộc định dạng JPG, JPEG hoặc PNG", null);
@@ -42,10 +42,10 @@
 
                 // Generate unique filename
                 var fileName = $"{folderName}/{Guid.NewGuid()}_image{fileExtension}";
-                
+
                 // Upload to blob storage
                 var uploadResult = await _blobService.UploadFileAsync(imageFile.OpenReadStream(), fileName);
-                
+
                 if (string.IsNullOrEmpty(uploadResult))
                 {
                     return (false, "Lỗi khi tải ảnh lên server. Vui lòng thử lại", null);

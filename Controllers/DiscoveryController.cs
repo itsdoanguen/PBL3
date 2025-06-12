@@ -1,6 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Dashboard;
-using System.Security.Claims;
 
 namespace PBL3.Controllers
 {
@@ -67,4 +67,4 @@ namespace PBL3.Controllers
             return View("StoryList", pagedStories);
         }
     }
-} 
+}

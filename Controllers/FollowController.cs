@@ -1,8 +1,7 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Follow;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace PBL3.Controllers
 {

@@ -1,6 +1,6 @@
-﻿using PBL3.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using PBL3.Data;
 using PBL3.ViewModels.Search;
-using Microsoft.EntityFrameworkCore;
 
 namespace PBL3.Service.Search
 {
@@ -17,7 +17,7 @@ namespace PBL3.Service.Search
 
         public async Task<List<SearchByTitleStory>> SearchByTitleAsync(string? tenTruyen, int pageNumber = 1, int pageSize = 20)
         {
-            var query = _dbContext.Stories  .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+            var query = _dbContext.Stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
                                             .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(tenTruyen))
@@ -52,7 +52,7 @@ namespace PBL3.Service.Search
 
         public async Task<List<SearchByTitleStory>> SearchAdvancedAsync(StoryFilterModel filter, int pageNumber = 1, int pageSize = 20)
         {
-            var query = _dbContext.Stories  .Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
+            var query = _dbContext.Stories.Where(s => s.Status == Models.StoryModel.StoryStatus.Active || s.Status == Models.StoryModel.StoryStatus.Completed)
                                             .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter.TenTruyen))

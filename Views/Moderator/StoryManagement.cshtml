@@ -50,7 +50,7 @@
                             </a>
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <a href="@Url.Action("ViewStory", "ViewStory", new { id = story.StoryID })" target="_blank">@story.Title</a>
+                                    <a href="@Url.Action("ViewStory", "Moderator", new { id = story.StoryID })" target="_blank">@story.Title</a>
                                 </h5>
                                 <p>Số chương: @story.TotalChapters</p>
                                 <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>

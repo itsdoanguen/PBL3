@@ -12,7 +12,7 @@ namespace PBL3.Attributes
             }
 
             var password = value.ToString();
-        
+
             if (password.Length < 6 || password.Length > 18)
             {
                 return new ValidationResult("The length of password must be greater than 6 and smaller than 18");

@@ -40,7 +40,7 @@ namespace PBL3.Service.Discovery
                 .Where(u => u.UserID == s.AuthorID)
                 .Select(u => u.DisplayName ?? u.Email)
                 .FirstOrDefaultAsync();
-                
+
             int totalLikes = 0;
             if (chapters.Count > 0)
             {

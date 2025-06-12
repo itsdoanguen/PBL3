@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using PBL3.Models;
 
 namespace PBL3.Service.Report

@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,9 +17,9 @@ namespace PBL3.Models
         public int StoryID { get; set; }
 
         [ForeignKey("Chapter")]
-        public int? ChapterID { get; set; } 
+        public int? ChapterID { get; set; }
 
-        public DateTime LastReadAt { get; set; } = DateTime.Now; 
+        public DateTime LastReadAt { get; set; } = DateTime.Now;
 
         // Navigation properties
         public UserModel? User { get; set; }

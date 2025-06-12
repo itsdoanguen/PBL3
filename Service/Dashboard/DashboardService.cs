@@ -362,7 +362,7 @@ namespace PBL3.Service.Dashboard
                 var user = await _context.Users.FindAsync(userId.Value);
                 var displayName = user?.DisplayName ?? user?.Email ?? "Bạn";
                 viewModel.HeaderMessage = $"Chào mừng trở lại, {displayName}!";
-                
+
                 // Populate user profile summary
                 if (user != null)
                 {
@@ -390,7 +390,7 @@ namespace PBL3.Service.Dashboard
             viewModel.CompletedStories = await GetCompletedStoriesAsync();
             viewModel.TopStoriesOfWeek = await GetTopStoriesOfWeekAsync();
             viewModel.TopFollowedStories = await GetTopFollowedStoriesAsync();
-            
+
             // Load categories
             viewModel.AllCategories = await GetAllCategoriesAsync();
             viewModel.CategorySelectList = new SelectList(viewModel.AllCategories, "Id", "Name");
@@ -403,19 +403,19 @@ namespace PBL3.Service.Dashboard
             {
                 // Get followed authors
                 viewModel.FollowedAuthors = await GetFollowedAuthorsAsync(userId.Value);
-                
+
                 // Get stories from followed authors
                 viewModel.FollowingStories = await GetFollowingStoriesAsync(userId.Value);
-                
+
                 // Get personalized recommendations
                 viewModel.RecommendedStories = await GetRecommendedStoriesAsync(userId.Value);
-                
+
                 // Get recent reading history
                 viewModel.RecentlyRead = await GetRecentReadingHistoryAsync(userId.Value);
-                
+
                 // Get user activity stats
                 viewModel.ActivityStats = await GetUserActivityStatsAsync(userId.Value);
-                
+
                 // Get favorite categories
                 viewModel.FavoriteCategories = await GetFavoriteCategoriesAsync(userId.Value);
             }
@@ -431,7 +431,7 @@ namespace PBL3.Service.Dashboard
                 .ToListAsync();
 
             var stories = await _context.Stories
-                .Where(s => followingAuthors.Contains(s.AuthorID) && 
+                .Where(s => followingAuthors.Contains(s.AuthorID) &&
                            (s.Status == StoryStatus.Active || s.Status == StoryStatus.Completed))
                 .OrderByDescending(s => s.UpdatedAt)
                 .Take(count)
@@ -486,7 +486,7 @@ namespace PBL3.Service.Dashboard
                 .ToListAsync();
 
             var stories = await _context.Stories
-                .Where(s => s.Status == StoryStatus.Active && 
+                .Where(s => s.Status == StoryStatus.Active &&
                            !userHistory.Contains(s.StoryID) &&
                            s.Genres.Any(g => preferredGenres.Contains(g.GenreID)))
                 .OrderByDescending(s => s.UpdatedAt)
@@ -522,8 +522,8 @@ namespace PBL3.Service.Dashboard
         private async Task<List<RecentReadViewModel>> GetRecentReadingHistoryAsync(int userId, int count = 5)
         {
             var recentReads = await _context.Set<HistoryModel>()
-                .Where(h => h.UserID == userId && 
-                           h.ChapterID.HasValue && 
+                .Where(h => h.UserID == userId &&
+                           h.ChapterID.HasValue &&
                            h.ChapterID.Value > 0 &&
                            h.Chapter != null &&
                            h.Story.Status == StoryStatus.Active)
@@ -538,7 +538,7 @@ namespace PBL3.Service.Dashboard
                     ChapterTitle = h.Chapter.Title,
                     LastRead = h.LastReadAt,
                     TotalChapters = h.Story.Chapters.Count,
-                    ReadProgress = h.Chapter != null && h.Story.Chapters.Any() ? 
+                    ReadProgress = h.Chapter != null && h.Story.Chapters.Any() ?
                         (int)((double)h.Chapter.ChapterOrder / h.Story.Chapters.Count * 100) : 0
                 })
                 .ToListAsync();
@@ -555,7 +555,7 @@ namespace PBL3.Service.Dashboard
         private async Task<UserActivityStats> GetUserActivityStatsAsync(int userId)
         {
             var user = await _context.Users.FindAsync(userId);
-            
+
             return new UserActivityStats
             {
                 TotalStoriesRead = _context.Set<HistoryModel>().Where(h => h.UserID == userId).Select(h => h.StoryID).Distinct().Count(),
@@ -639,7 +639,7 @@ namespace PBL3.Service.Dashboard
         private async Task<DatabaseStats> GetDatabaseStatsAsync()
         {
             var sevenDaysAgo = DateTime.Now.AddDays(-7);
-            
+
             return new DatabaseStats
             {
                 TotalActiveStories = await _context.Stories.CountAsync(s => s.Status == StoryStatus.Active),

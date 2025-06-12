@@ -117,15 +117,15 @@ namespace PBL3.Service.Follow
         public async Task<List<UserFollowItemViewModel>> GetFollowingUsersAsync(int userId)
         {
             var users = await (from f in _context.FollowUsers
-                              join u in _context.Users on f.FollowingID equals u.UserID
-                              where f.FollowerID == userId
-                              select new UserFollowItemViewModel
-                              {
-                                  UserID = u.UserID,
-                                  UserName = u.DisplayName ?? u.Email,
-                                  AvatarUrl = u.Avatar,
-                                  ShortBio = u.Bio
-                              }).ToListAsync();
+                               join u in _context.Users on f.FollowingID equals u.UserID
+                               where f.FollowerID == userId
+                               select new UserFollowItemViewModel
+                               {
+                                   UserID = u.UserID,
+                                   UserName = u.DisplayName ?? u.Email,
+                                   AvatarUrl = u.Avatar,
+                                   ShortBio = u.Bio
+                               }).ToListAsync();
             foreach (var user in users)
             {
                 user.AvatarUrl = await _blobService.GetSafeImageUrlAsync(user.AvatarUrl ?? string.Empty);
@@ -136,15 +136,15 @@ namespace PBL3.Service.Follow
         public async Task<List<UserFollowItemViewModel>> GetFollowerUsersAsync(int userId)
         {
             var users = await (from f in _context.FollowUsers
-                              join u in _context.Users on f.FollowerID equals u.UserID
-                              where f.FollowingID == userId
-                              select new UserFollowItemViewModel
-                              {
-                                  UserID = u.UserID,
-                                  UserName = u.DisplayName ?? u.Email,
-                                  AvatarUrl = u.Avatar,
-                                  ShortBio = u.Bio
-                              }).ToListAsync();
+                               join u in _context.Users on f.FollowerID equals u.UserID
+                               where f.FollowingID == userId
+                               select new UserFollowItemViewModel
+                               {
+                                   UserID = u.UserID,
+                                   UserName = u.DisplayName ?? u.Email,
+                                   AvatarUrl = u.Avatar,
+                                   ShortBio = u.Bio
+                               }).ToListAsync();
             foreach (var user in users)
             {
                 user.AvatarUrl = await _blobService.GetSafeImageUrlAsync(user.AvatarUrl ?? string.Empty);

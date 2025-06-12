@@ -59,7 +59,7 @@ namespace PBL3.Service.Style
             style.FontSize = styleViewModel.FontSize;
             style.BackgroundColor = styleViewModel.BackgroundColor;
             style.UpdatedAt = DateTime.Now;
-            
+
             _context.Styles.Update(style);
             await _context.SaveChangesAsync();
             return style;

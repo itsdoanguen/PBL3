@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PBL3.Models
@@ -8,7 +7,7 @@ namespace PBL3.Models
     {
         [Key]
         public int StoryID { get; set; }
-        [Required,StringLength(255)]
+        [Required, StringLength(255)]
         public string Title { get; set; }
         [Required]
         public string Description { get; set; }

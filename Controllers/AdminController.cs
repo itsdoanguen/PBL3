@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PBL3.Service.Story;
 using PBL3.Service.Admin;
+using PBL3.Service.Story;
 
 namespace PBL3.Controllers
 {

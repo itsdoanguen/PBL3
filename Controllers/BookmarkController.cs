@@ -1,7 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Service.Bookmark;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PBL3.Controllers
 {

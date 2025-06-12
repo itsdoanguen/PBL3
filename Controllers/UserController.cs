@@ -1,50 +1,30 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using PBL3.ViewModels.User;
-using PBL3.Models;
-using PBL3.Data;
-using PBL3.Service.Image;
-using PBL3.Service.User;
-using PBL3.ViewModels.UserProfile;
-using PBL3.Service;
-using Microsoft.EntityFrameworkCore;
 using PBL3.Service.Bookmark;
-using PBL3.Service.Follow;
-using PBL3.Service.Dashboard;   
-using PBL3.ViewModels.Account;
+using PBL3.Service.Dashboard;
 using PBL3.Service.Email;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using PBL3.Service.Follow;
+using PBL3.Service.User;
+using PBL3.ViewModels.Account;
+using PBL3.ViewModels.UserProfile;
 
 namespace PBL3.Controllers
 {
     [Authorize]
     public class UserController : Controller
     {
-        private const string DefaultAvatar = "/image/default-avatar.png";
-        private const string DefaultBanner = "/image/default-banner.png";
-
-        private readonly ApplicationDbContext _context;
         private readonly IUserService _userService;
-        private readonly BlobService _blobService;
-        private readonly IImageService _imageService;
         private readonly IBookmarkService _bookmarkService;
         private readonly IFollowService _followService;
         private readonly IDashboardService _dashboardService;
         private readonly IEmailService _emailService;
 
-        public UserController(ApplicationDbContext context, BlobService blobService, IUserService userService, IImageService imageService, IBookmarkService bookmarkService, IFollowService followService, IEmailService emailService, IDashboardService dashboardService)
+        public UserController(IUserService userService, IBookmarkService bookmarkService, IFollowService followService, IEmailService emailService, IDashboardService dashboardService)
         {
-            _context = context;
-            _blobService = blobService;
             _userService = userService;
-            _imageService = imageService;
             _bookmarkService = bookmarkService;
             _followService = followService;
             _dashboardService = dashboardService;
@@ -296,7 +276,7 @@ namespace PBL3.Controllers
             TempData["SuccessMessage"] = message;
             return RedirectToAction("Login", "Authentication");
         }
-        
+
         // Hàm gửi email
         private async Task SendResetPasswordEmail(string toEmail, string newPassword, string? displayName = null)
         {

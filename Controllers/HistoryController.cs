@@ -42,7 +42,7 @@ namespace PBL3.Controllers
             // Xóa lịch sử đọc (theo storyId)
             await _historyService.DeleteHistoryAsync(userId, history.StoryID);
             TempData["SuccessMessage"] = "Đã xóa lịch sử đọc truyện thành công.";
-            return RedirectToAction("Index","History");
+            return RedirectToAction("Index", "History");
         }
 
     }

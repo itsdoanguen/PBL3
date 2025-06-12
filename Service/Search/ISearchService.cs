@@ -1,6 +1,4 @@
 ﻿using PBL3.ViewModels.Search;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PBL3.Service.Search
 {

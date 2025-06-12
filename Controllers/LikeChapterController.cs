@@ -1,10 +1,8 @@
 ﻿using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PBL3.Data;
-using PBL3.Models;
 using PBL3.Service.Like;
-using Microsoft.AspNetCore.Authorization;
 
 namespace PBL3.Controllers
 {

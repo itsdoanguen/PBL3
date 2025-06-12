@@ -1,7 +1,5 @@
 using PBL3.Models;
 using PBL3.ViewModels.Bookmark;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PBL3.Service.Bookmark
 {
