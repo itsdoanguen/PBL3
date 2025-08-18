@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="Discover" xml:space="preserve">
+    <value>Khám phá</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm truyện...</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Đăng nhập để tìm kiếm...</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Thông báo</value>
+  </data>
+  <data name="Management" xml:space="preserve">
+    <value>Quản lí</value>
+  </data>
+  <data name="ContentManagement" xml:space="preserve">
+    <value>Quản lí nội dung</value>
+  </data>
+  <data name="SystemManagement" xml:space="preserve">
+    <value>Quản lí hệ thống</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="MyStories" xml:space="preserve">
+    <value>Truyện của tôi</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Lịch sử</value>
+  </data>
+  <data name="Library" xml:space="preserve">
+    <value>Thư viện</value>
+  </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Cài đặt tài khoản</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Đăng Nhập</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Đăng Ký</value>
+  </data>
+  <data name="Copyright" xml:space="preserve">
+    <value>Bản quyền</value>
+  </data>
+  <data name="Policy" xml:space="preserve">
+    <value>Chính sách</value>
+  </data>
+  <data name="Contact" xml:space="preserve">
+    <value>Liên hệ</value>
+  </data>
+</root>

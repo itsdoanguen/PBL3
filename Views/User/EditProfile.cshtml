@@ -1,8 +1,9 @@
 ﻿@using PBL3.ViewModels.UserProfile
 @model UserProfileViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-	ViewData["Title"] = "Chỉnh sửa hồ sơ";
+	ViewData["Title"] = Localizer["EditProfile"];
 }
 
 <!-- Link to external CSS file -->
@@ -24,8 +25,8 @@
 				<h3 class="mt-2">@Model.DisplayName</h3>
 
 				<ul class="list-group disabled-content">
-					<li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
-					<li class="list-group-item"><strong>Ngày tham gia:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
+					<li class="list-group-item"><strong>@Localizer["Email"]:</strong> @Model.Email</li>
+					<li class="list-group-item"><strong>@Localizer["JoinDate"]:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
 				</ul>
 			</div>
 
@@ -37,47 +38,47 @@
 				@Html.AntiForgeryToken()
 				<!-- Avatar Upload -->
 				<div class="mb-3">
-					<label for="avatarUpload">Cập nhật Avatar:</label>
+					<label for="avatarUpload">@Localizer["UpdateAvatar"]:</label>
 					<input type="file" id="avatarUpload" name="avatarUpload" class="form-control" accept="image/*">
 				</div>
 
 				<!-- Banner Upload -->
 				<div class="mb-3">
-					<label for="bannerUpload">Cập nhật Banner:</label>
+					<label for="bannerUpload">@Localizer["UpdateBanner"]:</label>
 					<input type="file" id="bannerUpload" name="bannerUpload" class="form-control" accept="image/*">
 				</div>
 				<div class="mb-3">
-					<label for="displayname">Tên người dùng:</label>
+					<label for="displayname">@Localizer["DisplayName"]:</label>
 					<input type="text" id="displayname" name="DisplayName" class="form-control" value="@Model.DisplayName">
 				</div>
 				<!-- Date of Birth -->
 				<div class="mb-3">
-					<label for="dateOfBirth">Ngày sinh:</label>
+					<label for="dateOfBirth">@Localizer["DateOfBirth"]:</label>
 					<input type="date" id="dateOfBirth" name="DateOfBirth" class="form-control"
 						   value="@(Model.DateOfBirth?.ToString("yyyy-MM-dd") ?? "")">
 				</div>
 
 				<!-- Gender Selection -->
 				<div class="mb-3">
-					<label for="gender">Giới tính:</label>
+					<label for="gender">@Localizer["Gender"]:</label>
 					<select id="gender" name="Gender" class="form-control">
 						@foreach (var gender in Enum.GetValues(typeof(UserModel.UserGender)))
 						{
 							var selected = (Model.Gender == (UserModel.UserGender)gender) ? "selected" : "";
-							<option value="@gender" selected="selected">@gender</option>
+							<option value="@gender" selected="selected">@Localizer[$"Gender_{gender}"]</option>
 						}
 					</select>
 				</div>
 
 				<!-- Bio -->
 				<div class="mb-3">
-					<label for="bio">Bio:</label>
+					<label for="bio">@Localizer["Bio"]:</label>
 					<textarea id="bio" name="Bio" class="form-control">@Model.Bio</textarea>
 				</div>
 				<!--Submit-->
 				<div class="mt-3">
-					<button type="submit" class="btn btn-success">Lưu thay đổi</button>
-					<a asp-controller="User" asp-action="MyProfile" class="btn btn-secondary">Hủy</a>
+					<button type="submit" class="btn btn-success">@Localizer["SaveChanges"]</button>
+					<a asp-controller="User" asp-action="MyProfile" class="btn btn-secondary">@Localizer["Cancel"]</a>
 				</div>
 			</form>
 		</div>

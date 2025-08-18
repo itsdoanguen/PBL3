@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="WelcomeTitle" xml:space="preserve">
+    <value>Welcome to PBL3</value>
+  </data>
+  <data name="WhyChooseUsTitle" xml:space="preserve">
+    <value>Why Choose Us?</value>
+  </data>
+  <data name="ReadyToStartTitle" xml:space="preserve">
+    <value>Ready to Start Your Journey?</value>
+  </data>
+  <data name="ReadAnywhereTitle" xml:space="preserve">
+    <value>Read Anywhere, Anytime</value>
+  </data>
+  <data name="ActiveCommunityTitle" xml:space="preserve">
+    <value>Active Community</value>
+  </data>
+  <data name="SmartSuggestionsTitle" xml:space="preserve">
+    <value>Smart Suggestions</value>
+  </data>
+  <data name="FreeWritingTitle" xml:space="preserve">
+    <value>Free Writing</value>
+  </data>
+  <data name="PersonalManagementTitle" xml:space="preserve">
+    <value>Personal Management</value>
+  </data>
+  <data name="SecurityTitle" xml:space="preserve">
+    <value>Security &amp; Privacy</value>
+  </data>
+  <data name="Explore" xml:space="preserve">
+    <value>Explore</value>
+  </data>
+  <data name="StoryWorld" xml:space="preserve">
+    <value>Story World</value>
+  </data>
+  <data name="Endless" xml:space="preserve">
+    <value>Endless</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>The place for the best stories, where you can read, share, and discover countless works from talented authors worldwide.</value>
+  </data>
+  <data name="JoinNow" xml:space="preserve">
+    <value>Join Now</value>
+  </data>
+  <data name="ExploreStories" xml:space="preserve">
+    <value>Explore Stories</value>
+  </data>
+  <data name="ScrollDownToExplore" xml:space="preserve">
+    <value>Scroll down to explore</value>
+  </data>
+  <data name="WhyChooseUs" xml:space="preserve">
+    <value>Unique features for the best reading experience</value>
+  </data>
+  <data name="ReadAnywhere" xml:space="preserve">
+    <value>Optimized interface for all devices, allowing you to read comfortably on phone, tablet, or computer.</value>
+  </data>
+  <data name="ActiveCommunity" xml:space="preserve">
+    <value>Connect with thousands of readers and authors, share emotions, comment, and discuss your favorite stories.</value>
+  </data>
+  <data name="SmartSuggestions" xml:space="preserve">
+    <value>Smart AI system suggests stories that match your interests, helping you discover new works.</value>
+  </data>
+  <data name="FreeWriting" xml:space="preserve">
+    <value>Powerful writing tools with a modern editor, making it easy to create and share your works.</value>
+  </data>
+  <data name="PersonalManagement" xml:space="preserve">
+    <value>Store and manage your favorite stories, track reading progress, and never miss a new chapter.</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Advanced security system, absolutely protecting your personal information and works.</value>
+  </data>
+  <data name="DiverseStories" xml:space="preserve">
+    <value>Diverse Stories</value>
+  </data>
+  <data name="ActiveReaders" xml:space="preserve">
+    <value>Active Readers</value>
+  </data>
+  <data name="TalentedAuthors" xml:space="preserve">
+    <value>Talented Authors</value>
+  </data>
+  <data name="PublishedChapters" xml:space="preserve">
+    <value>Published Chapters</value>
+  </data>
+  <data name="ReadyToStart" xml:space="preserve">
+    <value>Join our community today and discover the endless world of stories</value>
+  </data>
+  <data name="RegisterFree" xml:space="preserve">
+    <value>Register Free</value>
+  </data>
+  <data name="AlreadyHaveAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="LoginNow" xml:space="preserve">
+    <value>Login now</value>
+  </data>
+</root>

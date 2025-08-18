@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Trang chủ</value>
+  </data>
+  <data name="OngoingStories" xml:space="preserve">
+    <value>Truyện Đang Tiến Hành</value>
+  </data>
+  <data name="NewStoriesThisWeek" xml:space="preserve">
+    <value>Truyện Mới Tuần</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Hoàn Thành</value>
+  </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Tác Giả</value>
+  </data>
+  <data name="TopStoriesOfWeek" xml:space="preserve">
+    <value>Top Truyện Tuần</value>
+  </data>
+  <data name="TopStoriesSubtitle" xml:space="preserve">
+    <value>Bảng xếp hạng truyện hot nhất tuần này</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>Xem tất cả</value>
+  </data>
+  <data name="HotStories" xml:space="preserve">
+    <value>Truyện Hot</value>
+  </data>
+  <data name="HotStoriesSubtitle" xml:space="preserve">
+    <value>Những truyện được yêu thích nhất</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Lọc theo thể loại:</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>Tất cả thể loại</value>
+  </data>
+  <data name="ReadNow" xml:space="preserve">
+    <value>Đọc ngay</value>
+  </data>
+  <data name="NewStories" xml:space="preserve">
+    <value>Truyện Mới</value>
+  </data>
+  <data name="NewStoriesSubtitle" xml:space="preserve">
+    <value>Những câu chuyện vừa mới ra mắt</value>
+  </data>
+  <data name="MostLiked" xml:space="preserve">
+    <value>Được Yêu Thích Nhất</value>
+  </data>
+  <data name="MostLikedSubtitle" xml:space="preserve">
+    <value>Những truyện có lượt thích cao nhất</value>
+  </data>
+  <data name="TopFollowedStories" xml:space="preserve">
+    <value>Top Truyện Được Theo Dõi</value>
+  </data>
+  <data name="TopFollowedSubtitle" xml:space="preserve">
+    <value>Những truyện được theo dõi nhiều nhất</value>
+  </data>
+  <data name="RecentlyRead" xml:space="preserve">
+    <value>Đọc Gần Đây</value>
+  </data>
+  <data name="RecentlyReadSubtitle" xml:space="preserve">
+    <value>Tiếp tục hành trình đọc truyện của bạn</value>
+  </data>
+  <data name="ContinueReading" xml:space="preserve">
+    <value>Tiếp tục đọc</value>
+  </data>
+  <data name="Chapter" xml:space="preserve">
+    <value>Chương</value>
+  </data>
+  <data name="StoriesFromFollowedAuthors" xml:space="preserve">
+    <value>Truyện Từ Tác Giả Theo Dõi</value>
+  </data>
+  <data name="FollowedAuthorsSubtitle" xml:space="preserve">
+    <value>Cập nhật mới nhất từ các tác giả bạn yêu thích</value>
+  </data>
+  <data name="CompletedStories" xml:space="preserve">
+    <value>Truyện Đã Hoàn Thành</value>
+  </data>
+  <data name="CompletedStoriesSubtitle" xml:space="preserve">
+    <value>Những câu chuyện đã có kết thúc hoàn chỉnh</value>
+  </data>
+  <data name="FeaturedAuthors" xml:space="preserve">
+    <value>Tác Giả Nổi Bật</value>
+  </data>
+  <data name="FeaturedAuthorsSubtitle" xml:space="preserve">
+    <value>Những tác giả được theo dõi nhiều nhất</value>
+  </data>
+  <data name="ViewProfile" xml:space="preserve">
+    <value>Xem Profile</value>
+  </data>
+  <data name="Stories" xml:space="preserve">
+    <value>truyện</value>
+  </data>
+  <data name="ErrorLoadingData" xml:space="preserve">
+    <value>Đã xảy ra lỗi khi tải dữ liệu.</value>
+  </data>
+  <data name="UnfollowAuthorConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn bỏ theo dõi tác giả này?</value>
+  </data>
+  <data name="UnfollowSuccess" xml:space="preserve">
+    <value>Đã bỏ theo dõi tác giả</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>Có lỗi xảy ra</value>
+  </data>
+  <data name="ErrorUnfollow" xml:space="preserve">
+    <value>Có lỗi xảy ra khi bỏ theo dõi</value>
+  </data>
+  <data name="ViewCount" xml:space="preserve">
+    <value>{0} lượt xem</value>
+    <comment>Format for displaying view count</comment>
+  </data>
+  <data name="FollowCount" xml:space="preserve">
+    <value>{0} người theo dõi</value>
+  </data>
+  <data name="ChapterCount" xml:space="preserve">
+    <value>{0} chương</value>
+  </data>
+  <data name="LikeCount" xml:space="preserve">
+    <value>{0} lượt thích</value>
+  </data>
+</root>

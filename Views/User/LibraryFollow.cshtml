@@ -1,25 +1,27 @@
 @model PBL3.ViewModels.FollowUser.UserFollowListViewModel
 @using System.Linq
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Người dùng theo dõi";
+    ViewData["Title"] = @Localizer["FollowingUsers"];
     var followingIds = Model.FollowingUsers.Select(u => u.UserID).ToHashSet();
 }
 <link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
 <div class="container py-5 user-library-container" style="margin-top:100px">
-    <h2 class="mb-4 text-center">Quản lý theo dõi</h2>
+    <h2 class="mb-4 text-center">@Localizer["ManageFollows"]</h2>
     <ul class="nav nav-tabs mb-4" id="followTab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="following-tab" data-bs-toggle="tab" data-bs-target="#following" type="button" role="tab">Đang theo dõi</button>
+            <button class="nav-link active" id="following-tab" data-bs-toggle="tab" data-bs-target="#following" type="button" role="tab">@Localizer["Following"]</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="follower-tab" data-bs-toggle="tab" data-bs-target="#follower" type="button" role="tab">Người theo dõi mình</button>
+            <button class="nav-link" id="follower-tab" data-bs-toggle="tab" data-bs-target="#follower" type="button" role="tab">@Localizer["Followers"]</button>
         </li>
     </ul>
     <div class="tab-content" id="followTabContent">
         <div class="tab-pane fade show active" id="following" role="tabpanel">
             @if (Model.FollowingUsers.Count == 0)
             {
-                <div class="alert alert-info">Bạn chưa theo dõi ai.</div>
+                <div class="alert alert-info">@Localizer["NoFollowing"]</div>
             }
             else
             {
@@ -36,7 +38,7 @@
 
                                 <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="ms-auto d-inline-block" style="margin-left:8px;">
                                     <input type="hidden" name="followingId" value="@user.UserID" />
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Hủy theo dõi</button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">@Localizer["Unfollow"]</button>
                                 </form>
                             </a>
                         </li>
@@ -47,7 +49,7 @@
         <div class="tab-pane fade" id="follower" role="tabpanel">
             @if (Model.FollowerUsers.Count == 0)
             {
-                <div class="alert alert-info">Chưa có ai theo dõi bạn.</div>
+                <div class="alert alert-info">@Localizer["NoFollowers"]</div>
             }
             else
             {
@@ -64,13 +66,13 @@
 
                                 @if (followingIds.Contains(user.UserID))
                                 {
-                                    <button type="button" class="btn btn-success btn-sm ms-auto" disabled>Đã theo dõi</button>
+                                    <button type="button" class="btn btn-success btn-sm ms-auto" disabled>@Localizer["AlreadyFollowing"]</button>
                                 }
                                 else
                                 {
                                     <form asp-controller="Follow" asp-action="ToggleUserFollow" method="post" class="ms-auto d-inline-block" style="margin-left:8px;">
                                         <input type="hidden" name="followingId" value="@user.UserID" />
-                                        <button type="submit" class="btn btn-outline-primary btn-sm">Theo dõi lại</button>
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">@Localizer["FollowBack"]</button>
                                     </form>
                                 }
                             </a>

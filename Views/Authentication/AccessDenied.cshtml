@@ -1,7 +1,11 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Localizer["AccessDeniedMessage"];
 }
-<div>
-   <h1>You are not having the permit to enter this page</h1>
-	
+<div class="container">
+    <div class="alert alert-danger mt-4">
+        <h1>@Localizer["AccessDeniedMessage"]</h1>
+    </div>
 </div>

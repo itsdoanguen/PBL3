@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
-<html lang="vi">
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
+<html lang="@System.Threading.Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no" />
-	<title>@ViewData["Title"] - Truyện Hấp Dẫn</title>
+	<title>@ViewData["Title"]</title>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -25,9 +28,27 @@
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-custom fixed-top">
 			<div class="container">
 				<!-- Logo -->
-				<a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
-					<img src="~/image/logo.png" alt="Logo" width="40" height="40" class="me-2">
-				</a>
+				@if (User.Identity.IsAuthenticated)
+				{
+					<a class="navbar-brand d-flex align-items-center" asp-controller="User" asp-action="Index">
+						<img src="~/image/logo.png" alt="Logo" width="40" height="40" class="me-2">
+					</a>
+				}
+				else
+				{
+					<a class="navbar-brand d-flex align-items-center" asp-controller="Authentication" asp-action="Index">
+						<img src="~/image/logo.png" alt="Logo" width="40" height="40" class="me-2">
+					</a>
+				}
+				<!-- Language Switcher -->
+				<form method="post" asp-controller="Language" asp-action="SetLanguage" class="d-flex align-items-center ms-3">
+					@Html.AntiForgeryToken()
+					<input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+					<select name="culture" class="form-select form-select-sm" onchange="this.form.submit()" style="width: 110px;">
+						<option value="vi-VN" selected="@(System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "vi-VN")">Tiếng Việt</option>
+						<option value="en-US" selected="@(System.Threading.Thread.CurrentThread.CurrentUICulture.Name == "en-US")">English</option>
+					</select>
+				</form>
 				<!-- Mobile Toggle -->
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
 					<span class="navbar-toggler-icon"></span>
@@ -39,13 +60,13 @@
 						@if (User.Identity.IsAuthenticated)
 						{
 							<li class="nav-item">
-								<a class="nav-link" asp-controller="User" asp-action="Index">Khám phá</a>
+								<a class="nav-link" asp-controller="User" asp-action="Index">@Localizer["Discover"]</a>
 							</li>
 						}
 						else
 						{
 							<li class="nav-item">
-								<a class="nav-link" asp-controller="Authentication" asp-action="Login">Khám phá</a>
+								<a class="nav-link" asp-controller="Authentication" asp-action="Login">@Localizer["Discover"]</a>
 							</li>
 						}
 					</ul>
@@ -58,7 +79,7 @@
 							{
 								<form class="d-flex header_form-search" method="get" action="/Util/Search" style="max-width: 260px;">
 									<div class="input-group">
-										<input type="text" class="form-control" name="tenTruyen" placeholder="Tìm truyện..." aria-label="Tìm truyện" style="min-width: 120px; border-radius: 25px 0 0 25px !important;">
+										<input type="text" class="form-control" name="tenTruyen" placeholder="@Localizer["Search"]" aria-label="@Localizer["Search"]" style="min-width: 120px; border-radius: 25px 0 0 25px !important;">
 										<button class="btn" type="submit" style="border-radius: 0 25px 25px 0 !important;">
 											<svg xmlns="http://www.w3.org/2000/svg" height="1em"
 												 viewBox="0 0 512 512" style="fill: #666;">
@@ -73,7 +94,7 @@
 							{
 								<div class="d-flex header_form-search">
 									<div class="input-group">
-										<input type="search" class="form-control" placeholder="Đăng nhập để tìm kiếm..." readonly style="border-radius: 25px 0 0 25px !important;">
+										<input type="search" class="form-control" placeholder="@Localizer["SearchPlaceholder"]" readonly style="border-radius: 25px 0 0 25px !important;">
 										<a class="btn" asp-controller="Authentication" asp-action="Login" style="border-radius: 0 25px 25px 0 !important;">
 											<svg xmlns="http://www.w3.org/2000/svg" height="1em"
 												 viewBox="0 0 512 512" style="fill: #666;">
@@ -90,7 +111,7 @@
 						@if (User.Identity.IsAuthenticated)
 						{
 							<li class="nav-item d-flex align-items-center me-2">
-								<a class="nav-link notification-btn position-relative d-flex align-items-center" asp-controller="Notification" asp-action="Index" title="Thông báo">
+								<a class="nav-link notification-btn position-relative d-flex align-items-center" asp-controller="Notification" asp-action="Index" title="@Localizer["Notifications"]">
 									<i class="fas fa-bell text-light" style="font-size: 1.2rem;"></i>
 									<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notificationCount" style="font-size: 0.7rem; display: none;">
 										0
@@ -104,12 +125,12 @@
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle text-warning fw-bold" href="#" data-bs-toggle="dropdown">
 									<i class="bi bi-shield-lock me-1" style="font-size:1.2rem;"></i>
-									<span class="d-none d-lg-inline">Quản lí</span>
+									<span class="d-none d-lg-inline">@Localizer["Management"]</span>
 								</a>
 								<ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="Moderator" asp-action="Index">
-											<i class="fas fa-cog me-2"></i>Quản lí nội dung
+											<i class="fas fa-cog me-2"></i>@Localizer["ContentManagement"]
 										</a>
 									</li>
 									@if (User.IsInRole("Admin"))
@@ -117,7 +138,7 @@
 										<li><hr class="dropdown-divider"></li>
 										<li>
 											<a class="dropdown-item dropdown-item-dark" asp-controller="Admin" asp-action="Dashboard">
-												<i class="fas fa-tools me-2"></i>Quản lí hệ thống
+												<i class="fas fa-tools me-2"></i>@Localizer["SystemManagement"]
 											</a>
 										</li>
 									}
@@ -135,38 +156,38 @@
 								<ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyProfile">
-											<i class="fas fa-user me-2"></i>Hồ sơ
+											<i class="fas fa-user me-2"></i>@Localizer["Profile"]
 										</a>
 									</li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyStories">
-											<i class="fas fa-book me-2"></i>Truyện của tôi
+											<i class="fas fa-book me-2"></i>@Localizer["MyStories"]
 										</a>
 									</li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="History" asp-action="Index">
-											<i class="fas fa-history me-2"></i>Lịch sử
+											<i class="fas fa-history me-2"></i>@Localizer["History"]
 										</a>
 									</li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="Library">
-											<i class="fas fa-bookmark me-2"></i>Thư viện
+											<i class="fas fa-bookmark me-2"></i>@Localizer["Library"]
 										</a>
 									</li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="Notification" asp-action="Index">
-											<i class="fas fa-bell me-2"></i>Thông báo
+											<i class="fas fa-bell me-2"></i>@Localizer["Notifications"]
 										</a>
 									</li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="Settings">
-											<i class="fas fa-cog me-2"></i>Cài đặt tài khoản
+											<i class="fas fa-cog me-2"></i>@Localizer["Settings"]
 										</a>
 									</li>
 									<li><hr class="dropdown-divider"></li>
 									<li>
 										<a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Logout">
-											<i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+											<i class="fas fa-sign-out-alt me-2"></i>@Localizer["Logout"]
 										</a>
 									</li>
 								</ul>
@@ -176,12 +197,12 @@
 						{
 							<li class="nav-item">
 								<a class="btn btn-dark-custom me-2" asp-controller="Authentication" asp-action="Login">
-									<i class="fas fa-sign-in-alt me-1"></i>Đăng Nhập
+									<i class="fas fa-sign-in-alt me-1"></i>@Localizer["Login"]
 								</a>
 							</li>
 							<li class="nav-item">
 								<a class="btn btn-outline-light" asp-controller="Authentication" asp-action="Register">
-									<i class="fas fa-user-plus me-1"></i>Đăng Ký
+									<i class="fas fa-user-plus me-1"></i>@Localizer["Register"]
 								</a>
 							</li>
 						}
@@ -244,19 +265,19 @@
 				<div class="col-md-6 text-center text-md-start">
 					<p class="mb-0 text-light">
 						<i class="fas fa-book me-2"></i>
-						Bản quyền &copy; @DateTime.Now.Year - Truyện Hấp Dẫn
+						@Localizer["Copyright"] &copy; @DateTime.Now.Year - Reading Hub
 					</p>
 				</div>
 				<div class="col-md-6">
 					<ul class="list-inline text-center text-md-end mb-0">
 						<li class="list-inline-item">
 							<a asp-controller="Authentication" asp-action="Login" class="text-light text-decoration-none">
-								<i class="fas fa-shield-alt me-1"></i>Chính sách
+								<i class="fas fa-shield-alt me-1"></i>@Localizer["Policy"]
 							</a>
 						</li>
 						<li class="list-inline-item ms-3">
 							<a asp-controller="Authentication" asp-action="Login" class="text-light text-decoration-none">
-								<i class="fas fa-envelope me-1"></i>Liên hệ
+								<i class="fas fa-envelope me-1"></i>@Localizer["Contact"]
 							</a>
 						</li>
 						<li class="list-inline-item ms-3">

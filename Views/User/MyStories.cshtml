@@ -1,7 +1,10 @@
 ﻿@using PBL3.ViewModels.UserProfile
 @model IEnumerable<UserStoryCardViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Truyện của tôi";
+    ViewData["Title"] = @Localizer["MyStories"];
 }
 
 <link rel="stylesheet" href="~/css/my-stories.css" asp-append-version="true" />
@@ -9,14 +12,14 @@
 
 <div class="container py-5" style="margin-top:40px">
     <div class="d-flex justify-content-between align-items-center mb-4 my-stories-header">
-        <h2 class="mb-0">Truyện của tôi</h2>
-        <a class="btn btn-success btn-create-story" asp-controller="Story" asp-action="Create">Viết truyện mới</a>
+        <h2 class="mb-0">@Localizer["MyStories"]</h2>
+        <a class="btn btn-success btn-create-story" asp-controller="Story" asp-action="Create">@Localizer["WriteNewStory"]</a>
     </div>
 
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info text-center" role="alert">
-            Bạn chưa có truyện nào! Hãy bắt đầu sáng tác ngay.
+            @Localizer["NoStoriesMessage"]
         </div>
     }
     else
@@ -29,34 +32,34 @@
                         <img src="@story.s.Cover" class="card-img-top rounded-top" alt="@story.s.Title" style="object-fit: cover; height: 180px;">
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title">@story.s.Title</h5>
-                            <p class="card-text text-muted">Cập nhật: @(story.s.LastUpdated?.ToString("dd/MM/yyyy") ?? "Chưa có cập nhật")</p>
-                            <p class="card-text">Trạng thái:
+                            <p class="card-text text-muted">@Localizer["LastUpdated"]: @(story.s.LastUpdated?.ToString("dd/MM/yyyy") ?? "No update")</p>
+                            <p class="card-text">@Localizer["Status"]:
                                 <strong>
                                     @if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Active)
                                     {
-                                        @:Đang thực hiện
+                                        @Localizer["StatusActive"]
                                     }
                                     else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Completed)
                                     {
-                                        @:Hoàn thành
+                                        @Localizer["StatusCompleted"]
                                     }
                                     else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.Locked)
                                     {
-                                        @:Bị khóa
+                                        @Localizer["StatusLocked"]
                                     }
                                     else if (story.s.Status == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
                                     {
-                                        @:Đang chờ duyệt
+                                        @Localizer["StatusReviewPending"]
                                     }
                                     else
                                     {
-                                        @:Bản thảo
+                                        @Localizer["StatusDraft"]
                                     }
                                 </strong>
                             </p>
-                            <p class="card-text">Chương: @story.s.TotalChapters</p>
+                            <p class="card-text">@Localizer["Chapter"]: @story.s.TotalChapters</p>
                             <div class="mt-auto">
-                                <a href="/Story/EditDetail/@story.s.StoryID" class="btn btn-outline-secondary btn-sm btn-edit-story">Chỉnh sửa</a>
+                                <a href="/Story/EditDetail/@story.s.StoryID" class="btn btn-outline-secondary btn-sm btn-edit-story">@Localizer["Edit"]</a>
                             </div>
                         </div>
                     </div>

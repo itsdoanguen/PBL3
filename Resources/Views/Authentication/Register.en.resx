@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="RegisterTitle" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value>Confirm Password</value>
+  </data>
+  <data name="RegisterButton" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="HaveAccount" xml:space="preserve">
+    <value>Already have an account?</value>
+  </data>
+  <data name="LoginHere" xml:space="preserve">
+    <value>Login here</value>
+  </data>
+  <data name="PasswordStrength" xml:space="preserve">
+    <value>Password Strength:</value>
+  </data>
+  <data name="PasswordWeak" xml:space="preserve">
+    <value>Weak</value>
+  </data>
+  <data name="PasswordMedium" xml:space="preserve">
+    <value>Medium</value>
+  </data>
+  <data name="PasswordStrong" xml:space="preserve">
+    <value>Strong</value>
+  </data>
+  <data name="PasswordRequirements" xml:space="preserve">
+    <value>Password Requirements:</value>
+  </data>
+  <data name="PasswordLength" xml:space="preserve">
+    <value>Password must be 6-18 characters long</value>
+  </data>
+  <data name="PasswordUppercase" xml:space="preserve">
+    <value>Contains at least 1 uppercase letter (A-Z)</value>
+  </data>
+  <data name="PasswordLowercase" xml:space="preserve">
+    <value>Contains at least 1 lowercase letter (a-z)</value>
+  </data>
+  <data name="PasswordNumber" xml:space="preserve">
+    <value>Contains at least 1 number (0-9)</value>
+  </data>
+  <data name="PasswordSpecial" xml:space="preserve">
+    <value>Contains at least 1 special character</value>
+  </data>
+  <data name="PasswordNoSpace" xml:space="preserve">
+    <value>Cannot contain spaces</value>
+  </data>
+</root>

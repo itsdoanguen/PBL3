@@ -1,16 +1,17 @@
 @model PBL3.ViewModels.FollowStory.FollowStoryViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Truyện theo dõi";
+    ViewData["Title"] = Localizer["FollowedStories"];
 }
 
 <link rel="stylesheet" href="~/css/user-followstories.css" asp-append-version="true" />
 <script src="~/js/user-followstories.js" asp-append-version="true"></script>
 <div class="container py-5 user-followstories-container" style="margin-top:100px">
-    <h2 class="mb-4 text-center">Truyện đang theo dõi</h2>
+    <h2 class="mb-4 text-center">@Localizer["FollowedStories"]</h2>
     @if (Model.FollowedStories == null || !Model.FollowedStories.Any())
     {
-        <div class="alert alert-info text-center">Bạn chưa theo dõi truyện nào!</div>
+        <div class="alert alert-info text-center">@Localizer["NoFollowedStories"]</div>
     }
     else
     {
@@ -22,7 +23,7 @@
                         <img src="@item.StoryCoverImageUrl" class="follow-story-cover" alt="@item.StoryTitle" />
                         <div>
                             <h5 class="mb-1">@item.StoryTitle</h5>
-                            <a href="/Story/View/@item.StoryID" class="btn btn-outline-primary btn-sm mt-1">Xem chi tiết</a>
+                            <a href="/Story/View/@item.StoryID" class="btn btn-outline-primary btn-sm mt-1">@Localizer["ViewDetails"]</a>
                         </div>
                     </div>
                 </div>

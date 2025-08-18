@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="PageTitle" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="OngoingStories" xml:space="preserve">
+    <value>Ongoing Stories</value>
+  </data>
+  <data name="NewStoriesThisWeek" xml:space="preserve">
+    <value>New Stories This Week</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Completed</value>
+  </data>
+  <data name="Authors" xml:space="preserve">
+    <value>Authors</value>
+  </data>
+  <data name="TopStoriesOfWeek" xml:space="preserve">
+    <value>Top Stories of the Week</value>
+  </data>
+  <data name="TopStoriesSubtitle" xml:space="preserve">
+    <value>Hottest stories ranking this week</value>
+  </data>
+  <data name="ViewAll" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="HotStories" xml:space="preserve">
+    <value>Hot Stories</value>
+  </data>
+  <data name="HotStoriesSubtitle" xml:space="preserve">
+    <value>Most loved stories</value>
+  </data>
+  <data name="FilterByCategory" xml:space="preserve">
+    <value>Filter by category:</value>
+  </data>
+  <data name="AllCategories" xml:space="preserve">
+    <value>All categories</value>
+  </data>
+  <data name="ReadNow" xml:space="preserve">
+    <value>Read now</value>
+  </data>
+  <data name="NewStories" xml:space="preserve">
+    <value>New Stories</value>
+  </data>
+  <data name="NewStoriesSubtitle" xml:space="preserve">
+    <value>Latest released stories</value>
+  </data>
+  <data name="MostLiked" xml:space="preserve">
+    <value>Most Liked</value>
+  </data>
+  <data name="MostLikedSubtitle" xml:space="preserve">
+    <value>Stories with highest likes</value>
+  </data>
+  <data name="TopFollowedStories" xml:space="preserve">
+    <value>Top Followed Stories</value>
+  </data>
+  <data name="TopFollowedSubtitle" xml:space="preserve">
+    <value>Most followed stories</value>
+  </data>
+  <data name="RecentlyRead" xml:space="preserve">
+    <value>Recently Read</value>
+  </data>
+  <data name="RecentlyReadSubtitle" xml:space="preserve">
+    <value>Continue your reading journey</value>
+  </data>
+  <data name="ContinueReading" xml:space="preserve">
+    <value>Continue reading</value>
+  </data>
+  <data name="Chapter" xml:space="preserve">
+    <value>Chapter</value>
+  </data>
+  <data name="StoriesFromFollowedAuthors" xml:space="preserve">
+    <value>Stories from Followed Authors</value>
+  </data>
+  <data name="FollowedAuthorsSubtitle" xml:space="preserve">
+    <value>Latest updates from your favorite authors</value>
+  </data>
+  <data name="CompletedStories" xml:space="preserve">
+    <value>Completed Stories</value>
+  </data>
+  <data name="CompletedStoriesSubtitle" xml:space="preserve">
+    <value>Stories with complete endings</value>
+  </data>
+  <data name="FeaturedAuthors" xml:space="preserve">
+    <value>Featured Authors</value>
+  </data>
+  <data name="FeaturedAuthorsSubtitle" xml:space="preserve">
+    <value>Most followed authors</value>
+  </data>
+  <data name="ViewProfile" xml:space="preserve">
+    <value>View Profile</value>
+  </data>
+  <data name="Stories" xml:space="preserve">
+    <value>stories</value>
+  </data>
+  <data name="ErrorLoadingData" xml:space="preserve">
+    <value>An error occurred while loading data.</value>
+  </data>
+  <data name="UnfollowAuthorConfirm" xml:space="preserve">
+    <value>Are you sure you want to unfollow this author?</value>
+  </data>
+  <data name="UnfollowSuccess" xml:space="preserve">
+    <value>Successfully unfollowed author</value>
+  </data>
+  <data name="ErrorOccurred" xml:space="preserve">
+    <value>An error occurred</value>
+  </data>
+  <data name="ErrorUnfollow" xml:space="preserve">
+    <value>An error occurred while unfollowing</value>
+  </data>
+  <data name="ViewCount" xml:space="preserve">
+    <value>{0} views</value>
+    <comment>Format for displaying view count</comment>
+  </data>
+  <data name="FollowCount" xml:space="preserve">
+    <value>{0} followers</value>
+  </data>
+  <data name="ChapterCount" xml:space="preserve">
+    <value>{0} chapters</value>
+  </data>
+  <data name="LikeCount" xml:space="preserve">
+    <value>{0} likes</value>
+  </data>
+</root>

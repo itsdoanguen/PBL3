@@ -1,4 +1,5 @@
 @model List<PBL3.ViewModels.User.StoryViewModel>
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 
 @foreach (var story in Model)
 {
@@ -17,27 +18,27 @@
                 }
                 @if (story.IsCompleted)
                 {
-                    <span class="badge badge-complete">Full</span>
+                    <span class="badge badge-complete">@Localizer["Complete"]</span>
                 }
             </div>
             <div class="story-overlay">
                 <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                     <i class="fas fa-book-open"></i>
-                    <span>Đọc ngay</span>
+                    <span>@Localizer["ReadNow"]</span>
                 </a>
             </div>
             <div class="view-count">
                 <i class="fas fa-eye"></i>
-                <span>@story.ViewCount.ToString("N0")</span>
+                <span>@Localizer["ViewCount", story.ViewCount.ToString("N0")]</span>
             </div>
         </div>
         <div class="story-info">
             <h4 class="story-title">@story.Title</h4>
             <p class="story-author">@story.AuthorName</p>
             <div class="story-stats">
-                <span><i class="fas fa-eye"></i> @story.ViewCount.ToString("N0")</span>
-                <span><i class="fas fa-heart"></i> @story.LikeCount</span>
-                <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                <span><i class="fas fa-eye"></i> @Localizer["ViewCount", story.ViewCount.ToString("N0")]</span>
+                <span><i class="fas fa-heart"></i> @Localizer["LikeCount", story.LikeCount]</span>
+                <span><i class="fas fa-book"></i> @Localizer["ChapterCount", story.ChapterCount]</span>
             </div>
         </div>
     </div>
