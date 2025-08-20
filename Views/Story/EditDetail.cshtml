@@ -1,8 +1,10 @@
 ﻿@using PBL3.ViewModels.Story
+@using Microsoft.AspNetCore.Mvc.Localization
 @model StoryEditViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Chỉnh sửa thông tin truyện";
+    ViewData["Title"] = Localizer["EditStoryDetails"].Value;
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";
 }
 
@@ -30,26 +32,26 @@
 
             <!-- Trạng thái -->
             <p class="mt-2">
-                <strong>Trạng thái:</strong>
+                <strong>@Localizer["Status"]:</strong>
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)
                 {
-                    <span class="badge bg-success">Đã xuất bản</span>
+                    <span class="badge bg-success">@Localizer["Published"]</span>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
                 {
-                    <span class="badge bg-secondary">Bản nháp</span>
+                    <span class="badge bg-secondary">@Localizer["Draft"]</span>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Completed)
                 {
-                    <span class="badge bg-primary">Đã hoàn thành</span>
+                    <span class="badge bg-primary">@Localizer["Completed"]</span>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)
                 {
-                    <span class="badge bg-danger">Đã bị khóa</span>
+                    <span class="badge bg-danger">@Localizer["Locked"]</span>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.ReviewPending)
                 {
-                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                    <span class="badge bg-warning text-dark">@Localizer["PendingReview"]</span>
                 }
             </p>
 
@@ -68,56 +70,56 @@
 
             <!-- Thống kê -->
             <div class="d-flex flex-wrap gap-2 mt-3">
-                <span class="badge-modern">👍 Lượt thích: @Model.TotalLike</span>
-                <span class="badge-modern">🔖 Đánh dấu: @Model.TotalBookmark</span>
-                <span class="badge-modern">💬 Bình luận: @Model.TotalComment</span>
-                <span class="badge-modern">📖 Chương: @Model.TotalChapter</span>
-                <span class="badge-modern">👁️ Lượt xem: @Model.TotalView</span>
+                <span class="badge-modern">👍 @Localizer["Likes"]: @Model.TotalLike</span>
+                <span class="badge-modern">🔖 @Localizer["Bookmarks"]: @Model.TotalBookmark</span>
+                <span class="badge-modern">💬 @Localizer["Comments"]: @Model.TotalComment</span>
+                <span class="badge-modern">📖 @Localizer["Chapters"]: @Model.TotalChapter</span>
+                <span class="badge-modern">👁️ @Localizer["Views"]: @Model.TotalView</span>
             </div>
 
             <div class="mt-4 d-flex gap-3">
-                <a asp-controller="Story" asp-action="Edit" asp-route-id="@Model.StoryID" class="btn btn-outline-dark btn-modern">✏️ Chỉnh sửa truyện</a>
+                <a asp-controller="Story" asp-action="Edit" asp-route-id="@Model.StoryID" class="btn btn-outline-dark btn-modern">✏️ @Localizer["EditStory"]</a>
 
                 <form asp-action="Delete" asp-controller="Story" method="post" style="display:inline;">
                     <input type="hidden" name="StoryID" value="@Model.StoryID" />
-                    <button type="submit" class="btn btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa truyện này không?');">🗑️ Xóa</button>
+                    <button type="submit" class="btn btn-outline-danger btn-modern" onclick="return confirm('@Localizer["DeleteConfirm"]');">🗑️ @Localizer["DeleteStory"]</button>
                 </form>
 
                 @if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Active)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về bản nháp?');" style="display:inline;">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('@Localizer["MoveToDraftConfirm"]');" style="display:inline;">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Inactive" />
-                        <button type="submit" class="btn btn-warning btn-modern">📝 Chuyển về bản nháp</button>
+                        <button type="submit" class="btn btn-warning btn-modern">📝 @Localizer["MoveToDraft"]</button>
                     </form>
 
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn đánh dấu truyện này hoàn thành? Lưu ý: Truyện cần có ít nhất 3 chương đã xuất bản.');" style="display:inline;">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('@Localizer["MarkCompletedConfirm"]');" style="display:inline;">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Completed" />
-                        <button type="submit" class="btn btn-primary btn-modern">✅ Đánh dấu hoàn thành</button>
+                        <button type="submit" class="btn btn-primary btn-modern">✅ @Localizer["MarkAsCompleted"]</button>
                     </form>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Inactive)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn xuất bản truyện này?');">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('@Localizer["PublishConfirm"]');">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Active" />
-                        <button type="submit" class="btn btn-success btn-modern">🚀 Xuất bản</button>
+                        <button type="submit" class="btn btn-success btn-modern">🚀 @Localizer["Publish"]</button>
                     </form>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Completed)
                 {
-                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('Bạn có chắc chắn muốn chuyển truyện về trạng thái đang xuất bản?');" style="display:inline;">
+                    <form asp-action="UpdateStatus" asp-controller="Story" method="post" onsubmit="return confirm('@Localizer["PublishConfirm"]');" style="display:inline;">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <input type="hidden" name="NewStatus" value="Active" />
-                        <button type="submit" class="btn btn-success btn-modern">🔄 Chuyển về đang xuất bản</button>
+                        <button type="submit" class="btn btn-success btn-modern">🔄 @Localizer["MoveToPublishing"]</button>
                     </form>
                 }
                 else if (Model.StoryStatus == PBL3.Models.StoryModel.StoryStatus.Locked)
                 {
-                    <form asp-action="PendingReview" asp-controller="Story" method="post" onsubmit="return confirm('Bạn muốn gửi yêu cầu duyệt truyện này?');">
+                    <form asp-action="PendingReview" asp-controller="Story" method="post" onsubmit="return confirm('@Localizer["RequestReviewConfirm"]');">
                         <input type="hidden" name="storyId" value="@Model.StoryID" />
-                        <button type="submit" class="btn btn-info btn-modern">🔄 Gửi yêu cầu duyệt lại</button>
+                        <button type="submit" class="btn btn-info btn-modern">🔄 @Localizer["RequestReview"]</button>
                     </form>
                 }
             </div>
@@ -128,8 +130,8 @@
 
     <!-- Chapters -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>📚 Các chương</h3>
-        <button id="toggleAddChapter" type="button" class="btn btn-dark btn-modern">➕ Thêm chương</button>
+        <h3>📚 @Localizer["Chapters"]</h3>
+        <button id="toggleAddChapter" type="button" class="btn btn-dark btn-modern">➕ @Localizer["AddChapter"]</button>
     </div>
 
     <div class="table-responsive">
@@ -137,13 +139,13 @@
             <thead>
                 <tr>
                     <th style="width: 80px;">#</th>
-                    <th>Tiêu đề</th>
-                    <th style="width: 110px">Ngày tạo</th>
-                    <th style="width: 110px">Cập nhật</th>
-                    <th style="width: 110px">Lượt xem</th>
-                    <th style="width: 90px">Thứ tự</th>
-                    <th style="width: 110px">Trạng thái</th>
-                    <th style="width: 170px">Hành động</th>
+                    <th>@Localizer["Title"]</th>
+                    <th style="width: 110px">@Localizer["CreatedDate"]</th>
+                    <th style="width: 110px">@Localizer["UpdatedDate"]</th>
+                    <th style="width: 110px">@Localizer["Views"]</th>
+                    <th style="width: 90px">@Localizer["Order"]</th>
+                    <th style="width: 110px">@Localizer["Status"]</th>
+                    <th style="width: 170px">@Localizer["Actions"]</th>
                 </tr>
             </thead>
             <tbody id="chapterTableBody">
@@ -152,14 +154,14 @@
                     <form id="createChapterForm" asp-controller="Chapter" asp-action="CreateChapter" method="post">
                         <input type="hidden" name="StoryID" value="@Model.StoryID" />
                         <td>-</td>
-                        <td><input type="text" name="Title" class="form-control" placeholder="Nhập tiêu đề chương..." required /></td>
+                        <td><input type="text" name="Title" class="form-control" placeholder="@Localizer["EnterChapterTitle"]" required /></td>
                         <td>-</td>
                         <td>-</td>
                         <td>0</td>
                         <td>-</td>
                         <td>
-                            <button type="submit" class="btn btn-sm btn-dark btn-modern">Lưu</button>
-                            <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">Hủy</button>
+                            <button type="submit" class="btn btn-sm btn-dark btn-modern">@Localizer["Save"]</button>
+                            <button type="button" id="cancelAddChapter" class="btn btn-sm btn-secondary btn-modern">@Localizer["Cancel"]</button>
                         </td>
                     </form>
                 </tr>
@@ -181,27 +183,27 @@
                                 <span class="chapter-order-value">@chapter.ChapterOrder</span>
                                 @if (chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Active)
                                 {
-                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 edit-order-btn" data-bs-toggle="modal" data-bs-target="#orderModal-@chapter.ChapterID" title="Sửa thứ tự"><i class="bi bi-gear"></i></button>
+                                    <button type="button" class="btn btn-link btn-sm p-0 ms-1 edit-order-btn" data-bs-toggle="modal" data-bs-target="#orderModal-@chapter.ChapterID" title="@Localizer["EditOrder"]"><i class="bi bi-gear"></i></button>
                                     <!-- Modal đổi thứ tự chương -->
                                     <div class="modal fade" id="orderModal-@chapter.ChapterID" tabindex="-1" aria-labelledby="orderModalLabel-@chapter.ChapterID" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
                                             <div class="modal-content">
                                                 <form asp-action="UpdateChapterOrder" asp-controller="Chapter" method="post">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="orderModalLabel-@chapter.ChapterID">Đổi thứ tự chương</h5>
+                                                        <h5 class="modal-title" id="orderModalLabel-@chapter.ChapterID">@Localizer["ChangeChapterOrder"]</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
                                                         <input type="hidden" name="chapterId" value="@chapter.ChapterID" />
                                                         <input type="hidden" name="storyId" value="@Model.StoryID" />
                                                         <div class="mb-3">
-                                                            <label for="newOrder-@chapter.ChapterID" class="form-label">Thứ tự mới</label>
+                                                            <label for="newOrder-@chapter.ChapterID" class="form-label">@Localizer["NewOrder"]</label>
                                                             <input type="number" name="newOrder" id="newOrder-@chapter.ChapterID" min="1" max="@Model.Chapters.Count" value="@chapter.ChapterOrder" class="form-control" required />
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                        <button type="submit" class="btn btn-primary">Lưu</button>
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                                                        <button type="submit" class="btn btn-primary">@Localizer["Save"]</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -212,23 +214,23 @@
                             <td>
                                 @if (chapter.Status == PBL3.ViewModels.Chapter.ChapterSummaryViewModel.ChapterStatus.Inactive)
                                 {
-                                    <span class="badge bg-secondary">Bản nháp</span>
+                                    <span class="badge bg-secondary">@Localizer["Draft"]</span>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success">Đã xuất bản</span>
+                                    <span class="badge bg-success">@Localizer["Published"]</span>
                                 }
                             </td>
                             <td>
                                 <a href="@Url.Action("EditChapter", "Chapter", new { chapterId = chapter.ChapterID, storyId = Model.StoryID })"
                                    class="btn btn-sm btn-outline-dark btn-modern">
-                                    ✏️ Chỉnh sửa
+                                    ✏️ @Localizer["Edit"]
                                 </a>
 
                                 <form asp-action="DeleteChapter" asp-controller="Chapter" method="post" style="display:inline;">
                                     <input type="hidden" name="chapterID" value="@chapter.ChapterID" />
                                     <input type="hidden" name="storyID" value="@Model.StoryID" />
-                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('Bạn có chắc chắn muốn xóa chương này không?');">🗑️</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-modern" onclick="return confirm('@Localizer["DeleteChapterConfirm"]');">🗑️</button>
                                 </form>
                             </td>
                         </tr>
@@ -238,7 +240,7 @@
                 else
                 {
                     <tr>
-                        <td colspan="8" class="text-center text-muted">Chưa có chương nào. Bắt đầu bằng cách thêm chương mới!</td>
+                        <td colspan="8" class="text-center text-muted">@Localizer["NoChapters"]</td>
                     </tr>
                 }
             </tbody>

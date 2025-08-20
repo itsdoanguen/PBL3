@@ -1,6 +1,9 @@
 @model List<PBL3.ViewModels.UserProfile.UserStoryCardViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Tất cả truyện";
+    ViewData["Title"] = @Localizer["AllStories"];
     Layout = "~/Views/Shared/_Layout.cshtml";
     var currentQuery = ViewBag.CurrentQuery as string ?? "updated";
     int page = Context.Request.Query["page"].Count > 0 ? int.Parse(Context.Request.Query["page"]) : 1;
@@ -11,33 +14,33 @@
 
     var filterOptions = new List<(string value, string label)>
     {
-        ("updated", "Mới cập nhật"),
-        ("recommend", "Đề xuất cho bạn"),
-        ("view", "Lượt xem"),
-        ("follow", "Lượt theo dõi"),
-        ("like", "Lượt thích"),
-        ("topweek", "Top tuần"),
-        ("wordcount", "Số lượng từ"),
-        ("completed", "Truyện hoàn thành")
+        ("updated", Localizer["RecentlyUpdated"].Value),
+        ("recommend", Localizer["RecommendedForYou"].Value),
+        ("view", Localizer["Views"].Value),
+        ("follow", Localizer["Follows"].Value),
+        ("like", Localizer["Likes"].Value),
+        ("topweek", Localizer["TopWeek"].Value),
+        ("wordcount", Localizer["WordCount"].Value),
+        ("completed", Localizer["CompletedStories"].Value)
     };
 
     var filterOptionsHtml = string.Join("\n", filterOptions.Select(opt => $"<option value=\"{opt.value}\"{(opt.value == currentQuery ? " selected" : "")}>{opt.label}</option>"));
 }
 <link rel="stylesheet" href="~/css/story-allstory.css" />
 <div class="container py-4">
-    <h2 class="mb-4">Tất cả truyện</h2>
+    <h2 class="mb-4">@Localizer["AllStories"]</h2>
     <div class="mb-3 d-flex align-items-center flex-wrap gap-2">
         <!-- Thanh tìm kiếm truyện -->
         <form class="d-flex align-items-center me-3" method="get" action="/Util/Search" style="max-width: 340px;">
-            <input type="text" name="tenTruyen" class="form-control me-2" placeholder="Tìm kiếm truyện..." style="min-width: 180px;" />
-            <button type="submit" class="btn btn-outline-primary">Tìm</button>
+            <input type="text" name="tenTruyen" class="form-control me-2" placeholder="@Localizer["SearchStories"]" style="min-width: 180px;" />
+            <button type="submit" class="btn btn-outline-primary">@Localizer["Search"]</button>
         </form>
         <!-- Icon phễu lọc -->
-        <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="Tìm kiếm nâng cao" style="height: 38px;">
+        <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="@Localizer["AdvancedSearch"]" style="height: 38px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#1976d2" d="M3 5a1 1 0 0 1 1-1h16a1 1 0 0 1 .8 1.6l-5.6 7.5V19a1 1 0 0 1-1.447.894l-4-2A1 1 0 0 1 9 17v-4.9L3.2 6.6A1 1 0 0 1 3 5zm3.28 2L10 12.1V17.382l2 1V12.1l3.72-5.1H6.28z"/></svg>
         </a>
         <div class="d-flex align-items-center ms-auto">
-            <label class="me-2">Lọc theo:</label>
+            <label class="me-2">@Localizer["FilterBy"]:</label>
             <select id="storyFilter" class="form-select w-auto">
                 @Html.Raw(filterOptionsHtml)
             </select>
@@ -53,9 +56,9 @@
                     </a>
                     <div class="card-body">
                         <h5 class="card-title text-truncate">@story.Title</h5>
-                        <p class="card-text mb-1">Chương: @story.TotalChapters</p>
-                        <p class="card-text mb-1">Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
-                        <span class="badge bg-success">@story.Status</span>
+                        <p class="card-text mb-1">@Localizer["Chapter"]: @story.TotalChapters</p>
+                        <p class="card-text mb-1">@Localizer["LastUpdated"]: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
+                        <span class="badge bg-success">@Localizer[story.Status.ToString()]</span>
                     </div>
                 </div>
             </div>

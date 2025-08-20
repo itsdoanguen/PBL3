@@ -1,15 +1,17 @@
 ﻿@using PBL3.ViewModels.Story
+@using Microsoft.AspNetCore.Mvc.Localization
 @model StoryEditViewModel
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Edit Story";
+    ViewData["Title"] = Localizer["EditStory"].Value;
     Layout = "~/Views/Shared/_StoryEditorLayout.cshtml";  
 }
 
 <link rel="stylesheet" href="~/css/story-edit.css" asp-append-version="true" />
 
 <div class="container py-5 story-edit-container">
-    <h2>Chỉnh sửa truyện</h2>
+    <h2>@Localizer["EditStory"]</h2>
     
     @if (TempData["ErrorMessage"] != null)
     {
@@ -30,17 +32,17 @@
         
         <!-- Cột bên trái: Ảnh bìa -->
         <div class="col-md-4 d-flex flex-column align-items-center">
-            <label for="coverPreview" class="form-label fw-bold">Ảnh Bìa</label>
+            <label for="coverPreview" class="form-label fw-bold">@Localizer["Cover"]</label>
             <div class="border rounded p-2 w-100 d-flex justify-content-center position-relative" style="height: 350px;">
                 <img id="coverPreview" src="@Model.CoverImage" class="img-fluid rounded" style="max-height: 100%; object-fit: cover;">
                 <div id="imageLoadingSpinner" class="position-absolute top-50 start-50 translate-middle d-none">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
+                        <span class="visually-hidden">@Localizer["Loading"]</span>
                     </div>
                 </div>
             </div>
             <input type="file" id="coverInput" name="UploadCover" class="form-control mt-2" accept="image/jpeg,image/jpg,image/png" onchange="previewImage(this)">
-            <small class="text-muted mt-1">Chấp nhận: JPG, JPEG, PNG. Tối đa: 1MB</small>
+            <small class="text-muted mt-1">@Localizer["FileTypeAccepted"]</small>
             <span asp-validation-for="UploadCover" class="text-danger"></span>
             <div id="imageError" class="text-danger mt-1" style="display: none;"></div>
         </div>
@@ -61,15 +63,15 @@
             
             <!-- Thể loại -->
             <div class="mb-3 position-relative">
-                <label class="form-label fw-bold">Thể loại</label>
+                <label class="form-label fw-bold">@Localizer["Genres"]</label>
                 <div id="genreTagList" class="genre-tag-list">
                     @foreach (var genre in Model.AvailableGenres.Where(g => Model.GenreIDs.Contains(g.GenreID)))
                     {
                         <span class="genre-tag" data-genre-id="@genre.GenreID">
-                            @genre.Name <button type="button" class="remove-genre" title="Xóa">&times;</button>
+                            @genre.Name <button type="button" class="remove-genre" title="@Localizer["Remove"]">&times;</button>
                         </span>
                     }
-                    <span class="ms-1"><button type="button" class="btn-add-genre" id="btnAddGenre" title="Thêm thể loại"><i class="bi bi-plus"></i></button></span>
+                    <span class="ms-1"><button type="button" class="btn-add-genre" id="btnAddGenre" title="@Localizer["AddGenre"]"><i class="bi bi-plus"></i></button></span>
                 </div>
                 <input type="hidden" id="GenreIDsInput" />
                 <div id="genreDropdown" class="genre-dropdown">
@@ -82,20 +84,20 @@
             </div>
             
             <div class="mb-3">
-                <label class="form-label fw-bold">Trạng thái truyện</label>
+                <label class="form-label fw-bold">@Localizer["StoryStatus"]</label>
                 <select asp-for="StoryStatus" class="form-select">
-                    <option value="1">Đang xuất bản</option>
-                    <option value="0">Bản thảo</option>
-                    <option value="2">Đã hoàn thành</option>
+                    <option value="1">@Localizer["Publishing"]</option>
+                    <option value="0">@Localizer["Draft"]</option>
+                    <option value="2">@Localizer["Completed"]</option>
                 </select>
             </div>
             
             <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-dark btn-modern" id="submitBtn">
-                    <i class="fas fa-save me-2"></i>Lưu thay đổi
+                    <i class="fas fa-save me-2"></i>@Localizer["SaveChanges"]
                 </button>
-                <a asp-action="EditDetail" asp-route-storyId="@Model.StoryID" class="btn btn-secondary btn-modern">
-                    <i class="fas fa-times me-2"></i>Hủy
+                <a asp-action="EditDetail" asp-route-id="@Model.StoryID" class="btn btn-secondary btn-modern">
+                    <i class="fas fa-times me-2"></i>@Localizer["Cancel"]
                 </a>
             </div>
         </div>
@@ -123,7 +125,7 @@
         // Validate file type
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
         if (!allowedTypes.includes(file.type)) {
-            errorDiv.textContent = 'Chỉ chấp nhận file JPG, JPEG hoặc PNG';
+            errorDiv.textContent = '@Localizer["InvalidFileType"]';
             errorDiv.style.display = 'block';
             input.value = '';
             return;
@@ -131,7 +133,7 @@
         
         // Validate file size (1MB = 1048576 bytes)
         if (file.size > 1048576) {
-            errorDiv.textContent = 'Kích thước file phải nhỏ hơn 1MB';
+            errorDiv.textContent = '@Localizer["FileSizeError"]';
             errorDiv.style.display = 'block';
             input.value = '';
             return;
@@ -146,7 +148,7 @@
             loadingSpinner.classList.add('d-none');
         };
         reader.onerror = function() {
-            errorDiv.textContent = 'Lỗi khi đọc file ảnh';
+            errorDiv.textContent = '@Localizer["ImageReadError"]';
             errorDiv.style.display = 'block';
             loadingSpinner.classList.add('d-none');
             input.value = '';
@@ -159,7 +161,7 @@
         const loadingSpinner = document.getElementById('imageLoadingSpinner');
         if (!loadingSpinner.classList.contains('d-none')) {
             e.preventDefault();
-            alert('Vui lòng đợi ảnh tải xong trước khi lưu');
+            alert('@Localizer["WaitForImage"]');
         }
     });
 </script>
