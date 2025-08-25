@@ -61,7 +61,7 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["Error"] = "Có lỗi xảy ra trong quá trình tạo chương mới. Vui lòng thử lại.";
+                TempData["Error"] = "An error occurred while creating the chapter. Please try again.";
                 return RedirectToAction("EditDetail", "Story", new { id = chapter.StoryID });
             }
 
@@ -125,7 +125,7 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Có lỗi xảy ra trong quá trình cập nhật chương. Vui lòng thử lại.";
+                TempData["ErrorMessage"] = "An error occurred while updating the chapter. Please try again.";
                 return View(model);
             }
 
@@ -133,11 +133,11 @@ namespace PBL3.Controllers
 
             if (!success)
             {
-                TempData["ErrorMessage"] = "Chương không tồn tại.";
+                TempData["ErrorMessage"] = "Chapter does not exist.";
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Cập nhật chương thành công.";
+            TempData["SuccessMessage"] = "Chapter updated successfully.";
             return RedirectToAction("EditChapter", new { chapterId = model.ChapterID, storyId = model.StoryID });
         }
 
@@ -214,11 +214,11 @@ namespace PBL3.Controllers
             var success = await _chapterService.UpdateChapterOrderAsync(chapterId, storyId, newOrder);
             if (!success)
             {
-                TempData["ErrorMessage"] = "Không thể cập nhật thứ tự chương.";
+                TempData["ErrorMessage"] = "Cannot update chapter order.";
             }
             else
             {
-                TempData["SuccessMessage"] = "Cập nhật thứ tự chương thành công!";
+                TempData["SuccessMessage"] = "Chapter order updated successfully!";
             }
             return RedirectToAction("EditDetail", "Story", new { id = storyId });
         }

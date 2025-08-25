@@ -30,19 +30,19 @@ namespace PBL3.Controllers
 
                 if (targetId <= 0 || string.IsNullOrWhiteSpace(message))
                 {
-                    TempData["ErrorMessage"] = "Dữ liệu không hợp lệ.";
+                    TempData["ErrorMessage"] = "Invalid data.";
                     return RedirectToAction("Error", "Error");
                 }
 
                 if (fromUserId <= 0)
                 {
-                    TempData["ErrorMessage"] = "Bạn cần đăng nhập để thực hiện hành động này.";
+                    TempData["ErrorMessage"] = "You need to log in to perform this action.";
                     return RedirectToAction("Login", "Authentication", new { returnUrl = returnUrl ?? Url.Action("Index", "User") });
                 }
 
                 if (checkSelfReport && targetId == fromUserId)
                 {
-                    TempData["ErrorMessage"] = "Bạn không thể tự báo cáo chính mình.";
+                    TempData["ErrorMessage"] = "You cannot report yourself.";
                     return RedirectToAction("Error", "Error");
                 }
 
@@ -61,11 +61,11 @@ namespace PBL3.Controllers
                         await _reportService.InitReportStoryNotificationAsync(targetId, fromUserId, message);
                         break;
                     default:
-                        TempData["ErrorMessage"] = "Loại báo cáo không hợp lệ.";
+                        TempData["ErrorMessage"] = "Invalid report type.";
                         return RedirectToAction("Error", "Error");
                 }
 
-                TempData["SuccessMessage"] = "Đã gửi báo cáo thành công.";
+                TempData["SuccessMessage"] = "Report submitted successfully.";
 
                 if (!string.IsNullOrEmpty(returnUrl))
                 {
@@ -76,7 +76,7 @@ namespace PBL3.Controllers
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "Đã xảy ra lỗi khi xử lý báo cáo.";
+                TempData["ErrorMessage"] = "An error occurred while processing the report.";
                 return RedirectToAction("Error", "Error");
             }
         }
@@ -139,12 +139,12 @@ namespace PBL3.Controllers
             var noti = await _notificationService.GetNotificationByIdAsync(notificationId);
             if (noti == null)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy báo cáo để xóa!";
+                TempData["ErrorMessage"] = "Report not found!";
                 return RedirectToAction("Index");
             }
             if (!noti.IsRead)
             {
-                TempData["ErrorMessage"] = "Chỉ được xóa báo cáo đã xử lý!";
+                TempData["ErrorMessage"] = "Only processed reports can be deleted!";
                 return RedirectToAction("Index");
             }
             var (isSuccess, message) = await _notificationService.DeleteNotificationAsync(notificationId);

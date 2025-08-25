@@ -20,7 +20,7 @@ namespace PBL3.Controllers
             int? newCommentId = null;
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ";
+                TempData["ErrorMessage"] = "Invalid data.";
             }
             else
             {
@@ -74,7 +74,7 @@ namespace PBL3.Controllers
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null)
             {
-                TempData["ErrorMessage"] = "Không xác định được người dùng.";
+                TempData["ErrorMessage"] = "User not identified.";
                 if (chapterId != null)
                     return RedirectToAction("ReadChapter", "Chapter", new { id = chapterId });
                 else

@@ -234,7 +234,7 @@ namespace PBL3.Service.Chapter
             var chapter = await _context.Chapters.FindAsync(chapterId);
             if (chapter == null)
             {
-                return (false, "Chương không tồn tại.", 0);
+                return (false, "Chapter does not exist.", 0);
             }
 
             var authorId = await _context.Stories
@@ -253,20 +253,20 @@ namespace PBL3.Service.Chapter
                 .FirstOrDefaultAsync();
             if (storyStatus == StoryModel.StoryStatus.Inactive)
             {
-                return (false, "Truyện chưa được xuất bản, không thể xuất bản chương!", chapter.StoryID);
+                return (false, "Story is not published; cannot publish chapter!", chapter.StoryID);
             }
             if (storyStatus == StoryModel.StoryStatus.ReviewPending)
             {
-                return (false, "Truyện đang chờ duyệt, không thể xuất bản chương!", chapter.StoryID);
+                return (false, "Story is pending review; cannot publish chapter!", chapter.StoryID);
             }
             if (storyStatus == StoryModel.StoryStatus.Locked)
             {
-                return (false, "Truyện đã bị khóa, không thể xuất bản chương!", chapter.StoryID);
+                return (false, "Story is locked; cannot publish chapter!", chapter.StoryID);
             }
 
             if (!Enum.TryParse<ChapterStatus>(newStatus, out var parsedStatus))
             {
-                return (false, "Trạng thái không hợp lệ.", chapter.StoryID);
+                return (false, "Invalid status.", chapter.StoryID);
             }
 
             var oldStatus = chapter.Status;
@@ -280,7 +280,7 @@ namespace PBL3.Service.Chapter
                 await _notificationService.InitNewChapterNotificationAsync(chapter.StoryID, chapter.ChapterID, authorId);
             }
 
-            return (true, "Cập nhật trạng thái chương thành công.", chapter.StoryID);
+            return (true, "Chapter status updated successfully.", chapter.StoryID);
         }
 
         public async Task<List<ChapterSummaryViewModel>> GetChaptersForStoryAsync(int storyId)

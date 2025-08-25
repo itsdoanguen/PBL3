@@ -75,7 +75,7 @@ namespace PBL3.Controllers
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ModelState.AddModelError(string.Empty, "Nội dung cảnh cáo không được để trống.");
+                ModelState.AddModelError(string.Empty, "Warning message cannot be empty.");
                 return RedirectToAction("ViewUser", new { id });
             }
             int moderatorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -85,7 +85,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewUser", new { id });
             }
-            TempData["SuccessMessage"] = "Cảnh cáo người dùng thành công!";
+            TempData["SuccessMessage"] = "User warned successfully!";
             return RedirectToAction("ViewUser", new { id });
         }
         //POST: Moderator/BanUser/{id}
@@ -95,7 +95,7 @@ namespace PBL3.Controllers
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ModelState.AddModelError(string.Empty, "Nội dung cấm không được để trống.");
+                ModelState.AddModelError(string.Empty, "Ban message cannot be empty.");
                 return RedirectToAction("ViewUser", new { id });
             }
             var moderatorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -105,7 +105,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewUser", new { id });
             }
-            TempData["SuccessMessage"] = "Cấm người dùng thành công!";
+            TempData["SuccessMessage"] = "User banned successfully!";
             return RedirectToAction("ViewUser", new { id });
         }
         //POST: Moderator/UnbanUser/{id}
@@ -120,7 +120,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewUser", new { id });
             }
-            TempData["SuccessMessage"] = "Mở cấm người dùng thành công!";
+            TempData["SuccessMessage"] = "User unbanned successfully!";
             return RedirectToAction("ViewUser", new { id });
         }
     }

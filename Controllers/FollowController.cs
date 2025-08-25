@@ -34,7 +34,8 @@ namespace PBL3.Controllers
             }
 
             // Có thể trả về JSON nếu dùng AJAX, hoặc redirect kèm TempData nếu dùng form thường
-            TempData["FollowMessage"] = result.message;
+                // Can return JSON for AJAX or redirect with TempData for normal forms
+                TempData["FollowMessage"] = result.message;
             return RedirectToAction("View", "Story", new { id = storyId });
         }
 
@@ -48,7 +49,7 @@ namespace PBL3.Controllers
 
             if (followerId == followingId)
             {
-                TempData["FollowMessage"] = "Bạn không thể theo dõi chính mình.";
+                    TempData["FollowMessage"] = "You cannot follow yourself.";
                 return RedirectToAction("ViewProfile", "User", new { id = followingId });
             }
 

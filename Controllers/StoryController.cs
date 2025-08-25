@@ -86,7 +86,7 @@ namespace PBL3.Controllers
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Tạo truyện mới thành công!";
+            TempData["SuccessMessage"] = "New story created successfully!";
             return RedirectToAction("MyStories", "User");
         }
 
@@ -103,7 +103,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("MyStories", "User");
             }
-            TempData["SuccessMessage"] = "Xóa truyện thành công!";
+            TempData["SuccessMessage"] = "Story deleted successfully!";
             return RedirectToAction("MyStories", "User");
         }
 
@@ -120,7 +120,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("MyStories", "User");
             }
-            TempData["SuccessMessage"] = "Cập nhật trạng thái truyện thành công!";
+            TempData["SuccessMessage"] = "Story status updated successfully!";
             return RedirectToAction("EditDetail", new { id = storyID });
         }
 
@@ -184,7 +184,7 @@ namespace PBL3.Controllers
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Cập nhật truyện thành công!";
+            TempData["SuccessMessage"] = "Story updated successfully!";
             return RedirectToAction("EditDetail", new { id = model.StoryID });
         }
         //POST: Story/PendingReview
@@ -194,7 +194,7 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Dữ liệu không hợp lệ";
+                TempData["ErrorMessage"] = "Invalid data.";
                 return RedirectToAction("EditDetail", new { id = storyId });
             }
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -204,7 +204,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("EditDetail", new { id = storyId });
             }
-            TempData["SuccessMessage"] = "Đã gửi truyện chờ duyệt thành công!";
+            TempData["SuccessMessage"] = "Story submitted for review successfully!";
             return RedirectToAction("MyStories", "User");
         }
 
@@ -222,7 +222,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
             }
-            TempData["SuccessMessage"] = "Khóa truyện thành công!";
+            TempData["SuccessMessage"] = "Story locked successfully!";
             return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
         }
         //POST: Story/Unlock
@@ -238,7 +238,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
             }
-            TempData["SuccessMessage"] = "Mở khóa truyện thành công!";
+            TempData["SuccessMessage"] = "Story unlocked successfully!";
             return RedirectToAction("ViewStory", "Moderator", new { id = storyID });
         }
         //POST: Story/AddGenre
@@ -253,7 +253,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ManageSystem", "Admin");
             }
-            TempData["SuccessMessage"] = "Thêm thể loại mới thành công!";
+            TempData["SuccessMessage"] = "New genre added successfully!";
             return RedirectToAction("ManageSystem", "Admin");
         }
         //POST: Story/DeleteGenre
@@ -268,7 +268,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("ManageSystem", "Admin");
             }
-            TempData["SuccessMessage"] = "Xóa thể loại thành công!";
+            TempData["SuccessMessage"] = "Genre deleted successfully!";
             return RedirectToAction("ManageSystem", "Admin");
         }
 

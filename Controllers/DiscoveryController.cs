@@ -34,8 +34,8 @@ namespace PBL3.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalCount = totalCount;
-            ViewBag.PageTitle = "Top Tác giả nổi bật";
-            ViewBag.PageDescription = "Những tác giả có lượt theo dõi cao";
+            ViewBag.PageTitle = "Top Featured Authors";
+            ViewBag.PageDescription = "Authors with the highest follower counts";
 
             return View("AuthorsList", pagedAuthors);
         }
@@ -61,8 +61,8 @@ namespace PBL3.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.TotalCount = totalCount;
-            ViewBag.PageTitle = "Truyện từ tác giả bạn theo dõi";
-            ViewBag.PageDescription = "Những truyện mới nhất từ các tác giả bạn theo dõi";
+            ViewBag.PageTitle = "Stories from Followed Authors";
+            ViewBag.PageDescription = "Latest stories from the authors you follow";
 
             return View("StoryList", pagedStories);
         }

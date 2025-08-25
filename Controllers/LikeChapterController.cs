@@ -28,11 +28,11 @@ namespace PBL3.Controllers
 
             if (isLiked)
             {
-                TempData["Success"] = "Bạn đã thích chương này.";
+                TempData["Success"] = "You liked this chapter.";
             }
             else
             {
-                TempData["Error"] = "Bạn đã bỏ thích chương này.";
+                TempData["Error"] = "You unliked this chapter.";
             }
             return RedirectToAction("ReadChapter", "Chapter", new
             {

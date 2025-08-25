@@ -64,7 +64,7 @@ namespace PBL3.Controllers
                 await _context.SaveChangesAsync();
 
                 await SignIn(user);
-                TempData["SuccessMessage"] = "Đăng ký tài khoản thành công!";
+                TempData["SuccessMessage"] = "Account registered successfully!";
                 return RedirectToAction("Index", "User");
             }
             return View(model);
@@ -90,19 +90,19 @@ namespace PBL3.Controllers
                 if (user == null || !BCrypt.Net.BCrypt.Verify(model.Password, user.PasswordHash))
                 {
                     ModelState.AddModelError("Email", "Invalid email or password");
-                    TempData["ErrorMessage"] = "Đăng nhập thất bại. Email hoặc mật khẩu không đúng.";
+                    TempData["ErrorMessage"] = "Login failed. Email or password is incorrect.";
                     return View(model);
                 }
 
                 if (user.Status == UserModel.UserStatus.Banned)
                 {
                     ModelState.AddModelError("Email", "Your account has been banned.");
-                    TempData["ErrorMessage"] = "Tài khoản của bạn đã bị cấm. Hãy liên hệ với BQT để giải quyết.";
+                    TempData["ErrorMessage"] = "Your account has been banned. Please contact support for assistance.";
                     return View(model);
                 }
 
                 await SignIn(user);
-                TempData["SuccessMessage"] = "Đăng nhập thành công!";
+                TempData["SuccessMessage"] = "Login successful!";
                 return RedirectToAction("Index", "User");
             }
             return View(model);
@@ -110,7 +110,7 @@ namespace PBL3.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            TempData["SuccessMessage"] = "Đăng xuất thành công!";
+            TempData["SuccessMessage"] = "Logout successful!";
             return RedirectToAction("Index", "Authentication");
         }
 
