@@ -1,16 +1,18 @@
 @model List<PBL3.ViewModels.Admin.UserInfo>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <div class="table-responsive">
     <table class="table table-bordered table-hover user-table">
         <thead class="table-light">
             <tr>
-                <th>#</th>
-                <th>Tên người dùng</th>
-                <th>Email</th>
-                <th>Vai trò</th>
-                <th>Cảnh báo</th>
-                <th>Trạng thái</th>
-                <th>Chi tiết</th>
-                <th>Hành động</th>
+                <th>@Localizer["#"].Value</th>
+                <th>@Localizer["User Name"].Value</th>
+                <th>@Localizer["Email"].Value</th>
+                <th>@Localizer["Role"].Value</th>
+                <th>@Localizer["Warnings"].Value</th>
+                <th>@Localizer["Status"].Value</th>
+                <th>@Localizer["Details"].Value</th>
+                <th>@Localizer["Actions"].Value</th>
             </tr>
         </thead>
         <tbody>
@@ -25,29 +27,29 @@
                     <td>
                         @if (Model[i].IsActive)
                         {
-                            <span class="badge bg-success">Active</span>
+                            <span class="badge bg-success">@Localizer["Active"]</span>
                         }
                         else
                         {
-                            <span class="badge bg-danger">Banned</span>
+                            <span class="badge bg-danger">@Localizer["Banned"]</span>
                         }
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-detail" href="@Url.Action("ViewUser", "Moderator", new { id = Model[i].Id })">Chi tiết</a>
+                        <a class="btn btn-sm btn-detail" href="@Url.Action("ViewUser", "Moderator", new { id = Model[i].Id })">@Localizer["Details"]</a>
                     </td>
                     <td>
                         @if (Model[i].Role == "User")
                         {
                             <form method="post" asp-controller="User" asp-action="ToggleUserRole" asp-route-id="@Model[i].Id" style="display:inline">
                                 <hidden name="id" value=@Model[i].Id/>
-                                <button type="submit" class="btn btn-sm btn-promote">Promote</button>
+                                <button type="submit" class="btn btn-sm btn-promote">@Localizer["Promote"]</button>
                             </form>
                         }
                         else if (Model[i].Role == "Moderator")
                         {
                             <form method="post" asp-controller="User" asp-action="ToggleUserRole" asp-route-id="@Model[i].Id" style="display:inline">
                                 <hidden name="id" value=@Model[i].Id/>
-                                <button type="submit" class="btn btn-sm btn-demote">Demote</button>
+                                <button type="submit" class="btn btn-sm btn-demote">@Localizer["Demote"]</button>
                             </form>
                         }
                     </td>

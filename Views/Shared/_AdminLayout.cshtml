@@ -1,9 +1,12 @@
+@using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@ViewData["Title"] - Quản trị hệ thống</title>
+    <title>@ViewData["Title"] - @Localizer["Admin System"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="~/css/site.css" rel="stylesheet" />
@@ -18,20 +21,20 @@
 
         <nav id="sidebar">
             <div class="sidebar-header text-center py-4">
-                <h4 class="text-white">Admin Panel</h4>
+                <h4 class="text-white">@Localizer["Admin Panel"]</h4>
             </div>
             <ul class="list-unstyled components px-3">
                 <li class="sidebar-item mb-2">
-                    <a asp-controller="Admin" asp-action="Dashboard" class="sidebar-link">Dashboard</a>
+                    <a asp-controller="Admin" asp-action="Dashboard" class="sidebar-link">@Localizer["Dashboard"]</a>
                 </li>
                 <li class="sidebar-item mb-2">
-                    <a asp-controller="Admin" asp-action="ManageSystem" class="sidebar-link">Quản lý Hệ thống</a>
+                    <a asp-controller="Admin" asp-action="ManageSystem" class="sidebar-link">@Localizer["Manage System"]</a>
                 </li>
                 <li class="sidebar-item mb-2">
-                    <a asp-controller="Admin" asp-action="Report" class="sidebar-link">Báo cáo</a>
+                    <a asp-controller="Admin" asp-action="Report" class="sidebar-link">@Localizer["Report"]</a>
                 </li>
                 <li class="sidebar-item mt-4">
-                    <a asp-controller="User" asp-action="Index" class="sidebar-link logout-link">Quay lại</a>
+                    <a asp-controller="User" asp-action="Index" class="sidebar-link logout-link">@Localizer["Back"]</a>
                 </li>
             </ul>
         </nav>
@@ -40,13 +43,13 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-custom border-bottom">
                 <div class="container-fluid">
                     <button class="btn btn-primary" id="menu-toggle">☰</button>
-                    <span class="ms-3 fw-bold text-light">Xin chào Admin</span>
+                    <span class="ms-3 fw-bold text-light">@Localizer["Hello Admin"]</span>
                     
                     <!-- Notification and User Menu -->
                     <ul class="navbar-nav ms-auto d-flex align-items-center">
                         <!-- Notification Button -->
                         <li class="nav-item d-flex align-items-center me-2">
-                            <a class="nav-link notification-btn position-relative d-flex align-items-center" asp-controller="Notification" asp-action="Index" title="Thông báo">
+                            <a class="nav-link notification-btn position-relative d-flex align-items-center" asp-controller="Notification" asp-action="Index" title="@Localizer["Notifications"]">
                                 <i class="fas fa-bell text-light" style="font-size: 1.2rem;"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notificationCount" style="font-size: 0.7rem; display: none;">
                                     0
@@ -58,18 +61,18 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-warning fw-bold" href="#" data-bs-toggle="dropdown">
                                 <i class="bi bi-shield-lock me-1" style="font-size:1.2rem;"></i>
-                                <span class="d-none d-lg-inline">Quản lí</span>
+                                <span class="d-none d-lg-inline">@Localizer["Management"]</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="Moderator" asp-action="Index">
-                                        <i class="fas fa-cog me-2"></i>Quản lí nội dung
+                                        <i class="fas fa-cog me-2"></i>@Localizer["Manage Content"]
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="Admin" asp-action="Dashboard">
-                                        <i class="fas fa-tools me-2"></i>Quản lí hệ thống
+                                        <i class="fas fa-tools me-2"></i>@Localizer["Manage System"]
                                     </a>
                                 </li>
                             </ul>
@@ -84,23 +87,23 @@
                             <ul class="dropdown-menu dropdown-menu-dark-custom dropdown-menu-end">
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="MyProfile">
-                                        <i class="fas fa-user me-2"></i>Hồ sơ
+                                        <i class="fas fa-user me-2"></i>@Localizer["Profile"]
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="User" asp-action="Index">
-                                        <i class="fas fa-home me-2"></i>Trang chủ
+                                        <i class="fas fa-home me-2"></i>@Localizer["Home"]
                                     </a>
                                 </li>
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="Notification" asp-action="Index">
-                                        <i class="fas fa-bell me-2"></i>Thông báo
+                                        <i class="fas fa-bell me-2"></i>@Localizer["Notifications"]
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item dropdown-item-dark" asp-controller="Authentication" asp-action="Logout">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Đăng xuất
+                                        <i class="fas fa-sign-out-alt me-2"></i>@Localizer["Logout"]
                                     </a>
                                 </li>
                             </ul>
@@ -145,7 +148,7 @@
                     }
                 })
                 .fail(function() {
-                    console.log('Failed to load notification count');
+                    console.log(@JsonSerializer.Serialize(Localizer["Failed to load notification count"].Value));
                 });
         }
     </script>

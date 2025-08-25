@@ -1,9 +1,11 @@
 ﻿@* Views/Shared/_AccessDeniedPartial.cshtml *@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
     var userRole = Context.User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
 }
 <div id="accessDeniedMessage" style="display:none;">
-	<h1>You do not have permission to enter this page</h1>
+	<h1>@Localizer["AccessDeniedMessage"]</h1>
 </div>
 
 <script>

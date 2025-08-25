@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="User Information" xml:space="preserve">
+    <value>Thông tin người dùng</value>
+  </data>
+  <data name="Warn" xml:space="preserve">
+    <value>Cảnh cáo</value>
+  </data>
+  <data name="Enter Warning Reason" xml:space="preserve">
+    <value>Nhập lý do cảnh cáo</value>
+  </data>
+  <data name="Warning Placeholder" xml:space="preserve">
+    <value>Nhập lý do cảnh cáo...</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Send Warning" xml:space="preserve">
+    <value>Gửi cảnh cáo</value>
+  </data>
+  <data name="Ban Account" xml:space="preserve">
+    <value>Khóa tài khoản</value>
+  </data>
+  <data name="Ban Confirmation" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn khóa tài khoản người dùng này?</value>
+  </data>
+  <data name="Ban Message" xml:space="preserve">
+    <value>Tài khoản của bạn đã bị khóa do vi phạm quy định.</value>
+  </data>
+  <data name="Unban Account" xml:space="preserve">
+    <value>Mở khóa tài khoản</value>
+  </data>
+  <data name="Unban Confirmation" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn mở khóa tài khoản người dùng này?</value>
+  </data>
+  <data name="Unban Message" xml:space="preserve">
+    <value>Tài khoản của bạn đã được mở khóa.</value>
+  </data>
+
+  <data name="Posted Stories" xml:space="preserve">
+    <value>Truyện đã đăng</value>
+  </data>
+  <data name="Chapters Count" xml:space="preserve">
+    <value>Số chương: {0}</value>
+  </data>
+  <data name="Updated" xml:space="preserve">
+    <value>Cập nhật: {0}</value>
+  </data>
+  <data name="No Stories" xml:space="preserve">
+    <value>Chưa có truyện nào.</value>
+  </data>
+
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Nội dung</value>
+  </data>
+  <data name="Story/Chapter" xml:space="preserve">
+    <value>Truyện/Chương</value>
+  </data>
+  <data name="Created At" xml:space="preserve">
+    <value>Ngày tạo</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Hành động</value>
+  </data>
+  <data name="Go to Comment" xml:space="preserve">
+    <value>Đến vị trí bình luận</value>
+  </data>
+  <data name="No Comments" xml:space="preserve">
+    <value>Chưa có bình luận nào.</value>
+  </data>
+
+  <data name="Reports Created" xml:space="preserve">
+    <value>Report đã tạo</value>
+  </data>
+  <data name="Reports Received" xml:space="preserve">
+    <value>Report bị nhận</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Loại</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Đối tượng</value>
+  </data>
+  <data name="Reason" xml:space="preserve">
+    <value>Lý do</value>
+  </data>
+  <data name="Processed" xml:space="preserve">
+    <value>Đã xử lý</value>
+  </data>
+  <data name="Unprocessed" xml:space="preserve">
+    <value>Chưa xử lý</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Khác</value>
+  </data>
+
+  <data name="Cover" xml:space="preserve">
+    <value>Cover</value>
+  </data>
+  <data name="Avatar" xml:space="preserve">
+    <value>Avatar</value>
+  </data>
+</root>

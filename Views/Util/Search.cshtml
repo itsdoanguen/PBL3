@@ -1,6 +1,8 @@
 ﻿@model List<PBL3.ViewModels.Search.SearchByTitleStory>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Tìm kiếm truyện";
+    ViewData["Title"] = Localizer["Search"];
     var currentKeyword = Context.Request.Query["tenTruyen"].ToString();
     int page = int.TryParse(Context.Request.Query["page"], out var p) ? p : 1;
     int pageSize = 12;
@@ -11,11 +13,11 @@
 <link rel="stylesheet" href="~/css/user-library.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/util-search.css" asp-append-version="true" />
 
-<h2 class="text-center" style="margin-top:50px">Tìm kiếm</h2>
+<h2 class="text-center" style="margin-top:50px">@Localizer["Search"]</h2>
 <form method="get" asp-controller="Util" asp-action="Search" class="mb-4 d-flex justify-content-center gap-2">
-    <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="Nhập tên truyện..." class="form-control w-auto" style="max-width:320px" />
-    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
-    <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="Tìm kiếm nâng cao" style="border-radius: 50%; width: 42px; height: 42px; justify-content: center;">
+    <input type="text" name="tenTruyen" value="@currentKeyword" placeholder="@Localizer["Enter story name..."]" class="form-control w-auto" style="max-width:320px" />
+    <button type="submit" class="btn btn-primary">@Localizer["Search"]</button>
+    <a href="/Util/AdvancedSearch" class="btn btn-outline-secondary d-flex align-items-center" title="@Localizer["Advanced Search"]" style="border-radius: 50%; width: 42px; height: 42px; justify-content: center;">
         <i class="bi bi-funnel" style="font-size: 1.3rem;"></i>
     </a>
 </form>
@@ -24,7 +26,7 @@
 
 @if (pagedStories == null || !pagedStories.Any())
 {
-    <div class="alert alert-info text-center">Không tìm thấy truyện nào.</div>
+    <div class="alert alert-info text-center">@Localizer["No stories found."]</div>
 }
 else
 {
@@ -37,7 +39,7 @@ else
                 <div class="search-story-author"><i class="bi bi-person"></i> @story.AuthorName</div>
                 <div class="search-story-genre">@string.Join(", ", story.Genres)</div>
                 <div class="search-story-status">@story.Status</div>
-                <a href="/Story/View/@story.StoryID" class="btn btn-outline-primary btn-sm mt-2">Xem chi tiết</a>
+                <a href="/Story/View/@story.StoryID" class="btn btn-outline-primary btn-sm mt-2">@Localizer["View Details"]</a>
             </div>
         }
     </div>
