@@ -1,17 +1,19 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Lỗi trang";
+    ViewData["Title"] = Localizer["Error Page"].Value;
 }
 
 <div class="text-center mt-5">
     <h1 class="display-4 text-danger">@ViewBag.StatusCode ?? "Error"</h1>
-    <p class="lead">Trang bạn tìm kiếm không tồn tại hoặc bạn không có quyền truy cập.</p>
+    <p class="lead">@Localizer["Page Not Found Message"]</p>
     @if(ViewBag.UserRole != null)
     {
-        <a asp-action="Index" asp-controller="User" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+        <a asp-action="Index" asp-controller="User" class="btn btn-primary mt-3">@Localizer["Back to Home"]</a>
 	} 
     else 
     {
-        <a asp-action="Index" asp-controller="Authentication" class="btn btn-primary mt-3">Quay lại trang chủ</a>
+        <a asp-action="Index" asp-controller="Authentication" class="btn btn-primary mt-3">@Localizer["Back to Home"]</a>
     }
 </div>

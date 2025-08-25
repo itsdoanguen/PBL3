@@ -1,10 +1,12 @@
+@using Microsoft.AspNetCore.Mvc.Localization
 @model List<PBL3.Models.NotificationModel>
+@inject IViewLocalizer Localizer
 @{
-    ViewBag.Title = "Thông báo";
+    ViewBag.Title = Localizer["Notifications"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="notifications-container" style="margin-top:60px">
-    <h2 class="text-center mb-4">Thông báo</h2>
+    <h2 class="text-center mb-4">@Localizer["Notifications"]</h2>
     <!-- Tabs -->
     <div class="notifications-tabs">
         <button class="tab-button active" data-type="all">
@@ -44,13 +46,13 @@
                     <form asp-action="MarkAsRead" asp-controller="Notification" method="post" style="display:inline;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="notificationId" value="@notification.NotificationID" />
-                        <button type="submit" class="mark-read-button">Đã đọc</button>
+                        <button type="submit" class="mark-read-button">@Localizer["Mark Selected as Read"]</button>
                     </form>
                 }
                 <form asp-action="DeleteNotification" asp-controller="Notification" method="post" style="display:inline; margin-left: 8px;">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="notificationId" value="@notification.NotificationID" />
-                    <button type="submit" class="mark-read-button bg-danger text-white" onclick="return confirm('Bạn có chắc muốn xóa thông báo này?');">Xóa</button>
+                    <button type="submit" class="mark-read-button bg-danger text-white" onclick="return confirm('@Localizer["Delete Confirmation"]');">@Localizer["Delete Selected"]</button>
                 </form>
             </div>
         }

@@ -1,4 +1,6 @@
 @model List<PBL3.ViewModels.User.AuthorViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = ViewBag.PageTitle;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -168,11 +170,11 @@
         <div class="discovery-stats">
             <div class="stat-badge">
                 <i class="fas fa-users me-2"></i>
-                <strong>@ViewBag.TotalCount</strong> tác giả
+                @string.Format(Localizer["Authors Count"].Value, ViewBag.TotalCount)
             </div>
             <div class="stat-badge">
                 <i class="fas fa-file-alt me-2"></i>
-                Trang <strong>@ViewBag.CurrentPage</strong> / <strong>@ViewBag.TotalPages</strong>
+                @Localizer["Page"] <strong>@ViewBag.CurrentPage</strong> / <strong>@ViewBag.TotalPages</strong>
             </div>
         </div>
     </div>
@@ -192,12 +194,12 @@
                     <div class="author-info">
                         <h4 class="author-name">@author.Name</h4>
                         <div class="author-stats">
-                            <span><i class="fas fa-book me-1"></i> @author.TotalStories truyện</span>
-                            <span><i class="fas fa-users me-1"></i> @author.TotalFollowers followers</span>
+                            <span><i class="fas fa-book me-1"></i> @string.Format(Localizer["Stories"].Value, author.TotalStories)</span>
+                            <span><i class="fas fa-users me-1"></i> @string.Format(Localizer["Followers"].Value, author.TotalFollowers)</span>
                         </div>
                         <div class="author-actions">
                             <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-view-profile">
-                                <i class="fas fa-user me-2"></i>Xem Profile
+                                <i class="fas fa-user me-2"></i>@Localizer["View Profile"]
                             </a>
                         </div>
                     </div>
@@ -264,10 +266,10 @@
             <div class="mb-4">
                 <i class="fas fa-users fa-5x text-muted"></i>
             </div>
-            <h3 class="text-muted">Không có tác giả nào</h3>
-            <p class="text-muted">Hãy thử theo dõi một số tác giả hoặc khám phá những tác giả khác.</p>
+            <h3 class="text-muted">@Localizer["No Authors Found"]</h3>
+            <p class="text-muted">@Localizer["Try Follow Authors"]</p>
             <a asp-controller="User" asp-action="Index" class="btn btn-primary">
-                <i class="fas fa-home me-2"></i>Về trang chủ
+                <i class="fas fa-home me-2"></i>@Localizer["Back to Home"]
             </a>
         </div>
     }
