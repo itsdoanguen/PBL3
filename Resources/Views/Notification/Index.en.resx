@@ -91,4 +91,20 @@
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <!-- Tab labels -->
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
+  <data name="NewFollower" xml:space="preserve">
+    <value>Followers</value>
+  </data>
+  <data name="NewStory" xml:space="preserve">
+    <value>New stories</value>
+  </data>
+  <data name="NewChapter" xml:space="preserve">
+    <value>New chapters</value>
+  </data>
+  <data name="NewComment" xml:space="preserve">
+    <value>Comments</value>
+  </data>
 </root>

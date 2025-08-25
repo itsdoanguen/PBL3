@@ -46,65 +46,13 @@
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="Notifications" xml:space="preserve">
-    <value>Thông báo</value>
-  </data>
-  <data name="No Notifications" xml:space="preserve">
-    <value>Chưa có thông báo nào!</value>
-  </data>
-  <data name="Mark All as Read" xml:space="preserve">
-    <value>Đánh dấu tất cả đã đọc</value>
-  </data>
-  <data name="Delete All" xml:space="preserve">
-    <value>Xóa tất cả</value>
-  </data>
-  <data name="Delete Selected" xml:space="preserve">
-    <value>Xóa mục đã chọn</value>
-  </data>
-  <data name="Mark Selected as Read" xml:space="preserve">
-    <value>Đánh dấu đã đọc mục đã chọn</value>
-  </data>
-  <data name="Select All" xml:space="preserve">
-    <value>Chọn tất cả</value>
-  </data>
-  <data name="Unselect All" xml:space="preserve">
-    <value>Bỏ chọn tất cả</value>
-  </data>
-  <data name="Delete Confirmation" xml:space="preserve">
-    <value>Bạn có chắc chắn muốn xóa những thông báo này?</value>
-  </data>
-  <data name="Confirm Delete" xml:space="preserve">
-    <value>Có, xóa</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Hủy</value>
-  </data>
-  <!-- Tab labels -->
-  <data name="All" xml:space="preserve">
-    <value>Tất cả</value>
-  </data>
-  <data name="NewFollower" xml:space="preserve">
-    <value>Người theo dõi</value>
-  </data>
-  <data name="NewStory" xml:space="preserve">
-    <value>Truyện mới</value>
-  </data>
-  <data name="NewChapter" xml:space="preserve">
-    <value>Chương mới</value>
-  </data>
-  <data name="NewComment" xml:space="preserve">
-    <value>Bình luận</value>
-  </data>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="ReplyingTo" xml:space="preserve"><value>Đang trả lời:</value></data>
+  <data name="CommentPlaceholder" xml:space="preserve"><value>Viết bình luận...</value></data>
+  <data name="SubmitComment" xml:space="preserve"><value>Gửi bình luận</value></data>
+  <data name="CancelReply" xml:space="preserve"><value>Hủy trả lời</value></data>
 </root>

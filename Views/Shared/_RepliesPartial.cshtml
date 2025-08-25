@@ -1,5 +1,10 @@
 @model List<PBL3.ViewModels.Chapter.CommentTreeViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<div class="replies-list" aria-label="@Localizer["Replies"]">
 @foreach (var reply in Model)
 {
     <partial name="_CommentPartial" model="@reply" />
 }
+</div>

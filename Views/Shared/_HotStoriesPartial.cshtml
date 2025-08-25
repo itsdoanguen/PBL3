@@ -1,4 +1,6 @@
+@using Microsoft.AspNetCore.Mvc.Localization
 @model List<PBL3.ViewModels.User.StoryViewModel>
+@inject IViewLocalizer Localizer
 
 @foreach (var story in Model)
 {
@@ -13,19 +15,19 @@
             <div class="list-badge">
                 @if (story.IsCompleted)
                 {
-                    <span class="story-item__badge badge text-bg-success">Full</span>
+                    <span class="story-item__badge badge text-bg-success">@Localizer["Full"]</span>
                 }
 
                 @if (story.IsHot)
                 {
-                    <span class="story-item__badge story-item__badge-hot badge text-bg-danger">Hot</span>
+                    <span class="story-item__badge story-item__badge-hot badge text-bg-danger">@Localizer["Hot"]</span>
                 }
 
                 @if (story.IsNew)
                 {
-                    <span class="story-item__badge story-item__badge-new badge text-bg-info text-light">New</span>
+                    <span class="story-item__badge story-item__badge-new badge text-bg-info text-light">@Localizer["New"]</span>
                 }
             </div>
         </a>
     </div>
-} 
+}
