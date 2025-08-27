@@ -25,6 +25,10 @@ PBL3 is a web platform that allows users to read stories, write stories, comment
 
 </details>
 
+## Demo Video
+Check out our project demo video:
+[![Project Demo]](https://www.youtube.com/watch?v=1GJ4fMEjJ4k)
+
 ## Key Features
 - Read stories, search and filter by genre
 - Write stories, manage chapters
@@ -73,6 +77,10 @@ PBL3 là một nền tảng web cho phép người dùng đọc truyện, viết
 ![Admin Dashboard](/wwwroot/image/screenshots/admin2.png)
 
 </details>
+
+## Video demo
+Xem video demo dự án tại đây:
+[![Demo dự án]](https://www.youtube.com/watch?v=1GJ4fMEjJ4k)
 
 ## Tính năng chính
 - Đọc truyện, tìm kiếm và lọc theo thể loại
