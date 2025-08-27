@@ -34,7 +34,7 @@ namespace PBL3.Controllers
                 TempData["ErrorMessage"] = errorMessage;
                 return RedirectToAction("StoryManagement", "Moderator");
             }
-            TempData["SuccessMessage"] = "Xóa truyện thành công!";
+                TempData["SuccessMessage"] = "Story deleted successfully!";
             return RedirectToAction("StoryManagement", "Moderator");
         }
         //GET: Admin/Dashboard

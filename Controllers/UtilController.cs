@@ -51,9 +51,9 @@ namespace PBL3.Controllers
 
             ViewBag.StatusList = new List<SelectListItem>
             {
-                new SelectListItem { Value = "", Text = "--Chọn--" },
-                new SelectListItem { Value = "Active", Text = "Đang tiến hành" },
-                new SelectListItem { Value = "Completed", Text = "Đã hoàn thành" }
+                new SelectListItem { Value = "", Text = "--Select--" },
+                new SelectListItem { Value = "Active", Text = "In progress" },
+                new SelectListItem { Value = "Completed", Text = "Completed" }
             };
 
             return View(results);

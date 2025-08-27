@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Chapter List" xml:space="preserve">
+    <value>Chapter List</value>
+  </data>
+  <data name="Previous Chapter" xml:space="preserve">
+    <value>Previous Chapter</value>
+  </data>
+  <data name="Next Chapter" xml:space="preserve">
+    <value>Next Chapter</value>
+  </data>
+  <data name="Back to Story" xml:space="preserve">
+    <value>Back to Story</value>
+  </data>
+  <data name="Like this chapter" xml:space="preserve">
+    <value>Like this chapter</value>
+  </data>
+  <data name="Remove Bookmark" xml:space="preserve">
+    <value>Remove Bookmark</value>
+  </data>
+  <data name="Bookmark this chapter" xml:space="preserve">
+    <value>Bookmark this chapter</value>
+  </data>
+  <data name="Reading Settings" xml:space="preserve">
+    <value>Reading Settings</value>
+  </data>
+  <data name="Report this chapter" xml:space="preserve">
+    <value>Report this chapter</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="Font" xml:space="preserve">
+    <value>Font</value>
+  </data>
+  <data name="Font Size" xml:space="preserve">
+    <value>Font Size</value>
+  </data>
+  <data name="Background Color" xml:space="preserve">
+    <value>Background Color</value>
+  </data>
+  <data name="Text Color" xml:space="preserve">
+    <value>Text Color</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>Save Changes</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Report Chapter" xml:space="preserve">
+    <value>Report Chapter</value>
+  </data>
+  <data name="Report Reason" xml:space="preserve">
+    <value>Report Reason:</value>
+  </data>
+  <data name="Enter report reason..." xml:space="preserve">
+    <value>Please describe in detail the reason for reporting this chapter...</value>
+  </data>
+  <data name="Send Report" xml:space="preserve">
+    <value>Send Report</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>{0} days</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>{0} hours</value>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>{0} minutes</value>
+  </data>
+  <data name="just now" xml:space="preserve">
+    <value>just now</value>
+  </data>
+  <data name="comments count" xml:space="preserve">
+    <value>{0} Comments</value>
+  </data>
+  <data name="word count" xml:space="preserve">
+    <value>Length: {0} words</value>
+  </data>
+  <data name="updated at" xml:space="preserve">
+    <value>Updated:</value>
+  </data>
+</root>

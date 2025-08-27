@@ -23,7 +23,7 @@ namespace PBL3.Controllers
             var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
             if (userIdClaim == null || string.IsNullOrEmpty(userIdClaim.Value))
             {
-                TempData["BookmarkMessage"] = "Không xác định được người dùng.";
+                TempData["BookmarkMessage"] = "User not identified.";
                 return RedirectToAction("ReadChapter", "Chapter", new { id = chapterId });
             }
             int userId = int.Parse(userIdClaim.Value);

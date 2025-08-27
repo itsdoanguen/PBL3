@@ -1,5 +1,7 @@
 @using PBL3.Service.Notification
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject INotificationService NotificationService
+@inject IViewLocalizer Localizer
 @{
     int unreadCount = 0;
     var user = User;
@@ -16,8 +18,10 @@
 }
 @if (unreadCount > 0)
 {
+    var label = string.Format(Localizer["Unread Notifications"].Value, unreadCount);
     <span id="noti-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          style="min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-top:10px;font-size:0.7rem;">
+          style="min-width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;margin-top:10px;font-size:0.7rem;"
+          aria-label="@label" title="@label">
         @unreadCount
     </span>
 }

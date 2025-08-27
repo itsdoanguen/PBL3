@@ -29,7 +29,7 @@ namespace PBL3.Service.Notification
                 {
                     UserID = userId,
                     Type = NotificationModel.NotificationType.NewChapter,
-                    Message = $"Truyện '{story?.Title}' vừa có chương mới: '{chapter?.Title}'",
+                    Message = $"Story '{story?.Title}' has a new chapter: '{chapter?.Title}'",
                     StoryID = storyId,
                     ChapterID = chapterId,
                     FromUserID = fromUserId
@@ -56,7 +56,7 @@ namespace PBL3.Service.Notification
                 {
                     UserID = userId,
                     Type = NotificationModel.NotificationType.NewStory,
-                    Message = $"{fromUser?.DisplayName ?? "Người bạn theo dõi"} vừa đăng truyện mới: '{story?.Title}'",
+                    Message = $"{fromUser?.DisplayName ?? "A user you follow"} just posted a new story: '{story?.Title}'",
                     StoryID = storyId,
                     FromUserID = fromUserId
                 };
@@ -78,7 +78,7 @@ namespace PBL3.Service.Notification
             {
                 UserID = parentComment.UserID,
                 Type = NotificationModel.NotificationType.NewReplyComment,
-                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Ai đó"} đã trả lời bình luận của bạn.",
+                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Someone"} replied to your comment.",
                 CommentID = commentId,
                 FromUserID = fromUserId
             };
@@ -96,7 +96,7 @@ namespace PBL3.Service.Notification
             {
                 UserID = story.AuthorID,
                 Type = NotificationModel.NotificationType.NewComment,
-                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Ai đó"} đã bình luận trên truyện của bạn.",
+                Message = $"{(await _context.Users.FindAsync(fromUserId))?.DisplayName ?? "Someone"} commented on your story.",
                 StoryID = storyId,
                 CommentID = commentId,
                 FromUserID = fromUserId
@@ -114,7 +114,7 @@ namespace PBL3.Service.Notification
             {
                 UserID = followingId,
                 Type = NotificationModel.NotificationType.NewFollower,
-                Message = $"{follower?.DisplayName ?? "Ai đó"} đã theo dõi bạn.",
+                Message = $"{follower?.DisplayName ?? "Someone"} started following you.",
                 FromUserID = followerId
             };
             _context.Notifications.Add(noti);
@@ -139,7 +139,7 @@ namespace PBL3.Service.Notification
             {
                 UserID = userId,
                 Type = NotificationModel.NotificationType.WarningIssued,
-                Message = "Thông báo: Bạn đã bị cảnh cáo vì hành vi của mình. \n Note: " + message,
+                Message = "Notice: You have been warned for your behavior.\n Note: " + message,
                 FromUserID = moderatorId
             };
             _context.Notifications.Add(noti);
@@ -164,9 +164,9 @@ namespace PBL3.Service.Notification
             {
                 _context.Notifications.Remove(noti);
                 await _context.SaveChangesAsync();
-                return (true, "Xóa thông báo thành công!");
+                return (true, "Notification deleted successfully!");
             }
-            return (false, "Không tìm thấy thông báo để xóa!");
+            return (false, "Notification not found!");
         }
 
         // Lấy noti theo ID

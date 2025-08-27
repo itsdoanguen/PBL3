@@ -19,7 +19,7 @@ namespace PBL3.Controllers
             var historyItems = await _historyService.GetUserHistoryAsync(userId);
             if (historyItems == null || !historyItems.Any())
             {
-                TempData["Message"] = "Bạn chưa đọc truyện nào.";
+                TempData["Message"] = "You haven't read any stories yet.";
                 return View();
             }
             return View(historyItems);
@@ -36,12 +36,12 @@ namespace PBL3.Controllers
             var history = histories.FirstOrDefault(h => h.HistoryID == historyId);
             if (history == null)
             {
-                TempData["ErrorMessage"] = "Không tìm thấy lịch sử cần xóa.";
+                TempData["ErrorMessage"] = "History not found.";
                 return RedirectToAction("Index");
             }
             // Xóa lịch sử đọc (theo storyId)
             await _historyService.DeleteHistoryAsync(userId, history.StoryID);
-            TempData["SuccessMessage"] = "Đã xóa lịch sử đọc truyện thành công.";
+            TempData["SuccessMessage"] = "Reading history deleted successfully.";
             return RedirectToAction("Index", "History");
         }
 

@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using DotNetEnv;
 using PBL3.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using PBL3.Service.Chapter;
 using PBL3.Service.Image;
 using PBL3.Service.Story;
@@ -28,7 +30,10 @@ Env.Load();
 builder.Configuration.AddEnvironmentVariables();
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+    .AddDataAnnotationsLocalization();
 
 //Add IchapterService vao builder
 builder.Services.AddScoped<IChapterService, ChapterService>();
@@ -77,13 +82,34 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+    app.UseHttpsRedirection();
 }
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
-app.UseHttpsRedirection();
-app.UseRouting();
+// Localization middleware
+var supportedCultures = new[] 
+{
+    new CultureInfo("vi-VN"),
+    new CultureInfo("en-US")
+};
 
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("vi-VN"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+};
+
+localizationOptions.RequestCultureProviders = new List<IRequestCultureProvider>
+{
+    new CookieRequestCultureProvider(),
+    new AcceptLanguageHeaderRequestCultureProvider()
+};
+
+app.UseRequestLocalization(localizationOptions);
+
+app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="StoryDetails" xml:space="preserve">
+    <value>Chi tiết truyện</value>
+  </data>
+  <data name="JustNow" xml:space="preserve">
+    <value>Vừa xong</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} ngày</value>
+  </data>
+  <data name="HoursAgo" xml:space="preserve">
+    <value>{0} giờ</value>
+  </data>
+  <data name="MinutesAgo" xml:space="preserve">
+    <value>{0} phút</value>
+  </data>
+  <data name="PostedStory" xml:space="preserve">
+    <value>Truyện đăng</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Tình trạng:</value>
+  </data>
+  <data name="Publishing" xml:space="preserve">
+    <value>Đang phát hành</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Hoàn thành</value>
+  </data>
+  <data name="ContinueReading" xml:space="preserve">
+    <value>Đọc tiếp</value>
+  </data>
+  <data name="TableOfContents" xml:space="preserve">
+    <value>Mục lục</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+  </data>
+  <data name="UnfollowStory" xml:space="preserve">
+    <value>Bỏ theo dõi</value>
+  </data>
+  <data name="FollowStory" xml:space="preserve">
+    <value>Theo dõi truyện</value>
+  </data>
+  <data name="ReportStory" xml:space="preserve">
+    <value>Báo cáo truyện</value>
+  </data>
+  <data name="ReportReason" xml:space="preserve">
+    <value>Lý do báo cáo:</value>
+  </data>
+  <data name="EnterReportReason" xml:space="preserve">
+    <value>Vui lòng mô tả chi tiết lý do báo cáo truyện này...</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="SendReport" xml:space="preserve">
+    <value>Gửi báo cáo</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Tác giả</value>
+  </data>
+  <data name="LastUpdate" xml:space="preserve">
+    <value>Lần cuối</value>
+  </data>
+  <data name="WordCount" xml:space="preserve">
+    <value>Số từ</value>
+  </data>
+  <data name="Rating" xml:space="preserve">
+    <value>Đánh giá</value>
+  </data>
+  <data name="Views" xml:space="preserve">
+    <value>Lượt xem</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>Tóm tắt</value>
+  </data>
+  <data name="ChapterList" xml:space="preserve">
+    <value>Danh sách chương</value>
+  </data>
+  <data name="NoChapters" xml:space="preserve">
+    <value>Chưa có chương nào.</value>
+  </data>
+  <data name="CommentsCount" xml:space="preserve">
+    <value>Bình luận ({0})</value>
+  </data>
+  <data name="ChapterCount" xml:space="preserve">
+    <value>Chương {0}</value>
+  </data>
+  <data name="UpdatedAt" xml:space="preserve">
+    <value>Cập nhật: {0}</value>
+  </data>
+</root>

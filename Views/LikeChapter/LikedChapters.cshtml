@@ -1,14 +1,16 @@
+@using Microsoft.AspNetCore.Mvc.Localization
 @model PBL3.ViewModels.LikeChapter.LikedChapterViewModel
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Chương đã thích";
+    ViewData["Title"] = Localizer["Liked Chapters"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" href="~/css/user-bookmarks.css" asp-append-version="true" />
 <div class="container py-5 user-bookmarks-container">
-    <h2 class="mb-4 text-center">Chương đã thích</h2>
+    <h2 class="mb-4 text-center">@Localizer["Liked Chapters"]</h2>
     @if (Model.LikedChapters == null || !Model.LikedChapters.Any())
     {
-        <div class="alert alert-info text-center">Bạn chưa thích chương nào!</div>
+        <div class="alert alert-info text-center">@Localizer["No Liked Chapters"]</div>
     }
     else
     {
@@ -23,11 +25,11 @@
                             <img src="@first.StoryCoverImageUrl" class="bookmark-story-cover" alt="@first.StoryTitle" />
                             <div>
                                 <h5 class="mb-1">@first.StoryTitle</h5>
-                                <span class="text-muted">@group.Count() chương đã thích</span>
+                                <span class="text-muted">@string.Format(Localizer["Chapters Liked Count"].Value, group.Count())</span>
                             </div>
                         </div>
                         <button class="btn btn-outline-primary btn-sm btn-toggle-chapters" type="button" data-bs-toggle="collapse" data-bs-target="#likedChapters_@first.StoryID" aria-expanded="false">
-                            <i class="bi bi-chevron-down"></i> Xem chương
+                            <i class="bi bi-chevron-down"></i> @Localizer["View Chapters"]
                         </button>
                     </div>
                     <div class="collapse bookmark-chapter-list" id="likedChapters_@first.StoryID">

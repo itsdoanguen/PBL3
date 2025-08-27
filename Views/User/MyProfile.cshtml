@@ -1,8 +1,10 @@
 ﻿@using PBL3.ViewModels.UserProfile
 @model UserProfileViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
-	ViewData["Title"] = "Hồ sơ của tôi";
+	ViewData["Title"] = @Localizer["MyProfile"];
 }
 
 <!-- Link to external CSS file -->
@@ -22,7 +24,7 @@
 				<img src="@(Model.Avatar != null ? Model.Avatar : Url.Content("~/image/default-avatar.png"))"
 					 class="profile-avatar rounded-circle" alt="Avatar">
 				<div class="avatar-edit-overlay">
-					<a asp-controller="User" asp-action="EditProfile" class="btn-edit-avatar" title="Chỉnh sửa hồ sơ">
+					<a asp-controller="User" asp-action="EditProfile" class="btn-edit-avatar" title="@Localizer["EditProfile"]">
 						<i class="bi bi-pencil-square"></i>
 					</a>
 				</div>
@@ -31,10 +33,10 @@
 				<p class="text-muted">@Model.Bio</p>
 
 				<ul class="list-group mt-3">
-					<li class="list-group-item"><strong>Email:</strong> @Model.Email</li>
-					<li class="list-group-item"><strong>Ngày tham gia:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
-					<li class="list-group-item"><strong>Ngày sinh:</strong> @(Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")</li>
-					<li class="list-group-item"><strong>Giới tính:</strong> @(Model.Gender?.ToString() ?? "Không xác định")</li>
+					<li class="list-group-item"><strong>@Localizer["Email"]:</strong> @Model.Email</li>
+					<li class="list-group-item"><strong>@Localizer["JoinDate"]:</strong> @Model.CreatedAt.ToString("dd/MM/yyyy")</li>
+					<li class="list-group-item"><strong>@Localizer["DateOfBirth"]:</strong> @(Model.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Not Updated")</li>
+					<li class="list-group-item"><strong>@Localizer["Gender"]:</strong> @(Model.Gender?.ToString() ?? "Unknown")</li>
 				</ul>
 			</div>
 		</div>
@@ -45,26 +47,26 @@
 				<div class="d-flex justify-content-between flex-wrap gap-3">
 					<div class="stat-box">
 						<h4>@Model.TotalUploadedStories</h4>
-						<p>Truyện đã đăng</p>
+						<p>@Localizer["UploadedStories"]</p>
 					</div>
 					<div class="stat-box">
 						<h4>@Model.TotalFollowers</h4>
-						<p>Người theo dõi</p>
+						<p>@Localizer["Followers"]</p>
 					</div>
 					<div class="stat-box">
 						<h4>@Model.TotalFollowings</h4>
-						<p>Đang theo dõi</p>
+						<p>@Localizer["Following"]</p>
 					</div>
 					<div class="stat-box">
 						<h4>@Model.TotalComments</h4>
-						<p>Bình luận</p>
+						<p>@Localizer["Comments"]</p>
 					</div>
 				</div>
 			</div>
 
 			<!-- Stories Section -->
 			<div class="mt-4">
-				<h5 class="section-title">Truyện đã đăng</h5>
+				<h5 class="section-title">@Localizer["UploadedStories"]</h5>
 				@if (Model.Stories.Any())
 				{
 					<div class="row">
@@ -75,8 +77,8 @@
                                     <img src="@story.Cover" class="story-cover" alt="@story.Title">
                                     <div class="story-info">
                                         <h6>@story.Title</h6>
-                                        <p><strong>Chương:</strong> @story.TotalChapters</p>
-                                        <p><strong>Trạng thái:</strong> @story.Status</p>
+                                        <p><strong>@Localizer["Chapter"]:</strong> @story.TotalChapters</p>
+                                        <p><strong>@Localizer["Status"]:</strong> @Localizer[story.Status.ToString()]</p>
                                     </div>
                                 </a>
 							</div>
@@ -85,7 +87,7 @@
 				}
 				else
 				{
-					<p class="text-muted">Không có truyện nào</p>
+					<p class="text-muted">@Localizer["NoStories"]</p>
 				}
 			</div>
 		</div>

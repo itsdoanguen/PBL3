@@ -1,15 +1,16 @@
 @model PBL3.ViewModels.Bookmark.BookmarkViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Truyện đã lưu";
+    ViewData["Title"] = Localizer["BookmarkedStories"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link rel="stylesheet" href="~/css/user-bookmarks.css" asp-append-version="true" />
 <script src="~/js/user-bookmarks.js" asp-append-version="true"></script>
 <div class="container py-5 user-bookmarks-container" style="margin-top:100px">
-    <h2 class="mb-4 text-center">Truyện đã lưu</h2>
+    <h2 class="mb-4 text-center">@Localizer["BookmarkedStories"]</h2>
     @if (Model.BookmarkedStories == null || !Model.BookmarkedStories.Any())
     {
-        <div class="alert alert-info text-center">Bạn chưa bookmark chương nào!</div>
+        <div class="alert alert-info text-center">@Localizer["NoBookmarkedChapters"]</div>
     }
     else
     {
@@ -24,11 +25,11 @@
                             <img src="@first.StoryCoverImageUrl" class="bookmark-story-cover" alt="@first.StoryTitle" />
                             <div>
                                 <h5 class="mb-1">@first.StoryTitle</h5>
-                                <span class="text-muted">@group.Count() chương đã lưu</span>
+                                <span class="text-muted">@Localizer["BookmarkedChaptersCount", group.Count()]</span>
                             </div>
                         </div>
                         <button class="btn btn-outline-primary btn-sm btn-toggle-chapters" type="button" data-bs-toggle="collapse" data-bs-target="#bookmarkChapters_@first.StoryID" aria-expanded="false">
-                            <i class="bi bi-chevron-down"></i> Xem chương
+                            <i class="bi bi-chevron-down"></i> @Localizer["ViewChapters"]
                         </button>
                     </div>
                     <div class="collapse bookmark-chapter-list" id="bookmarkChapters_@first.StoryID">

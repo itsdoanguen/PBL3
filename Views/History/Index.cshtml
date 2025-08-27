@@ -1,12 +1,14 @@
-﻿@model List<PBL3.ViewModels.History.HistoryItemViewModel>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model List<PBL3.ViewModels.History.HistoryItemViewModel>
+@inject IViewLocalizer Localizer
 
 @{
-    ViewData["Title"] = "Truyện đã đọc";
+    ViewData["Title"] = Localizer["Read Stories"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container py-4">
-    <h2 class="mb-4" style="margin-top:30px"><span class="text-success" style="font-size:1.5rem;"></span> Truyện đã đọc</h2>
+    <h2 class="mb-4" style="margin-top:30px"><span class="text-success" style="font-size:1.5rem;"></span> @Localizer["Read Stories"]</h2>
 
     @if (Model != null && Model.Any())
     {
@@ -21,8 +23,8 @@
                                 <div class="text-white fw-bold text-center" style="font-size:1rem;">@item.ChapterLabel</div>
                                 <form asp-action="DeleteHistory" asp-controller="History" method="post" class="mt-2 d-flex justify-content-center">
                                     <input type="hidden" name="historyId" value="@item.HistoryID" />
-                                    <button type="submit" class="btn btn-link text-white p-0" style="font-size:1.1rem;" title="Xóa" onclick="return confirm('Bạn có chắc muốn xóa lịch sử này?');">
-                                        <i class="bi bi-x-circle"></i> Xóa
+                                    <button type="submit" class="btn btn-link text-white p-0" style="font-size:1.1rem;" title="@Localizer["Delete"]" onclick="return confirm('@Localizer["Delete Confirmation"]');">
+                                        <i class="bi bi-x-circle"></i> @Localizer["Delete"]
                                     </button>
                                 </form>
                             </div>
@@ -35,7 +37,7 @@
     }
     else
     {
-        <div class="alert alert-info">Bạn chưa đọc truyện nào.</div>
+        <div class="alert alert-info">@Localizer["No Stories Read"]</div>
     }
 </div>
 

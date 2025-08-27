@@ -157,18 +157,18 @@ namespace PBL3.Controllers
         {
             if (id <= 0)
             {
-                TempData["ErrorMessage"] = "ID không hợp lệ.";
+                TempData["ErrorMessage"] = "Invalid ID.";
                 return RedirectToAction("ManageSystem", "Admin");
             }
 
             try
             {
                 await _userService.ToggleUpdateUserRoleAsync(id);
-                TempData["SuccessMessage"] = "Cập nhật vai trò người dùng thành công!";
+                TempData["SuccessMessage"] = "User role updated successfully!";
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error khi update user role: {ex.Message}";
+                TempData["ErrorMessage"] = $"Error updating user role: {ex.Message}";
             }
 
             return RedirectToAction("ManageSystem", "Admin");
@@ -194,12 +194,12 @@ namespace PBL3.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.OldPassword) || string.IsNullOrWhiteSpace(model.NewPassword) || string.IsNullOrWhiteSpace(model.ConfirmPassword))
             {
-                ModelState.AddModelError(string.Empty, "Vui lòng nhập đầy đủ thông tin.");
+                ModelState.AddModelError(string.Empty, "Please enter all required information.");
                 return View(model);
             }
             if (model.NewPassword != model.ConfirmPassword)
             {
-                ModelState.AddModelError("", "Mật khẩu mới và xác nhận không khớp.");
+                ModelState.AddModelError("", "New password and confirmation do not match.");
                 return View(model);
             }
             int currentUserID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -209,7 +209,7 @@ namespace PBL3.Controllers
                 ModelState.AddModelError("", errorMessage);
                 return View(model);
             }
-            TempData["SuccessMessage"] = "Đổi mật khẩu thành công!";
+            TempData["SuccessMessage"] = "Password changed successfully!";
             return RedirectToAction("MyProfile");
         }
 
@@ -268,7 +268,7 @@ namespace PBL3.Controllers
                     TempData["ErrorMessage"] = message;
                 return View(model);
             }
-            // Nếu người dùng đang đăng nhập, đăng xuất họ ra
+            // If the user is logged in, log them out
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -280,7 +280,7 @@ namespace PBL3.Controllers
         // Hàm gửi email
         private async Task SendResetPasswordEmail(string toEmail, string newPassword, string? displayName = null)
         {
-            var subject = "Mật khẩu mới cho tài khoản PBL3";
+            var subject = "New password for your PBL3 account";
             var body = _emailService.GetForgotPasswordEmailBody(displayName, newPassword);
             await _emailService.SendEmailAsync(toEmail, subject, body, isHtml: true);
         }

@@ -1,6 +1,8 @@
 @model List<PBL3.ViewModels.Moderator.UserProfileViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Quản lý người dùng";
+    ViewData["Title"] = Localizer["Users Management"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 
     var normalUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Active && u.TotalWarning == 0).ToList();
@@ -9,19 +11,19 @@
     var bannedUsers = Model.Where(u => u.Status == PBL3.Models.UserModel.UserStatus.Banned).ToList();
 }
 <div class="container py-4 mt-5">
-    <h2 class="mb-4">Quản lý người dùng</h2>
-    <h4 class="mt-4">Người dùng thông thường</h4>
+    <h2 class="mb-4">@Localizer["Users Management"]</h2>
+    <h4 class="mt-4">@Localizer["Normal Users"]</h4>
     <div class="table-responsive mb-4">
         <table class="table table-hover align-middle" id="user-table-normal">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Tên hiển thị</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                    <th>Trạng thái</th>
-                    <th>Cảnh cáo</th>
+                    <th>@Localizer["ID"]</th>
+                    <th>@Localizer["Display Name"]</th>
+                    <th>@Localizer["Email"]</th>
+                    <th>@Localizer["Role"]</th>
+                    <th>@Localizer["Created At"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Warnings"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -31,7 +33,7 @@
                     <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
                         <td>@user.UserID</td>
                         <td>
-                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="@Localizer["Avatar"]" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
                             @user.DisplayName
                         </td>
                         <td>@user.Email</td>
@@ -39,24 +41,24 @@
                         <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                         <td><span class="badge bg-success">@user.Status</span></td>
                         <td>0</td>
-                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">@Localizer["View Details"]</a></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <h4 class="mt-4">Người dùng đã bị cảnh cáo 1 lần</h4>
+    <h4 class="mt-4">@Localizer["Warned Once"]</h4>
     <div class="table-responsive mb-4">
         <table class="table table-hover align-middle" id="user-table-warning1">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Tên hiển thị</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                    <th>Trạng thái</th>
-                    <th>Cảnh cáo</th>
+                    <th>@Localizer["ID"]</th>
+                    <th>@Localizer["Display Name"]</th>
+                    <th>@Localizer["Email"]</th>
+                    <th>@Localizer["Role"]</th>
+                    <th>@Localizer["Created At"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Warnings"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -66,7 +68,7 @@
                     <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
                         <td>@user.UserID</td>
                         <td>
-                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="@Localizer["Avatar"]" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
                             @user.DisplayName
                         </td>
                         <td>@user.Email</td>
@@ -74,24 +76,24 @@
                         <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                         <td><span class="badge bg-success">@user.Status</span></td>
                         <td>1</td>
-                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">@Localizer["View Details"]</a></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <h4 class="mt-4">Người dùng đã bị cảnh cáo 2 lần</h4>
+    <h4 class="mt-4">@Localizer["Warned Twice"]</h4>
     <div class="table-responsive mb-4">
         <table class="table table-hover align-middle" id="user-table-warning2">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Tên hiển thị</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                    <th>Trạng thái</th>
-                    <th>Cảnh cáo</th>
+                    <th>@Localizer["ID"]</th>
+                    <th>@Localizer["Display Name"]</th>
+                    <th>@Localizer["Email"]</th>
+                    <th>@Localizer["Role"]</th>
+                    <th>@Localizer["Created At"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Warnings"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -101,7 +103,7 @@
                     <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
                         <td>@user.UserID</td>
                         <td>
-                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="@Localizer["Avatar"]" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
                             @user.DisplayName
                         </td>
                         <td>@user.Email</td>
@@ -109,24 +111,24 @@
                         <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                         <td><span class="badge bg-success">@user.Status</span></td>
                         <td>2</td>
-                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">@Localizer["View Details"]</a></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <h4 class="mt-4">Người dùng bị khóa</h4>
+    <h4 class="mt-4">@Localizer["Banned Users"]</h4>
     <div class="table-responsive mb-4">
         <table class="table table-hover align-middle" id="user-table-banned">
             <thead class="table-light">
                 <tr>
-                    <th>ID</th>
-                    <th>Tên hiển thị</th>
-                    <th>Email</th>
-                    <th>Vai trò</th>
-                    <th>Ngày tạo</th>
-                    <th>Trạng thái</th>
-                    <th>Cảnh cáo</th>
+                    <th>@Localizer["ID"]</th>
+                    <th>@Localizer["Display Name"]</th>
+                    <th>@Localizer["Email"]</th>
+                    <th>@Localizer["Role"]</th>
+                    <th>@Localizer["Created At"]</th>
+                    <th>@Localizer["Status"]</th>
+                    <th>@Localizer["Warnings"]</th>
                     <th></th>
                 </tr>
             </thead>
@@ -136,7 +138,7 @@
                     <tr class="user-row" style="cursor:pointer" onclick="window.location='@Url.Action("ViewUser", "Moderator", new { id = user.UserID })'">
                         <td>@user.UserID</td>
                         <td>
-                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="avatar" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
+                            <img src="@(user.Avatar ?? Url.Content("~/image/default-avatar.png"))" alt="@Localizer["Avatar"]" style="width:32px;height:32px;border-radius:50%;object-fit:cover;margin-right:8px;">
                             @user.DisplayName
                         </td>
                         <td>@user.Email</td>
@@ -144,7 +146,7 @@
                         <td>@user.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
                         <td><span class="badge bg-secondary">@user.Status</span></td>
                         <td>@user.TotalWarning</td>
-                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">Xem chi tiết</a></td>
+                        <td><a href="@Url.Action("ViewUser", "Moderator", new { id = user.UserID })" class="btn btn-outline-info btn-sm">@Localizer["View Details"]</a></td>
                     </tr>
                 }
             </tbody>

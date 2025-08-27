@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
 <html lang="vi">
 <head>
 	<meta charset="UTF-8">
@@ -28,7 +31,7 @@
 	<div class="container-fluid px-5 mt-4">
 		<div class="d-flex justify-content-between mb-3">
 			<a href="@Url.Action("MyStories", "User")" class="btn btn-outline-danger btn-cancel">
-				<i class="bi bi-arrow-left"></i> Quay lại
+				<i class="bi bi-arrow-left"></i> @Localizer["Back"]
 			</a>
 
 		</div>

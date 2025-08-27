@@ -1,8 +1,10 @@
 ﻿@using PBL3.ViewModels.Account
 @model LoginViewModel
 
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = Localizer["LoginTitle"];
 }
 @section Styles {
     <link href="~/css/introduction.css" rel="stylesheet" />
@@ -11,7 +13,7 @@
 }
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow-lg p-4" style="width: 400px;">
-        <h2 class="text-center mb-4">Login</h2>
+        <h2 class="text-center mb-4">@Localizer["LoginTitle"]</h2>
 
         @if (!string.IsNullOrEmpty(ViewBag.Message))
         {
@@ -33,13 +35,13 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <button type="submit" class="btn btn-primary w-100">@Localizer["LoginButton"]</button>
         </form>
 
         <div class="text-center mt-3">
-            <small>Don't have an account? <a asp-controller="Authentication" asp-action="Register">Sign up here</a></small>
+            <small>@Localizer["NoAccount"] <a asp-controller="Authentication" asp-action="Register">@Localizer["SignUpHere"]</a></small>
             <br />
-            <small><a asp-controller="User" asp-action="ForgotPassword">Quên mật khẩu?</a></small>
+            <small><a asp-controller="User" asp-action="ForgotPassword">@Localizer["ForgotPassword"]</a></small>
         </div>
     </div>
 </div>

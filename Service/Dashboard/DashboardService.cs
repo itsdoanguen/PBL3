@@ -361,7 +361,7 @@ namespace PBL3.Service.Dashboard
             {
                 var user = await _context.Users.FindAsync(userId.Value);
                 var displayName = user?.DisplayName ?? user?.Email ?? "Bạn";
-                viewModel.HeaderMessage = $"Chào mừng trở lại, {displayName}!";
+                viewModel.HeaderMessage = $"Welcome back, {displayName}!";
 
                 // Populate user profile summary
                 if (user != null)

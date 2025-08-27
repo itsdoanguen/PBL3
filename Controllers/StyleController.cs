@@ -30,7 +30,7 @@ namespace PBL3.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("Dữ liệu không hợp lệ");
+                return BadRequest("Invalid data");
             }
 
             var updatedStyle = await _styleService.UpdateStyleAsync(model);

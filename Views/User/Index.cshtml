@@ -1,6 +1,7 @@
 ﻿@model PBL3.ViewModels.User.IntroViewModel
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Trang chủ";
+    ViewData["Title"] = Localizer["PageTitle"];
 }
 @section css {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,19 +20,19 @@
             <div class="hero-stats">
                 <div class="stat-item">
                     <span class="stat-number">@Model.Statistics.TotalActiveStories.ToString("N0")</span>
-                    <span class="stat-label">Truyện Đang Tiến Hành</span>
+                    <span class="stat-label">@Localizer["OngoingStories"]</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">@Model.Statistics.TotalNewStories.ToString("N0")</span>
-                    <span class="stat-label">Truyện Mới Tuần</span>
+                    <span class="stat-label">@Localizer["NewStoriesThisWeek"]</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">@Model.Statistics.TotalCompletedStories.ToString("N0")</span>
-                    <span class="stat-label">Hoàn Thành</span>
+                    <span class="stat-label">@Localizer["Completed"]</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">@Model.Statistics.TotalAuthors.ToString("N0")</span>
-                    <span class="stat-label">Tác Giả</span>
+                    <span class="stat-label">@Localizer["Authors"]</span>
                 </div>
             </div>
         </div>
@@ -52,12 +53,12 @@
                         <div class="container-title-section">
                             <div class="container-title">
                                 <i class="fas fa-crown"></i>
-                                <h2>Top Truyện Tuần</h2>
+                                <h2>@Localizer["TopStoriesOfWeek"]</h2>
                             </div>
-                            <div class="container-subtitle">Bảng xếp hạng truyện hot nhất tuần này</div>
+                            <div class="container-subtitle">@Localizer["TopStoriesSubtitle"]</div>
                         </div>
                         <a asp-controller="Story" asp-action="AllStories" asp-route-query="topweek" class="btn-view-all">
-                            <span>Xem tất cả</span>
+                            <span>@Localizer["ViewAll"]</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -98,21 +99,21 @@
                                         <div class="story-overlay">
                                             <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                                 <i class="fas fa-book-open"></i>
-                                                <span>Đọc ngay</span>
+                                                <span>@Localizer["ReadNow"]</span>
                                             </a>
                                         </div>
                                         <div class="view-count">
                                             <i class="fas fa-eye"></i>
-                                            <span>@story.ViewCount</span>
+                                            @story.ViewCount
                                         </div>
                                     </div>
                                     <div class="story-info">
                                         <h4 class="story-title">@story.Title</h4>
                                         <p class="story-author">@story.AuthorName</p>
                                         <div class="story-stats">
-                                            <span><i class="fas fa-eye"></i> @story.ViewCount</span>
-                                            <span><i class="fas fa-users"></i> @story.FollowCount</span>
-                                            <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                            <span><i class="fas fa-eye"></i> @Localizer["ViewCount", story.ViewCount]</span>
+                                            <span><i class="fas fa-users"></i> @Localizer["FollowCount", story.FollowCount]</span>
+                                            <span><i class="fas fa-book"></i> @Localizer["ChapterCount", story.ChapterCount]</span>
                                         </div>
                                     </div>
                                 </div>
@@ -133,19 +134,19 @@
                     <div class="container-title-section">
                         <div class="container-title">
                             <i class="fas fa-fire"></i>
-                            <h2>Truyện Hot</h2>
+                            <h2>@Localizer["HotStories"]</h2>
                         </div>
-                        <div class="container-subtitle">Những truyện được yêu thích nhất</div>
+                        <div class="container-subtitle">@Localizer["HotStoriesSubtitle"]</div>
                     </div>
                     <a asp-controller="Story" asp-action="AllStories" asp-route-query="view" class="btn-view-all">
-                        <span>Xem tất cả</span>
+                        <span>@Localizer["ViewAll"]</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
                 <div class="filter-section">
-                    <label for="categoryFilter">Lọc theo thể loại:</label>
+                    <label for="categoryFilter">@Localizer["FilterByCategory"]</label>
                     <select class="form-select" id="categoryFilter" asp-items="@Model.CategorySelectList">
-                        <option value="0" selected>Tất cả thể loại</option>
+                        <option value="0" selected>@Localizer["AllCategories"]</option>
                     </select>
                 </div>
                 <div class="stories-slider" data-carousel="hot-stories">
@@ -172,21 +173,21 @@
                                     <div class="story-overlay">
                                         <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                             <i class="fas fa-book-open"></i>
-                                            <span>Đọc ngay</span>
+                                            <span>@Localizer["ReadNow"]</span>
                                         </a>
                                     </div>
                                     <div class="view-count">
                                         <i class="fas fa-eye"></i>
-                                        <span>@story.ViewCount</span>
+                                        <span>@Localizer["ViewCount", story.ViewCount]</span>
                                     </div>
                                 </div>
                                 <div class="story-info">
                                     <h4 class="story-title">@story.Title</h4>
                                     <p class="story-author">@story.AuthorName</p>
                                     <div class="story-stats">
-                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
-                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
-                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                        <span><i class="fas fa-eye"></i> @Localizer["ViewCount", story.ViewCount]</span>
+                                        <span><i class="fas fa-users"></i> @Localizer["FollowCount", story.FollowCount]</span>
+                                        <span><i class="fas fa-book"></i> @Localizer["ChapterCount", story.ChapterCount]</span>
                                     </div>
                                 </div>
                             </div>
@@ -206,12 +207,12 @@
                     <div class="container-title-section">
                         <div class="container-title">
                             <i class="fas fa-sparkles"></i>
-                            <h2>Truyện Mới</h2>
+                            <h2>@Localizer["NewStories"]</h2>
                         </div>
-                        <div class="container-subtitle">Những câu chuyện vừa mới ra mắt</div>
+                        <div class="container-subtitle">@Localizer["NewStoriesSubtitle"]</div>
                     </div>
                     <a asp-controller="Story" asp-action="AllStories" asp-route-query="updated" class="btn-view-all">
-                        <span>Xem tất cả</span>
+                        <span>@Localizer["ViewAll"]</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -239,7 +240,7 @@
                                     <div class="story-overlay">
                                         <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                             <i class="fas fa-book-open"></i>
-                                            <span>Đọc ngay</span>
+                                            <span>@Localizer["ReadNow"]</span>
                                         </a>
                                     </div>
                                     @if (story.LatestChapter != null)
@@ -254,9 +255,9 @@
                                     <h4 class="story-title">@story.Title</h4>
                                     <p class="story-author">@story.AuthorName</p>
                                     <div class="story-stats">
-                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
-                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
-                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                        <span><i class="fas fa-eye"></i> @Localizer["ViewCount", story.ViewCount]</span>
+                                        <span><i class="fas fa-users"></i> @Localizer["FollowCount", story.FollowCount]</span>
+                                        <span><i class="fas fa-book"></i> @Localizer["ChapterCount", story.ChapterCount]</span>
                                     </div>
                                 </div>
                             </div>
@@ -277,12 +278,12 @@
                     <div class="container-title-section">
                         <div class="container-title">
                             <i class="fas fa-heart"></i>
-                            <h2>Được Yêu Thích Nhất</h2>
+                            <h2>@Localizer["MostLiked"]</h2>
                         </div>
-                        <div class="container-subtitle">Những truyện có lượt thích cao nhất</div>
+                        <div class="container-subtitle">@Localizer["MostLikedSubtitle"]</div>
                     </div>
                     <a asp-controller="Story" asp-action="AllStories" asp-route-query="like" class="btn-view-all">
-                        <span>Xem tất cả</span>
+                        <span>@Localizer["ViewAll"]</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -310,7 +311,7 @@
                                     <div class="story-overlay">
                                         <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                             <i class="fas fa-book-open"></i>
-                                            <span>Đọc ngay</span>
+                                            <span>@Localizer["ReadNow"]</span>
                                         </a>
                                     </div>
                                     <div class="view-count">
@@ -322,10 +323,10 @@
                                     <h4 class="story-title">@story.Title</h4>
                                     <p class="story-author">@story.AuthorName</p>
                                     <div class="story-stats">
-                                        <span><i class="fas fa-heart"></i> @story.LikeCount</span>
-                                        <span><i class="fas fa-eye"></i> @story.ViewCount</span>
-                                        <span><i class="fas fa-users"></i> @story.FollowCount</span>
-                                        <span><i class="fas fa-book"></i> @story.ChapterCount</span>
+                                        <span><i class="fas fa-heart"></i> @Localizer["LikeCount", story.LikeCount]</span>
+                                        <span><i class="fas fa-eye"></i> @Localizer["ViewCount", story.ViewCount]</span>
+                                        <span><i class="fas fa-users"></i> @Localizer["FollowCount", story.FollowCount]</span>
+                                        <span><i class="fas fa-book"></i> @Localizer["ChapterCount", story.ChapterCount]</span>
                                     </div>
                                 </div>
                             </div>
@@ -348,12 +349,12 @@
                         <div class="container-title-section">
                             <div class="container-title">
                                 <i class="fas fa-users"></i>
-                                <h2>Top Truyện Được Theo Dõi</h2>
+                                <h2>@Localizer["TopFollowedStories"]</h2>
                             </div>
-                            <div class="container-subtitle">Những truyện được theo dõi nhiều nhất</div>
+                            <div class="container-subtitle">@Localizer["TopFollowedSubtitle"]</div>
                         </div>
                         <a asp-controller="Story" asp-action="AllStories" asp-route-query="follow" class="btn-view-all">
-                            <span>Xem tất cả</span>
+                            <span>@Localizer["ViewAll"]</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -381,7 +382,7 @@
                                         <div class="story-overlay">
                                             <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                                 <i class="fas fa-book-open"></i>
-                                                <span>Đọc ngay</span>
+                                                <span>@Localizer["ReadNow"]</span>
                                             </a>
                                         </div>
                                         <div class="view-count">
@@ -419,12 +420,12 @@
                 <div class="container-title-section">
                     <div class="container-title">
                                 <i class="fas fa-history"></i>
-                                <h2>Đọc Gần Đây</h2>
+                                <h2>@Localizer["RecentlyRead"]</h2>
                             </div>
-                            <div class="container-subtitle">Tiếp tục hành trình đọc truyện của bạn</div>
+                            <div class="container-subtitle">@Localizer["RecentlyReadSubtitle"]</div>
                         </div>
                         <a asp-controller="History" asp-action="Index" class="btn-view-all">
-                            <span>Xem tất cả</span>
+                            <span>@Localizer["ViewAll"]</span>
                             <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -442,16 +443,16 @@
                                                                 <div class="story-overlay">
                             <a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@read.ChapterID" class="btn-read">
                                 <i class="fas fa-play"></i>
-                                <span>Tiếp tục đọc</span>
+                                <span>@Localizer["ContinueReading"]</span>
                             </a>
                         </div>
                                     </div>
                                     <div class="story-info">
                                         <h4 class="story-title">@read.StoryTitle</h4>
-                                        <p class="story-author">Chương @read.ChapterID: @read.ChapterTitle</p>
+                                        <p class="story-author">@Localizer["Chapter"] @read.ChapterID: @read.ChapterTitle</p>
                                         <div class="story-stats">
                                             <span><i class="fas fa-clock"></i> @read.LastRead.ToString("dd/MM/yyyy")</span>
-                                            <span><i class="fas fa-book"></i> @read.TotalChapters chương</span>
+                                            <span><i class="fas fa-book"></i> @read.TotalChapters @Localizer["Chapter"]</span>
                                         </div>
                                     </div>
                                 </div>
@@ -475,12 +476,12 @@
                         <div class="container-title-section">
                             <div class="container-title">
                                 <i class="fas fa-rss"></i>
-                                <h2>Truyện Từ Tác Giả Theo Dõi</h2>
+                                <h2>@Localizer["StoriesFromFollowedAuthors"]</h2>
                             </div>
-                            <div class="container-subtitle">Cập nhật mới nhất từ các tác giả bạn yêu thích</div>
+                            <div class="container-subtitle">@Localizer["FollowedAuthorsSubtitle"]</div>
                         </div>
                         <a asp-controller="Discovery" asp-action="StoryFromFollowedAuthors" class="btn-view-all">
-                    <span>Xem tất cả</span>
+                    <span>@Localizer["ViewAll"]</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -508,7 +509,7 @@
                                 <div class="story-overlay">
                                     <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                         <i class="fas fa-book-open"></i>
-                                        <span>Đọc ngay</span>
+                                        <span>@Localizer["ReadNow"]</span>
                                     </a>
                                 </div>
                                 <div class="view-count">
@@ -543,12 +544,12 @@
                 <div class="container-title-section">
                     <div class="container-title">
                         <i class="fas fa-check-circle"></i>
-                        <h2>Truyện Đã Hoàn Thành</h2>
+                        <h2>@Localizer["CompletedStories"]</h2>
                     </div>
-                    <div class="container-subtitle">Những câu chuyện đã có kết thúc hoàn chỉnh</div>
+                    <div class="container-subtitle">@Localizer["CompletedStoriesSubtitle"]</div>
                 </div>
                 <a asp-controller="Story" asp-action="AllStories" asp-route-query="completed" class="btn-view-all">
-                    <span>Xem tất cả</span>
+                    <span>@Localizer["ViewAll"]</span>
                     <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
@@ -560,17 +561,17 @@
                             <div class="story-image">
                                 <img src="@story.CoverImageUrl" alt="@story.Title" loading="lazy">
                                 <div class="story-badges">
-                                    <span class="badge badge-complete">Hoàn thành</span>
+                                    <span class="badge badge-complete">@Localizer["Completed"]</span>
                                 </div>
                                 <div class="story-overlay">
                                     <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-read">
                                         <i class="fas fa-book-open"></i>
-                                        <span>Đọc ngay</span>
+                                        <span>@Localizer["ReadNow"]</span>
                                     </a>
                                 </div>
                                 <div class="view-count">
                                     <i class="fas fa-check"></i>
-                                    <span>@story.ChapterCount ch</span>
+                                    <span>@story.ChapterCount Chapters</span>
                                 </div>
                             </div>
                             <div class="story-info">
@@ -602,12 +603,12 @@
                     <div class="container-title-section">
                         <div class="container-title">
                             <i class="fas fa-users"></i>
-                            <h2>Tác Giả Nổi Bật</h2>
+                            <h2>@Localizer["FeaturedAuthors"]</h2>
                         </div>
-                        <div class="container-subtitle">Những tác giả được theo dõi nhiều nhất</div>
+                        <div class="container-subtitle">@Localizer["FeaturedAuthorsSubtitle"]</div>
                     </div>
                     <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn-view-all">
-                        <span>Xem tất cả</span>
+                        <span>@Localizer["ViewAll"]</span>
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -630,7 +631,7 @@
                                     <div class="story-overlay">
                                         <a asp-controller="User" asp-action="ViewProfile" asp-route-id="@author.Id" class="btn-read">
                                             <i class="fas fa-user"></i>
-                                            <span>Xem Profile</span>
+                                            <span>@Localizer["ViewProfile"]</span>
                                         </a>
                                     </div>
                                     <div class="view-count">
@@ -640,7 +641,7 @@
                                 </div>
                                 <div class="story-info">
                                     <h4 class="story-title">@author.Name</h4>
-                                    <p class="story-author">@author.TotalStories truyện</p>
+                                    <p class="story-author">@author.TotalStories @Localizer["Stories"]</p>
                                     <div class="story-stats">
                                         <span><i class="fas fa-users"></i> @author.TotalFollowers</span>
                                         <span><i class="fas fa-book"></i> @author.TotalStories</span>
@@ -888,7 +889,7 @@
                     },
                     error: function () {
                         hotStoriesContainer.removeClass('loading');
-                        toastr.error('Đã xảy ra lỗi khi tải dữ liệu.');
+                        toastr.error('@Localizer["ErrorLoadingData"]');
                     }
                 });
             });
@@ -898,7 +899,7 @@
                 var authorId = $(this).data('author-id');
                 var button = $(this);
 
-                if (confirm('Bạn có chắc chắn muốn bỏ theo dõi tác giả này?')) {
+                if (confirm('@Localizer["UnfollowAuthorConfirm"]')) {
                     $.ajax({
                         url: '/Follow/UnfollowUser',
                         type: 'POST',
@@ -921,13 +922,13 @@
                                     }
                                 }, 300);
                                 
-                                toastr.success('Đã bỏ theo dõi tác giả');
+                                toastr.success('@Localizer["UnfollowSuccess"]');
                             } else {
-                                toastr.error(response.message || 'Có lỗi xảy ra');
+                                toastr.error(response.message || '@Localizer["ErrorOccurred"]');
                             }
                         },
                         error: function() {
-                            toastr.error('Có lỗi xảy ra khi bỏ theo dõi');
+                            toastr.error('@Localizer["ErrorUnfollow"]');
                         }
                     });
                 }

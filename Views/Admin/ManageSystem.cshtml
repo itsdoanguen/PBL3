@@ -1,6 +1,8 @@
 @model PBL3.ViewModels.Admin.AdminManageSystemViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Quản lý hệ thống";
+    ViewData["Title"] = Localizer["Manage System"];
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 @section Styles {
@@ -22,59 +24,59 @@
 <div class="admin-system-container">
     <!-- Section: Users -->
     <section class="admin-section mb-5" id="user-section">
-        <h3 class="section-title">Quản lý người dùng</h3>
+        <h3 class="section-title">@Localizer["Manage Users"]</h3>
         <ul class="nav nav-tabs mb-3" id="userTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="active-users-tab" data-bs-toggle="tab" data-bs-target="#active-users" type="button" role="tab">Active</button>
+                <button class="nav-link active" id="active-users-tab" data-bs-toggle="tab" data-bs-target="#active-users" type="button" role="tab">@Localizer["Active"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="warning1-users-tab" data-bs-toggle="tab" data-bs-target="#warning1-users" type="button" role="tab">Warning 1</button>
+                <button class="nav-link" id="warning1-users-tab" data-bs-toggle="tab" data-bs-target="#warning1-users" type="button" role="tab">@Localizer["Warning 1"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="warning2-users-tab" data-bs-toggle="tab" data-bs-target="#warning2-users" type="button" role="tab">Warning 2</button>
+                <button class="nav-link" id="warning2-users-tab" data-bs-toggle="tab" data-bs-target="#warning2-users" type="button" role="tab">@Localizer["Warning 2"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="banned-users-tab" data-bs-toggle="tab" data-bs-target="#banned-users" type="button" role="tab">Banned</button>
+                <button class="nav-link" id="banned-users-tab" data-bs-toggle="tab" data-bs-target="#banned-users" type="button" role="tab">@Localizer["Banned"]</button>
             </li>
         </ul>
         <div class="tab-content" id="userTabContent">
             <div class="tab-pane fade show active" id="active-users" role="tabpanel">
-                @Html.Partial("_UserTablePartial", Model.Users.Where(u => u.IsActive && u.TotalWarnings == 0).ToList())
+                <partial name="_UserTablePartial" model="@Model.Users.Where(u => u.IsActive && u.TotalWarnings == 0).ToList()" />
             </div>
             <div class="tab-pane fade" id="warning1-users" role="tabpanel">
-                @Html.Partial("_UserTablePartial", Model.Users.Where(u => u.IsActive && u.TotalWarnings == 1).ToList())
+                <partial name="_UserTablePartial" model="@Model.Users.Where(u => u.IsActive && u.TotalWarnings == 1).ToList()" />
             </div>
             <div class="tab-pane fade" id="warning2-users" role="tabpanel">
-                @Html.Partial("_UserTablePartial", Model.Users.Where(u => u.IsActive && u.TotalWarnings == 2).ToList())
+                <partial name="_UserTablePartial" model="@Model.Users.Where(u => u.IsActive && u.TotalWarnings == 2).ToList()" />
             </div>
             <div class="tab-pane fade" id="banned-users" role="tabpanel">
-                @Html.Partial("_UserTablePartial", Model.Users.Where(u => !u.IsActive).ToList())
+                <partial name="_UserTablePartial" model="@Model.Users.Where(u => !u.IsActive).ToList()" />
             </div>
         </div>
     </section>
     <!-- Section: Stories -->
     <section class="admin-section mb-5" id="story-section">
-        <h3 class="section-title">Quản lý truyện</h3>
+        <h3 class="section-title">@Localizer["Manage Stories"]</h3>
         <ul class="nav nav-tabs mb-3" id="storyTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="active-stories-tab" data-bs-toggle="tab" data-bs-target="#active-stories" type="button" role="tab">Active</button>
+                <button class="nav-link active" id="active-stories-tab" data-bs-toggle="tab" data-bs-target="#active-stories" type="button" role="tab">@Localizer["Active"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="completed-stories-tab" data-bs-toggle="tab" data-bs-target="#completed-stories" type="button" role="tab">Completed</button>
+                <button class="nav-link" id="completed-stories-tab" data-bs-toggle="tab" data-bs-target="#completed-stories" type="button" role="tab">@Localizer["Completed"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="locked-stories-tab" data-bs-toggle="tab" data-bs-target="#locked-stories" type="button" role="tab">Locked</button>
+                <button class="nav-link" id="locked-stories-tab" data-bs-toggle="tab" data-bs-target="#locked-stories" type="button" role="tab">@Localizer["Locked"]</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pendingreview-stories-tab" data-bs-toggle="tab" data-bs-target="#pendingreview-stories" type="button" role="tab">Pending Review</button>
+                <button class="nav-link" id="pendingreview-stories-tab" data-bs-toggle="tab" data-bs-target="#pendingreview-stories" type="button" role="tab">@Localizer["Pending Review"]</button>
             </li>
         </ul>
         <div class="tab-content" id="storyTabContent">
             <div class="tab-pane fade show active" id="active-stories" role="tabpanel">
-                @Html.Partial("_StoryTablePartial", Model.ActiveStories)
+                <partial name="_StoryTablePartial" model="@Model.ActiveStories" />
             </div>
             <div class="tab-pane fade" id="completed-stories" role="tabpanel">
-                @Html.Partial("_StoryTablePartial", Model.CompletedStories)
+                <partial name="_StoryTablePartial" model="@Model.CompletedStories" />
             </div>
             <div class="tab-pane fade" id="locked-stories" role="tabpanel">
                 <partial name="_StoryTablePartial" model="@Model.LockedStories" />
@@ -87,19 +89,19 @@
     <!-- Section: Genres -->
     <section class="admin-section" id="genre-section">
         <div class="section-header-flex">
-            <h3 class="section-title">Thể loại</h3>
+            <h3 class="section-title">@Localizer["Genres"]</h3>
             <button type="button" class="btn btn-success btn-sm btn-add-genre" data-bs-toggle="modal" data-bs-target="#addGenreModal">
-                <i class="bi bi-plus-circle"></i> Thêm thể loại
+                <i class="bi bi-plus-circle"></i> @Localizer["Add Genre"]
             </button>
         </div>
         <div class="table-responsive">
             <table class="table table-bordered table-hover genre-table">
                 <thead class="table-light">
                     <tr>
-                        <th>#</th>
-                        <th>Tên thể loại</th>
-                        <th>Số truyện</th>
-                        <th>Hành động</th>
+                        <th>@Localizer["#"]</th>
+                        <th>@Localizer["Genre Name"]</th>
+                        <th>@Localizer["Story Count"]</th>
+                        <th>@Localizer["Actions"]</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -110,9 +112,9 @@
                             <td>@Model.Genres[i].Name</td>
                             <td>@Model.Genres[i].StoryCount</td>
                             <td>
-                                <form method="post" asp-controller="Story" asp-action="DeleteGenre" onsubmit="return confirm('Bạn có chắc muốn xóa thể loại này?');">
+                                <form method="post" asp-controller="Story" asp-action="DeleteGenre" onsubmit="return confirm('@Localizer["Confirm Delete Genre"].Value');">
                                     <input type="hidden" name="genreId" value="@Model.Genres[i].Id" />
-                                    <button type="submit" class="btn btn-danger btn-sm" title="Xóa thể loại">
+                                    <button type="submit" class="btn btn-danger btn-sm" title="@Localizer["Delete Genre Title"].Value">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
@@ -131,18 +133,18 @@
                 <div class="modal-content">
                     <form method="post" asp-controller="Story" asp-action="AddGenre">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="addGenreModalLabel">Thêm thể loại mới</h5>
+                            <h5 class="modal-title" id="addGenreModalLabel">@Localizer["Add Genre Modal Title"].Value</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="genreName" class="form-label">Tên thể loại</label>
+                                <label for="genreName" class="form-label">@Localizer["Genre Name Label"].Value</label>
                                 <input type="text" class="form-control" id="genreName" name="genreName" required maxlength="255" autocomplete="off" />
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            <button type="submit" class="btn btn-success">Thêm</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"].Value</button>
+                            <button type="submit" class="btn btn-success">@Localizer["Add"].Value</button>
                         </div>
                     </form>
                 </div>

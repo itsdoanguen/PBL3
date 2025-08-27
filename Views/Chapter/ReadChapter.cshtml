@@ -1,4 +1,6 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterDetailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
     ViewData["Title"] = Model.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,12 +11,12 @@
 @functions {
     string GetTimeAgo(DateTime? date)
     {
-        if (date == null) return "Không rõ";
+        if (date == null) return Localizer["Unknown"].Value;
         var span = DateTime.Now - date.Value;
-        if (span.TotalDays >= 1) return $"{(int)span.TotalDays} ngày";
-        if (span.TotalHours >= 1) return $"{(int)span.TotalHours} giờ";
-        if (span.TotalMinutes >= 1) return $"{(int)span.TotalMinutes} phút";
-        return "Vừa xong";
+        if (span.TotalDays >= 1) return string.Format(Localizer["days"].Value, (int)span.TotalDays);
+        if (span.TotalHours >= 1) return string.Format(Localizer["hours"].Value, (int)span.TotalHours);
+        if (span.TotalMinutes >= 1) return string.Format(Localizer["minutes"].Value, (int)span.TotalMinutes);
+        return Localizer["just now"].Value;
     }
     int CountAllComments(IEnumerable<PBL3.ViewModels.Chapter.CommentTreeViewModel> comments)
     {
@@ -52,7 +54,7 @@
 <!-- Sidebar Danh sách chương -->
 <div id="chapterSidebar">
 	<div class="card-body">
-		<h5 class="card-title">Danh sách chương</h5>
+		<h5 class="card-title">@Localizer["Chapter List"]</h5>
 
 		<ul id="chap_list" class="unstyled">
 			@foreach (var chap in Model.ChapterList)
@@ -70,15 +72,15 @@
 
 <!-- Thanh nav dọc -->
 <div id="floatingNav">
-	<!-- Chương trước -->
+	<!-- Previous Chapter -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.PreviousChapterID"
-	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="Chương trước">
+	   class="btn btn-outline-secondary btn-sm @(Model.PreviousChapterID == -1 ? "disabled" : "")" title="@Localizer["Previous Chapter"]">
 		<i class="bi bi-arrow-left"></i>
 	</a>
 
-	<!-- Quay lại truyện -->
+	<!-- Back to Story -->
 	<a asp-controller="Story" asp-action="View" asp-route-id="@Model.StoryID"
-	   class="btn btn-outline-secondary btn-sm" title="Quay lại truyện">
+	   class="btn btn-outline-secondary btn-sm" title="@Localizer["Back to Story"]">
 		<i class="bi bi-house-door"></i>
 	</a>
 
@@ -86,7 +88,7 @@
 	<form asp-action="LikeChapter" asp-controller="LikeChapter" method="post" class="m-0 p-0 d-flex justify-content-center">
 		@Html.AntiForgeryToken()
 		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
-		<button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="Thích chương này">
+		<button type="submit" class="btn btn-sm @(Model.IsLikedByCurrentUser ? "btn-danger" : "btn-outline-danger") w-100" title="@Localizer["Like this chapter"]">
 			<i class="bi bi-heart@(Model.IsLikedByCurrentUser ? "-fill" : "")"></i>
 		</button>
 	</form>
@@ -95,17 +97,18 @@
 	<form asp-action="Toggle" asp-controller="Bookmark" method="post" class="m-0 p-0 d-flex justify-content-center">
 		@Html.AntiForgeryToken()
 		<input type="hidden" name="chapterId" value="@Model.ChapterID" />
-		<button type="submit" class="btn btn-sm @(Model.IsBookmarkedByCurrentUser ? "btn-primary" : "btn-outline-primary") w-100" title="@(Model.IsBookmarkedByCurrentUser ? "Bỏ bookmark chương này" : "Bookmark chương này")">
+		<button type="submit" class="btn btn-sm @(Model.IsBookmarkedByCurrentUser ? "btn-primary" : "btn-outline-primary") w-100" 
+			title="@(Model.IsBookmarkedByCurrentUser ? Localizer["Remove Bookmark"] : Localizer["Bookmark this chapter"])">
 			<i class="bi bi-bookmark@(Model.IsBookmarkedByCurrentUser ? "-fill" : "")"></i>
 		</button>
 	</form>
 
-	<!-- Danh sách chương -->
-	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="Danh sách chương">
+	<!-- Chapter List -->
+	<button class="btn btn-outline-secondary btn-sm" onclick="toggleSidebar()" title="@Localizer["Chapter List"]">
 		<i class="bi bi-list"></i>
 	</button>
-	<!-- Cài đặt đọc -->
-	<button class="btn btn-outline-secondary btn-sm" title="Cài đặt đọc" data-bs-toggle="modal" data-bs-target="#styleModal">
+	<!-- Reading Settings -->
+	<button class="btn btn-outline-secondary btn-sm" title="@Localizer["Reading Settings"]" data-bs-toggle="modal" data-bs-target="#styleModal">
 		<i class="bi bi-gear"></i>
 	</button>
 
@@ -114,16 +117,16 @@
 		<!-- Report Button -->
 		<button type="button" 
 				class="btn btn-outline-danger btn-sm" 
-				title="Báo cáo chương này"
+				title="@Localizer["Report this chapter"]"
 				data-bs-toggle="modal" 
 				data-bs-target="#reportChapterModal">
 			<i class="bi bi-flag-fill"></i>
 		</button>
 	}
 
-	<!-- Chương sau -->
+	<!-- Next Chapter -->
 	<a asp-controller="Chapter" asp-action="ReadChapter" asp-route-id="@Model.NextChapterID"
-	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="Chương sau">
+	   class="btn btn-outline-secondary btn-sm @(Model.NextChapterID == -1 ? "disabled" : "")" title="@Localizer["Next Chapter"]">
 		<i class="bi bi-arrow-right"></i>
 	</a>
 </div>
@@ -138,9 +141,9 @@
 				<h2 class="title-item text-xl fw-bold">@Model.StoryTitle</h2>
 				<h4 class="title-item fw-bold">@Model.Title</h4>
 				<h6 class="chapter-meta">
-					<a href="#chapter-comments" class="text-decoration-underline">@CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()) Bình luận</a> -
-					Độ dài: @Model.TotalWord từ -
-					Cập nhật:
+					<a href="#chapter-comments" class="text-decoration-underline">@string.Format(Localizer["comments count"].Value, CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()))</a> -
+					@string.Format(Localizer["word count"].Value, Model.TotalWord) -
+					@Localizer["updated at"].Value
 					<time title="@Model.UpdatedAt?.ToString("dd-MM-yyyy HH:mm:ss")" datetime="@Model.UpdatedAt?.ToString("s")">
 						@GetTimeAgo(Model.UpdatedAt)
 					</time>
@@ -187,7 +190,7 @@
 
 			<!-- Phần bình luận -->
 			<div class="chapter-comments center-cl">
-				<h5 class="mb-3" id="chapter-comments">Bình luận (@CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()))</h5>
+				<h5 class="mb-3" id="chapter-comments">@string.Format(Localizer["comments count"].Value, CountAllComments(Model.Comments ?? new List<PBL3.ViewModels.Chapter.CommentTreeViewModel>()))</h5>
 				<!-- Form bình luận -->
 				<div id="mainCommentForm">
 					@await Html.PartialAsync("_CommentFormPartial", new PBL3.ViewModels.Chapter.CommentFormViewModel
@@ -226,15 +229,15 @@
 				<input type="hidden" name="ReturnChapterID" value="@Model.ChapterID" />
 
 				<div class="modal-header">
-					<h5 class="modal-title" id="styleModalLabel">Cài đặt đọc</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+					<h5 class="modal-title" id="styleModalLabel">@Localizer["Reading Settings"]</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["Close"]"></button>
 				</div>
 
 				<div class="modal-body">
 
-					<!-- Font chữ -->
+					<!-- Font -->
 					<div class="mb-3">
-						<label for="FontFamily" class="form-label">Phông chữ</label>
+						<label for="FontFamily" class="form-label">@Localizer["Font"]</label>
 						<select name="FontFamily" class="form-select">
 							@foreach (var font in Enum.GetValues(typeof(PBL3.Models.FontFamily)))
 							{
@@ -244,15 +247,15 @@
 						</select>
 					</div>
 
-					<!-- Cỡ chữ -->
+					<!-- Font Size -->
 					<div class="mb-3">
-						<label for="FontSize" class="form-label">Cỡ chữ (px)</label>
+						<label for="FontSize" class="form-label">@Localizer["Font Size"]</label>
 						<input type="number" name="FontSize" class="form-control" value="@Model.Style.FontSize" min="12" max="48" />
 					</div>
 
-					<!-- Màu nền -->
+					<!-- Background Color -->
 					<div class="mb-3">
-						<label for="BackgroundColor" class="form-label">Màu nền</label>
+						<label for="BackgroundColor" class="form-label">@Localizer["Background Color"]</label>
 						<select name="BackgroundColor" class="form-select">
 							@foreach (var bg in Enum.GetValues(typeof(PBL3.Models.BackgroundColor)))
 							{
@@ -262,23 +265,23 @@
 						</select>
 					</div>
 
-					<!-- Màu chữ hiển thị (read-only) -->
+					<!-- Text Color (read-only) -->
 					<div class="mb-3">
-						<label class="form-label">Màu chữ hiển thị</label>
+						<label class="form-label">@Localizer["Text Color"]</label>
 						<input type="color" class="form-control form-control-color" value="@Model.Style.TextColorHex" disabled />
 					</div>
 
-					<!-- Màu nền hiển thị (read-only) -->
+					<!-- Background Color Preview (read-only) -->
 					<div class="mb-3">
-						<label class="form-label">Màu nền hiển thị</label>
+						<label class="form-label">@Localizer["Background Color"]</label>
 						<input type="color" class="form-control form-control-color" value="@Model.Style.BackgroundColorHex" disabled />
 					</div>
 
 				</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-					<button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+					<button type="submit" class="btn btn-primary">@Localizer["Save Changes"]</button>
 				</div>
 			</form>
 		</div>
@@ -290,8 +293,8 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Báo cáo chương truyện</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title">@Localizer["Report Chapter"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="@Localizer["Close"]"></button>
             </div>
             <form asp-controller="Report" asp-action="ReportChapter" method="post" class="report-form">
                 @Html.AntiForgeryToken()
@@ -299,15 +302,15 @@
                     <input type="hidden" name="chapterId" value="@Model.ChapterID" />
                     <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
                     <div class="mb-3">
-                        <label for="message" class="form-label">Lý do báo cáo:</label>
+                        <label for="message" class="form-label">@Localizer["Report Reason"]</label>
                         <textarea class="form-control" id="message" name="message" 
                                   rows="3" required 
-                                  placeholder="Vui lòng mô tả chi tiết lý do báo cáo chương truyện này..."></textarea>
+                                  placeholder="@Localizer["Enter report reason..."]"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="submit" class="btn btn-danger">Gửi báo cáo</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Close"]</button>
+                    <button type="submit" class="btn btn-danger">@Localizer["Send Report"]</button>
                 </div>
             </form>
         </div>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <data name="WelcomeTitle" xml:space="preserve">
+    <value>Chào mừng đến với PBL3</value>
+  </data>
+  <data name="WhyChooseUsTitle" xml:space="preserve">
+    <value>Tại Sao Chọn Chúng Tôi?</value>
+  </data>
+  <data name="ReadyToStartTitle" xml:space="preserve">
+    <value>Sẵn Sàng Bắt Đầu Hành Trình?</value>
+  </data>
+  <data name="ReadAnywhereTitle" xml:space="preserve">
+    <value>Đọc Mọi Lúc Mọi Nơi</value>
+  </data>
+  <data name="ActiveCommunityTitle" xml:space="preserve">
+    <value>Cộng Đồng Sôi Động</value>
+  </data>
+  <data name="SmartSuggestionsTitle" xml:space="preserve">
+    <value>Gợi Ý Thông Minh</value>
+  </data>
+  <data name="FreeWritingTitle" xml:space="preserve">
+    <value>Sáng Tác Tự Do</value>
+  </data>
+  <data name="PersonalManagementTitle" xml:space="preserve">
+    <value>Quản Lý Cá Nhân</value>
+  </data>
+  <data name="SecurityTitle" xml:space="preserve">
+    <value>An Toàn &amp; Bảo Mật</value>
+  </data>
+  <data name="Explore" xml:space="preserve">
+    <value>Khám Phá</value>
+  </data>
+  <data name="StoryWorld" xml:space="preserve">
+    <value>Thế Giới Truyện</value>
+  </data>
+  <data name="Endless" xml:space="preserve">
+    <value>Bất Tận</value>
+  </data>
+  <data name="HeroSubtitle" xml:space="preserve">
+    <value>Nơi hội tụ những câu chuyện tuyệt vời nhất, nơi bạn có thể đọc, chia sẻ và khám phá vô vàn tác phẩm từ các tác giả tài năng trên khắp thế giới.</value>
+  </data>
+  <data name="JoinNow" xml:space="preserve">
+    <value>Tham Gia Ngay</value>
+  </data>
+  <data name="ExploreStories" xml:space="preserve">
+    <value>Khám Phá Truyện</value>
+  </data>
+  <data name="ScrollDownToExplore" xml:space="preserve">
+    <value>Cuộn xuống để khám phá</value>
+  </data>
+  <data name="WhyChooseUs" xml:space="preserve">
+    <value>Những tính năng độc đáo giúp bạn có trải nghiệm đọc truyện tuyệt vời nhất</value>
+  </data>
+  <data name="ReadAnywhere" xml:space="preserve">
+    <value>Giao diện tối ưu cho mọi thiết bị, cho phép bạn đọc truyện một cách thoải mái trên điện thoại, máy tính bảng hay máy tính.</value>
+  </data>
+  <data name="ActiveCommunity" xml:space="preserve">
+    <value>Kết nối với hàng nghìn độc giả và tác giả, chia sẻ cảm xúc, bình luận và thảo luận về những câu chuyện yêu thích.</value>
+  </data>
+  <data name="SmartSuggestions" xml:space="preserve">
+    <value>Hệ thống AI thông minh giúp gợi ý những truyện phù hợp với sở thích của bạn, giúp bạn khám phá những tác phẩm mới.</value>
+  </data>
+  <data name="FreeWriting" xml:space="preserve">
+    <value>Công cụ viết truyện mạnh mẽ với editor hiện đại, giúp bạn dễ dàng sáng tác và chia sẻ tác phẩm của mình.</value>
+  </data>
+  <data name="PersonalManagement" xml:space="preserve">
+    <value>Lưu trữ và quản lý danh sách truyện yêu thích, theo dõi tiến độ đọc và không bao giờ bỏ lỡ chương mới.</value>
+  </data>
+  <data name="Security" xml:space="preserve">
+    <value>Hệ thống bảo mật cao cấp, bảo vệ thông tin cá nhân và tác phẩm của bạn một cách tuyệt đối.</value>
+  </data>
+  <data name="DiverseStories" xml:space="preserve">
+    <value>Truyện Đa Dạng</value>
+  </data>
+  <data name="ActiveReaders" xml:space="preserve">
+    <value>Độc Giả Tích Cực</value>
+  </data>
+  <data name="TalentedAuthors" xml:space="preserve">
+    <value>Tác Giả Tài Năng</value>
+  </data>
+  <data name="PublishedChapters" xml:space="preserve">
+    <value>Chương Đã Đăng</value>
+  </data>
+  <data name="ReadyToStart" xml:space="preserve">
+    <value>Tham gia cộng đồng của chúng tôi ngay hôm nay và khám phá thế giới truyện bất tận</value>
+  </data>
+  <data name="RegisterFree" xml:space="preserve">
+    <value>Đăng Ký Miễn Phí</value>
+  </data>
+  <data name="AlreadyHaveAccount" xml:space="preserve">
+    <value>Đã có tài khoản?</value>
+  </data>
+  <data name="LoginNow" xml:space="preserve">
+    <value>Đăng nhập ngay</value>
+  </data>
+</root>

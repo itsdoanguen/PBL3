@@ -1,6 +1,8 @@
 @model List<PBL3.ViewModels.User.StoryViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = ViewBag.PageTitle ?? "Truyện từ tác giả bạn theo dõi";
+    ViewData["Title"] = ViewBag.PageTitle ?? Localizer["Stories from Authors You Follow"].Value;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -162,11 +164,11 @@
         <div class="discovery-stats">
             <div class="stat-badge">
                 <i class="fas fa-book me-2"></i>
-                <strong>@ViewBag.TotalCount</strong> truyện
+                @string.Format(Localizer["Stories Count"].Value, ViewBag.TotalCount)
             </div>
             <div class="stat-badge">
                 <i class="fas fa-file-alt me-2"></i>
-                Trang <strong>@ViewBag.CurrentPage</strong> / <strong>@ViewBag.TotalPages</strong>
+                @Localizer["Page"] <strong>@ViewBag.CurrentPage</strong> / <strong>@ViewBag.TotalPages</strong>
             </div>
         </div>
     </div>
@@ -184,14 +186,14 @@
                         <div class="story-title">@story.Title</div>
                         <div class="story-author"><i class="fas fa-user me-1"></i> @story.AuthorName</div>
                         <div class="story-stats">
-                            <span><i class="fas fa-eye me-1"></i> @story.ViewCount</span>
-                            <span><i class="fas fa-heart me-1"></i> @story.LikeCount</span>
-                            <span><i class="fas fa-users me-1"></i> @story.FollowCount</span>
-                            <span><i class="fas fa-book me-1"></i> @story.ChapterCount</span>
+                            <span><i class="fas fa-eye me-1"></i> @string.Format(Localizer["Views"].Value, story.ViewCount)</span>
+                            <span><i class="fas fa-heart me-1"></i> @string.Format(Localizer["Likes"].Value, story.LikeCount)</span>
+                            <span><i class="fas fa-users me-1"></i> @string.Format(Localizer["Follows"].Value, story.FollowCount)</span>
+                            <span><i class="fas fa-book me-1"></i> @string.Format(Localizer["Chapters"].Value, story.ChapterCount)</span>
                         </div>
                         <div class="story-description">@story.Description</div>
                         <a asp-controller="Story" asp-action="View" asp-route-id="@story.Id" class="btn-view-story mt-2">
-                            <i class="fas fa-book-open me-2"></i>Đọc truyện
+                            <i class="fas fa-book-open me-2"></i>@Localizer["Read Story"]
                         </a>
                     </div>
                 </div>
@@ -247,10 +249,10 @@
             <div class="mb-4">
                 <i class="fas fa-book fa-5x text-muted"></i>
             </div>
-            <h3 class="text-muted">Không có truyện nào từ tác giả bạn theo dõi</h3>
-            <p class="text-muted">Hãy theo dõi thêm tác giả để cập nhật truyện mới nhất.</p>
+            <h3 class="text-muted">@Localizer["No Stories Found"]</h3>
+            <p class="text-muted">@Localizer["Follow More Authors"]</p>
             <a asp-controller="Discovery" asp-action="FollowedAuthors" class="btn btn-primary">
-                <i class="fas fa-users me-2"></i>Khám phá tác giả
+                <i class="fas fa-users me-2"></i>@Localizer["Explore Authors"]
             </a>
         </div>
     }

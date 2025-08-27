@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="Report Statistics" xml:space="preserve">
+    <value>Báo cáo thống kê</value>
+  </data>
+  <data name="Time Filter" xml:space="preserve">
+    <value>Bộ lọc thời gian</value>
+  </data>
+  <data name="From Date" xml:space="preserve">
+    <value>Từ ngày</value>
+  </data>
+  <data name="To Date" xml:space="preserve">
+    <value>Đến ngày</value>
+  </data>
+  <data name="Filter Data" xml:space="preserve">
+    <value>Lọc dữ liệu</value>
+  </data>
+
+  <data name="New Users By Day" xml:space="preserve">
+    <value>Người dùng mới theo ngày</value>
+  </data>
+  <data name="New Stories By Day" xml:space="preserve">
+    <value>Truyện mới theo ngày</value>
+  </data>
+  <data name="Genre" xml:space="preserve">
+    <value>Thể loại</value>
+  </data>
+  <data name="All" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Lọc</value>
+  </data>
+
+  <data name="Report By Day" xml:space="preserve">
+    <value>Báo cáo theo ngày</value>
+  </data>
+  <data name="Report By Type" xml:space="preserve">
+    <value>Báo cáo theo loại</value>
+  </data>
+  <data name="Aggregated Statistics" xml:space="preserve">
+    <value>Thống kê tổng hợp</value>
+  </data>
+
+  <data name="Total New Users" xml:space="preserve">
+    <value>Tổng user mới</value>
+  </data>
+  <data name="Total New Stories" xml:space="preserve">
+    <value>Tổng truyện mới</value>
+  </data>
+  <data name="Total Reports" xml:space="preserve">
+    <value>Tổng báo cáo</value>
+  </data>
+  <data name="New Stories By Tag" xml:space="preserve">
+    <value>Truyện mới theo thể loại</value>
+  </data>
+
+  <data name="DateStartGreaterThanEnd" xml:space="preserve">
+    <value>Ngày bắt đầu không được lớn hơn ngày kết thúc.</value>
+  </data>
+  <data name="DateEndInFuture" xml:space="preserve">
+    <value>Không được chọn ngày kết thúc trong tương lai.</value>
+  </data>
+
+</root>

@@ -1,12 +1,15 @@
 ﻿@model PBL3.ViewModels.Chapter.CommentTreeViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @functions {
     string GetTimeAgo(DateTime? date)
     {
-        var span = DateTime.Now - date;
-        if (span?.TotalDays >= 1) return $"{(int)span?.TotalDays} ngày";
-        if (span?.TotalHours >= 1) return $"{(int)span?.TotalHours} giờ";
-        if (span?.TotalMinutes >= 1) return $"{(int)span?.TotalMinutes} phút";
-        return "Vừa xong";
+        if (date == null) return Localizer["Unknown"].Value;
+        var span = DateTime.Now - date.Value;
+        if (span.TotalDays >= 1) return string.Format(Localizer["DaysAgo"].Value, (int)span.TotalDays);
+        if (span.TotalHours >= 1) return string.Format(Localizer["HoursAgo"].Value, (int)span.TotalHours);
+        if (span.TotalMinutes >= 1) return string.Format(Localizer["MinutesAgo"].Value, (int)span.TotalMinutes);
+        return Localizer["JustNow"].Value;
     }
 }
 <div class="comment-container @(Model.Comment.ParentCommentID != null ? "is-reply" : "")" id="comment-@Model.Comment.CommentID">
@@ -22,14 +25,14 @@
         @if (!string.IsNullOrEmpty(Model.Comment.ParentUserName))
         {
             <div class="reply-to">
-                Trả lời <strong>@Model.Comment.ParentUserName</strong>
+                @Localizer["Reply"] <strong>@Model.Comment.ParentUserName</strong>
             </div>
         }
         <div class="comment-actions">
             <button type="button" class="btn btn-sm btn-outline-primary reply-btn"
                     data-comment-id="@Model.Comment.CommentID"
                     data-user-name="@Model.Comment.UserName">
-                Trả lời
+                @Localizer["Reply"]
             </button>
             @if ((ViewBag.CurrentUserID != null && (int)ViewBag.CurrentUserID == Model.Comment.UserID && !Model.Comment.isDeleted)
                 || (ViewBag.IsModerator == true && !Model.Comment.isDeleted))
@@ -39,7 +42,7 @@
                     <input type="hidden" name="commentId" value="@Model.Comment.CommentID" />
                     <input type="hidden" name="storyId" value="@Model.Comment.StoryID" />
                     <input type="hidden" name="chapterId" value="@Model.Comment.ChapterID" />
-                    <button type="submit" class="btn btn-sm text-danger p-0" title="Xóa bình luận" style="background: none; border: none;" onclick="return confirm('Bạn có chắc muốn xóa bình luận này?');">
+                    <button type="submit" class="btn btn-sm text-danger p-0" title="@Localizer["DeleteCommentTitle"]" style="background: none; border: none;" onclick="return confirm('@Localizer["ConfirmDeleteComment"]');">
                         <i class="bi bi-trash small"></i>
                     </button>
                 </form>
@@ -49,8 +52,8 @@
         {
             @if (ViewBag.IsModerator == true)
             {
-                <span class="text-muted fst-italic">[Ẩn] Bình luận này đã bị xóa
-                    <a href="#" class="ms-1" data-bs-toggle="collapse" data-bs-target="#deleted-content-@Model.Comment.CommentID" aria-expanded="false" aria-controls="deleted-content-@Model.Comment.CommentID" title="Xem nội dung đã xóa">
+                <span class="text-muted fst-italic">@Localizer["HiddenCommentModerator"]
+                    <a href="#" class="ms-1" data-bs-toggle="collapse" data-bs-target="#deleted-content-@Model.Comment.CommentID" aria-expanded="false" aria-controls="deleted-content-@Model.Comment.CommentID" title="@Localizer["ViewDeletedContent"]">
                         <i class="bi bi-eye small"></i>
                     </a>
                 </span>
@@ -60,7 +63,7 @@
             }
             else
             {
-                <span class="text-muted fst-italic">Bình luận này đã bị xóa</span>
+                <span class="text-muted fst-italic">@Localizer["CommentDeleted"]</span>
             }
         }
         else

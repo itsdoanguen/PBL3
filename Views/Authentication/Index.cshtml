@@ -1,5 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Chào mừng đến với PBL3";
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["WelcomeTitle"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -24,22 +26,21 @@
     <div class="container">
         <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
             <h1 class="hero-title">
-                <span class="title-line">Khám Phá</span>
-                <span class="title-line highlight">Thế Giới Truyện</span>
-                <span class="title-line">Bất Tận</span>
+                    <span class="title-line">@Localizer["Explore"]</span>
+                    <span class="title-line highlight">@Localizer["StoryWorld"]</span>
+                    <span class="title-line">@Localizer["Endless"]</span>
             </h1>
-            <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
-                Nơi hội tụ những câu chuyện tuyệt vời nhất, nơi bạn có thể đọc, chia sẻ và khám phá
-                vô vàn tác phẩm từ các tác giả tài năng trên khắp thế giới.
-            </p>
+                <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="300">
+                    @Localizer["HeroSubtitle"]
+                </p>
             <div class="hero-actions" data-aos="fade-up" data-aos-delay="600">
                 <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary">
-                    <i class="fas fa-user-plus"></i>
-                    Tham Gia Ngay
+                        <i class="fas fa-user-plus"></i>
+                        @Localizer["JoinNow"]
                 </a>
                 <a asp-controller="Authentication" asp-action="Login" class="btn btn-secondary">
-                    <i class="fas fa-compass"></i>
-                    Khám Phá Truyện
+                        <i class="fas fa-compass"></i>
+                        @Localizer["ExploreStories"]
                 </a>
             </div>
         </div>
@@ -49,7 +50,7 @@
         <div class="scroll-arrow">
             <i class="fas fa-chevron-down"></i>
         </div>
-        <span>Cuộn xuống để khám phá</span>
+        <span>@Localizer["ScrollDownToExplore"]</span>
     </div>
 </section>
 
@@ -57,8 +58,8 @@
 <section class="features-section">
     <div class="container">
         <div class="section-header" data-aos="fade-up">
-            <h2 class="section-title">Tại Sao Chọn Chúng Tôi?</h2>
-            <p class="section-subtitle">Những tính năng độc đáo giúp bạn có trải nghiệm đọc truyện tuyệt vời nhất</p>
+            <h2 class="section-title">@Localizer["WhyChooseUsTitle"]</h2>
+                <p class="section-subtitle">@Localizer["WhyChooseUs"]</p>
         </div>
 
         <div class="features-grid">
@@ -66,66 +67,60 @@
                 <div class="feature-icon">
                     <i class="fas fa-book-reader"></i>
                 </div>
-                <h3 class="feature-title">Đọc Mọi Lúc Mọi Nơi</h3>
-                <p class="feature-description">
-                    Giao diện tối ưu cho mọi thiết bị, cho phép bạn đọc truyện một cách thoải mái
-                    trên điện thoại, máy tính bảng hay máy tính.
-                </p>
+                <h3 class="feature-title">@Localizer["ReadAnywhereTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["ReadAnywhere"]
+                    </p>
             </div>
 
             <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
                 <div class="feature-icon">
                     <i class="fas fa-users"></i>
                 </div>
-                <h3 class="feature-title">Cộng Đồng Sôi Động</h3>
-                <p class="feature-description">
-                    Kết nối với hàng nghìn độc giả và tác giả, chia sẻ cảm xúc,
-                    bình luận và thảo luận về những câu chuyện yêu thích.
-                </p>
+                <h3 class="feature-title">@Localizer["ActiveCommunityTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["ActiveCommunity"]
+                    </p>
             </div>
 
             <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
                 <div class="feature-icon">
                     <i class="fas fa-star"></i>
                 </div>
-                <h3 class="feature-title">Gợi Ý Thông Minh</h3>
-                <p class="feature-description">
-                    Hệ thống AI thông minh giúp gợi ý những truyện phù hợp với
-                    sở thích của bạn, giúp bạn khám phá những tác phẩm mới.
-                </p>
+                <h3 class="feature-title">@Localizer["SmartSuggestionsTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["SmartSuggestions"]
+                    </p>
             </div>
 
             <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
                 <div class="feature-icon">
                     <i class="fas fa-pen-fancy"></i>
                 </div>
-                <h3 class="feature-title">Sáng Tác Tự Do</h3>
-                <p class="feature-description">
-                    Công cụ viết truyện mạnh mẽ với editor hiện đại,
-                    giúp bạn dễ dàng sáng tác và chia sẻ tác phẩm của mình.
-                </p>
+                <h3 class="feature-title">@Localizer["FreeWritingTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["FreeWriting"]
+                    </p>
             </div>
 
             <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
                 <div class="feature-icon">
                     <i class="fas fa-bookmark"></i>
                 </div>
-                <h3 class="feature-title">Quản Lý Cá Nhân</h3>
-                <p class="feature-description">
-                    Lưu trữ và quản lý danh sách truyện yêu thích,
-                    theo dõi tiến độ đọc và không bao giờ bỏ lỡ chương mới.
-                </p>
+                <h3 class="feature-title">@Localizer["PersonalManagementTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["PersonalManagement"]
+                    </p>
             </div>
 
             <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
                 <div class="feature-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
-                <h3 class="feature-title">An Toàn & Bảo Mật</h3>
-                <p class="feature-description">
-                    Hệ thống bảo mật cao cấp, bảo vệ thông tin cá nhân
-                    và tác phẩm của bạn một cách tuyệt đối.
-                </p>
+                <h3 class="feature-title">@Localizer["SecurityTitle"]</h3>
+                    <p class="feature-description">
+                        @Localizer["Security"]
+                    </p>
             </div>
         </div>
     </div>
@@ -137,19 +132,19 @@
         <div class="stats-grid">
             <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
                 <div class="stat-number">10,000+</div>
-                <div class="stat-label">Truyện Đa Dạng</div>
+                    <div class="stat-label">@Localizer["DiverseStories"]</div>
             </div>
             <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
                 <div class="stat-number">50,000+</div>
-                <div class="stat-label">Độc Giả Tích Cực</div>
+                    <div class="stat-label">@Localizer["ActiveReaders"]</div>
             </div>
             <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
                 <div class="stat-number">5,000+</div>
-                <div class="stat-label">Tác Giả Tài Năng</div>
+                    <div class="stat-label">@Localizer["TalentedAuthors"]</div>
             </div>
             <div class="stat-item" data-aos="fade-up" data-aos-delay="400">
                 <div class="stat-number">1M+</div>
-                <div class="stat-label">Chương Đã Đăng</div>
+                    <div class="stat-label">@Localizer["PublishedChapters"]</div>
             </div>
         </div>
     </div>
@@ -159,18 +154,18 @@
 <section class="cta-section">
     <div class="container">
         <div class="cta-content" data-aos="fade-up">
-            <h2 class="cta-title">Sẵn Sàng Bắt Đầu Hành Trình?</h2>
-            <p class="cta-subtitle">
-                Tham gia cộng đồng của chúng tôi ngay hôm nay và khám phá thế giới truyện bất tận
-            </p>
+            <h2 class="cta-title">@Localizer["ReadyToStartTitle"]</h2>
+                <p class="cta-subtitle">
+                    @Localizer["ReadyToStart"]
+                </p>
             <div class="cta-actions">
                 <a asp-controller="Authentication" asp-action="Register" class="btn btn-primary btn-large">
-                    <i class="fas fa-rocket"></i>
-                    Đăng Ký Miễn Phí
+                        <i class="fas fa-rocket"></i>
+                        @Localizer["RegisterFree"]
                 </a>
                 <div class="login-link">
-                    Đã có tài khoản?
-                    <a asp-controller="Authentication" asp-action="Login">Đăng nhập ngay</a>
+                        @Localizer["AlreadyHaveAccount"]
+                        <a asp-controller="Authentication" asp-action="Login">@Localizer["LoginNow"]</a>
                 </div>
             </div>
         </div>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Chapter List" xml:space="preserve">
+    <value>Danh sách chương</value>
+  </data>
+  <data name="Previous Chapter" xml:space="preserve">
+    <value>Chương trước</value>
+  </data>
+  <data name="Next Chapter" xml:space="preserve">
+    <value>Chương sau</value>
+  </data>
+  <data name="Back to Story" xml:space="preserve">
+    <value>Quay lại truyện</value>
+  </data>
+  <data name="Like this chapter" xml:space="preserve">
+    <value>Thích chương này</value>
+  </data>
+  <data name="Remove Bookmark" xml:space="preserve">
+    <value>Bỏ bookmark chương này</value>
+  </data>
+  <data name="Bookmark this chapter" xml:space="preserve">
+    <value>Bookmark chương này</value>
+  </data>
+  <data name="Reading Settings" xml:space="preserve">
+    <value>Cài đặt đọc</value>
+  </data>
+  <data name="Report this chapter" xml:space="preserve">
+    <value>Báo cáo chương này</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+  </data>
+  <data name="Font" xml:space="preserve">
+    <value>Phông chữ</value>
+  </data>
+  <data name="Font Size" xml:space="preserve">
+    <value>Cỡ chữ (px)</value>
+  </data>
+  <data name="Background Color" xml:space="preserve">
+    <value>Màu nền</value>
+  </data>
+  <data name="Text Color" xml:space="preserve">
+    <value>Màu chữ hiển thị</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Save Changes" xml:space="preserve">
+    <value>Lưu thay đổi</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Đóng</value>
+  </data>
+  <data name="Report Chapter" xml:space="preserve">
+    <value>Báo cáo chương truyện</value>
+  </data>
+  <data name="Report Reason" xml:space="preserve">
+    <value>Lý do báo cáo:</value>
+  </data>
+  <data name="Enter report reason..." xml:space="preserve">
+    <value>Vui lòng mô tả chi tiết lý do báo cáo chương truyện này...</value>
+  </data>
+  <data name="Send Report" xml:space="preserve">
+    <value>Gửi báo cáo</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Không rõ</value>
+  </data>
+  <data name="days" xml:space="preserve">
+    <value>{0} ngày</value>
+  </data>
+  <data name="hours" xml:space="preserve">
+    <value>{0} giờ</value>
+  </data>
+  <data name="minutes" xml:space="preserve">
+    <value>{0} phút</value>
+  </data>
+  <data name="just now" xml:space="preserve">
+    <value>Vừa xong</value>
+  </data>
+  <data name="comments count" xml:space="preserve">
+    <value>{0} Bình luận</value>
+  </data>
+  <data name="word count" xml:space="preserve">
+    <value>Độ dài: {0} từ</value>
+  </data>
+  <data name="updated at" xml:space="preserve">
+    <value>Cập nhật:</value>
+  </data>
+</root>

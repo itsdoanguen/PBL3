@@ -1,5 +1,8 @@
 ﻿@model PBL3.ViewModels.Chapter.CommentFormViewModel
 
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
 <form asp-action="Post" asp-controller="Comment" method="post" class="comment-form mb-4">
     @Html.AntiForgeryToken()
     <input type="hidden" name="ChapterID" value="@Model.ChapterID" />
@@ -9,18 +12,18 @@
 
     @if (!string.IsNullOrEmpty(Model.ReplyingToUsername))
     {
-        <small class="text-muted">Đang trả lời: <span id="replyingToDisplay-@Model.FormId">@Model.ReplyingToUsername</span></small>
+        <small class="text-muted">@Localizer["ReplyingTo"] <span id="replyingToDisplay-@Model.FormId">@Model.ReplyingToUsername</span></small>
     }
 
     <div class="mb-3 mt-2">
-        <textarea name="Content" rows="3" class="form-control" placeholder="Viết bình luận..."></textarea>
+        <textarea name="Content" rows="3" class="form-control" placeholder="@Localizer["CommentPlaceholder"]"></textarea>
     </div>
 
     <div class="d-flex justify-content-between align-items-center">
-        <button type="submit" class="btn btn-primary">Gửi bình luận</button>
+        <button type="submit" class="btn btn-primary">@Localizer["SubmitComment"]</button>
         @if (Model.ParentCommentID != null && Model.ParentCommentID > 0)
         {
-            <button type="button" class="btn btn-link" id="cancelReplyBtn-@Model.FormId" onclick="cancelReply(@Model.FormId)">Hủy trả lời</button>
+            <button type="button" class="btn btn-link" id="cancelReplyBtn-@Model.FormId" onclick="cancelReply(@Model.FormId)">@Localizer["CancelReply"]</button>
         }
     </div>
 </form>

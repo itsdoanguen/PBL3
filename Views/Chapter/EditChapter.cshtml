@@ -1,6 +1,8 @@
 ﻿@model PBL3.ViewModels.Chapter.ChapterEditViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @{
-    ViewData["Title"] = "Edit Chapter";
+    ViewData["Title"] = Localizer["Edit Chapter"];
     Layout = "~/Views/Shared/_ChapterEditorLayout.cshtml";
     ViewBag.StoryID = Model.StoryID;
 	ViewBag.ChapterID = Model.ChapterID;
@@ -31,25 +33,25 @@
         @Html.HiddenFor(m => m.StoryID)
         <div class="mb-3">
             @Html.LabelFor(m => m.Title, htmlAttributes: new { @class = "form-label" })
-            @Html.TextBoxFor(m => m.Title, new { @class = "form-control chapter-title-input", placeholder = "Nhập tiêu đề chương..." })
+            @Html.TextBoxFor(m => m.Title, new { @class = "form-control chapter-title-input", placeholder = Localizer["Enter chapter title..."].Value })
             @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
         </div>
         <div class="mb-3">
-            <label class="form-label">Nội dung chương</label>
+            <label class="form-label">@Localizer["Chapter Content"]</label>
             <div class="chapter-editor-toolbar" id="chapterEditorToolbar">
-                <button type="button" data-cmd="bold" title="In đậm"><b>B</b></button>
-                <button type="button" data-cmd="italic" title="In nghiêng"><i>I</i></button>
-                <button type="button" data-cmd="underline" title="Gạch chân"><u>U</u></button>
-                <button type="button" data-cmd="insertUnorderedList" title="Danh sách"><i class="bi bi-list-ul"></i>•</button>
-                <button type="button" data-cmd="insertOrderedList" title="Danh sách số"><i class="bi bi-list-ol"></i>1.</button>
-                <button type="button" data-cmd="undo" title="Hoàn tác"><i class="bi bi-arrow-counterclockwise"></i></button>
-                <button type="button" data-cmd="redo" title="Làm lại"><i class="bi bi-arrow-clockwise"></i></button>
+                <button type="button" data-cmd="bold" title="@Localizer["Bold"]"><b>B</b></button>
+                <button type="button" data-cmd="italic" title="@Localizer["Italic"]"><i>I</i></button>
+                <button type="button" data-cmd="underline" title="@Localizer["Underline"]"><u>U</u></button>
+                <button type="button" data-cmd="insertUnorderedList" title="@Localizer["List"]"><i class="bi bi-list-ul"></i>•</button>
+                <button type="button" data-cmd="insertOrderedList" title="@Localizer["Numbered List"]"><i class="bi bi-list-ol"></i>1.</button>
+                <button type="button" data-cmd="undo" title="@Localizer["Undo"]"><i class="bi bi-arrow-counterclockwise"></i></button>
+                <button type="button" data-cmd="redo" title="@Localizer["Redo"]"><i class="bi bi-arrow-clockwise"></i></button>
             </div>
             <div id="chapterContentArea" class="chapter-content-area" contenteditable="true">@Html.Raw(Model.Content)</div>
             <textarea id="chapterContentHidden" name="Content" style="display:none">@Model.Content</textarea>
             @Html.ValidationMessageFor(m => m.Content, "", new { @class = "text-danger" })
         </div>
-        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        <button type="submit" class="btn btn-primary">@Localizer["Save Changes"]</button>
     </form>
 </div>
 @section Scripts {

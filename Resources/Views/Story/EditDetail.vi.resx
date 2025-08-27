@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EditStoryDetails" xml:space="preserve">
+    <value>Chỉnh sửa thông tin truyện</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>Trạng thái</value>
+  </data>
+  <data name="Published" xml:space="preserve">
+    <value>Đã xuất bản</value>
+  </data>
+  <data name="Draft" xml:space="preserve">
+    <value>Bản nháp</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Đã hoàn thành</value>
+  </data>
+  <data name="Locked" xml:space="preserve">
+    <value>Đã bị khóa</value>
+  </data>
+  <data name="PendingReview" xml:space="preserve">
+    <value>Chờ duyệt</value>
+  </data>
+  <data name="Likes" xml:space="preserve">
+    <value>Lượt thích</value>
+  </data>
+  <data name="Bookmarks" xml:space="preserve">
+    <value>Đánh dấu</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+  </data>
+  <data name="Chapters" xml:space="preserve">
+    <value>Chương</value>
+  </data>
+  <data name="Views" xml:space="preserve">
+    <value>Lượt xem</value>
+  </data>
+  <data name="EditStory" xml:space="preserve">
+    <value>Chỉnh sửa truyện</value>
+  </data>
+  <data name="DeleteStory" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="MoveToDraft" xml:space="preserve">
+    <value>Chuyển về bản nháp</value>
+  </data>
+  <data name="MarkAsCompleted" xml:space="preserve">
+    <value>Đánh dấu hoàn thành</value>
+  </data>
+  <data name="Publish" xml:space="preserve">
+    <value>Xuất bản</value>
+  </data>
+  <data name="MoveToPublishing" xml:space="preserve">
+    <value>Chuyển về đang xuất bản</value>
+  </data>
+  <data name="RequestReview" xml:space="preserve">
+    <value>Gửi yêu cầu duyệt lại</value>
+  </data>
+  <data name="AddChapter" xml:space="preserve">
+    <value>Thêm chương</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Tiêu đề</value>
+  </data>
+  <data name="CreatedDate" xml:space="preserve">
+    <value>Ngày tạo</value>
+  </data>
+  <data name="UpdatedDate" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="Order" xml:space="preserve">
+    <value>Thứ tự</value>
+  </data>
+  <data name="EditOrder" xml:space="preserve">
+    <value>Sửa thứ tự</value>
+  </data>
+  <data name="Actions" xml:space="preserve">
+    <value>Hành động</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Chỉnh sửa</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="NoChapters" xml:space="preserve">
+    <value>Chưa có chương nào. Bắt đầu bằng cách thêm chương mới!</value>
+  </data>
+  <data name="EnterChapterTitle" xml:space="preserve">
+    <value>Nhập tiêu đề chương...</value>
+  </data>
+  <data name="ChangeChapterOrder" xml:space="preserve">
+    <value>Đổi thứ tự chương</value>
+  </data>
+  <data name="NewOrder" xml:space="preserve">
+    <value>Thứ tự mới</value>
+  </data>
+  <data name="DeleteConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn xóa truyện này không?</value>
+  </data>
+  <data name="MoveToDraftConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn chuyển truyện về bản nháp?</value>
+  </data>
+  <data name="MarkCompletedConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn đánh dấu truyện này hoàn thành? Lưu ý: Truyện cần có ít nhất 3 chương đã xuất bản.</value>
+  </data>
+  <data name="PublishConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn xuất bản truyện này?</value>
+  </data>
+  <data name="RequestReviewConfirm" xml:space="preserve">
+    <value>Bạn muốn gửi yêu cầu duyệt truyện này?</value>
+  </data>
+  <data name="DeleteChapterConfirm" xml:space="preserve">
+    <value>Bạn có chắc chắn muốn xóa chương này không?</value>
+  </data>
+</root>

@@ -1,11 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Welcome";
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@{
+    ViewData["Title"] = Localizer["Welcome Back"];
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
     <div class="text-center">
-        <h1 class="display-4 fw-bold text-primary">Chào mừng trở lại!</h1>
-        <p class="lead">Chúc bạn một ngày làm việc hiệu quả 🌟</p>
+        <h1 class="display-4 fw-bold text-primary">@Localizer["Welcome Back"]</h1>
+        <p class="lead">@Localizer["Have a productive day"]</p>
     </div>
 </div>

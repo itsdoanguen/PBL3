@@ -1,21 +1,23 @@
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 @model PBL3.ViewModels.Moderator.ViewUserViewModel
 @{
-    ViewData["Title"] = "Thông tin người dùng";
+    ViewData["Title"] = Localizer["User Information"];
 }
 <link rel="stylesheet" href="~/css/ViewUser.css" />
 <div class="view-user-container mt-5">
     <!-- Section 1: User Profile -->
     <section class="user-profile-section card mb-4">
-        <div class="card-header"><h4>Thông tin người dùng</h4></div>
+        <div class="card-header"><h4>@Localizer["User Information"]</h4></div>
         <div class="card-body d-flex align-items-center">
-            <img src="@Model.userProfile.Avatar" class="user-avatar me-4" alt="Avatar" />
+            <img src="@Model.userProfile.Avatar" class="user-avatar me-4" alt="@Localizer["Avatar"]" />
             <div>
                 <h5>@Model.userProfile.DisplayName</h5>
-                <p>Email: @Model.userProfile.Email</p>
-                <p>Vai trò: @Model.userProfile.Role</p>
-                <p>Ngày tạo: @Model.userProfile.CreatedAt.ToString("dd/MM/yyyy")</p>
-                <p>Trạng thái: <span class="badge bg-info">@Model.userProfile.Status</span></p>
-                <p>Cảnh cáo: <span class="badge bg-warning">@Model.userProfile.TotalWarning</span></p>
+                <p>@Localizer["Email"]: @Model.userProfile.Email</p>
+                <p>@Localizer["Role"]: @Model.userProfile.Role</p>
+                <p>@Localizer["Created At"]: @Model.userProfile.CreatedAt.ToString("dd/MM/yyyy")</p>
+                <p>@Localizer["Status"]: <span class="badge bg-info">@Model.userProfile.Status</span></p>
+                <p>@Localizer["Warnings"]: <span class="badge bg-warning">@Model.userProfile.TotalWarning</span></p>
             </div>
         </div>
     </section>
@@ -25,48 +27,48 @@
         {
             if (Model.userProfile.TotalWarning < 2)
             {
-                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#warnModal">⚠️ Cảnh cáo</button>
+                <button type="button" class="btn btn-warning me-2" data-bs-toggle="modal" data-bs-target="#warnModal">⚠️ @Localizer["Warn"]</button>
                 <!-- Modal cảnh cáo -->
                 <div class="modal fade" id="warnModal" tabindex="-1" aria-labelledby="warnModalLabel" aria-hidden="true">
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <form asp-action="WarnUser" asp-controller="Moderator" method="post">
                         <div class="modal-header">
-                          <h5 class="modal-title" id="warnModalLabel">Nhập lý do cảnh cáo</h5>
+                          <h5 class="modal-title" id="warnModalLabel">@Localizer["Enter Warning Reason"]</h5>
                           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                           <input type="hidden" name="id" value="@Model.userProfile.UserID" />
-                          <textarea name="message" class="form-control" placeholder="Nhập lý do cảnh cáo..." required rows="3"></textarea>
+                          <textarea name="message" class="form-control" placeholder="@Localizer["Warning Placeholder"]" required rows="3"></textarea>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                          <button type="submit" class="btn btn-warning">Gửi cảnh cáo</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Localizer["Cancel"]</button>
+                          <button type="submit" class="btn btn-warning">@Localizer["Send Warning"]</button>
                         </div>
                       </form>
                     </div>
                   </div>
                 </div>
             }
-            <form asp-action="BanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn khóa tài khoản người dùng này?');">
+            <form asp-action="BanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('@Localizer["Ban Confirmation"]');">
                 <input type="hidden" name="id" value="@Model.userProfile.UserID" />
-                <input type="hidden" name="message" value="Tài khoản của bạn đã bị khóa do vi phạm quy định." />
-                <button type="submit" class="btn btn-danger">🚫 Khóa tài khoản</button>
+                <input type="hidden" name="message" value="@Localizer["Ban Message"]" />
+                <button type="submit" class="btn btn-danger">🚫 @Localizer["Ban Account"]</button>
             </form>
         }
         @if(Model.userProfile.Status == PBL3.Models.UserModel.UserStatus.Banned)
         {
-            <form asp-action="UnbanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản người dùng này?');">
+            <form asp-action="UnbanUser" asp-controller="Moderator" method="post" class="d-inline" onsubmit="return confirm('@Localizer["Unban Confirmation"]');">
                 <input type="hidden" name="id" value="@Model.userProfile.UserID" />
-                <input type="hidden" name="message" value="Tài khoản của bạn đã được mở khóa." />
-                <button type="submit" class="btn btn-success">✔️ Mở khóa tài khoản</button>
+                <input type="hidden" name="message" value="@Localizer["Unban Message"]" />
+                <button type="submit" class="btn btn-success">✔️ @Localizer["Unban Account"]</button>
             </form>
 
         }
     </section>
     <!-- Section 2: User Stories -->
     <section class="user-stories-section card mb-4">
-        <div class="card-header"><h4>Truyện đã đăng</h4></div>
+        <div class="card-header"><h4>@Localizer["Posted Stories"]</h4></div>
         <div class="card-body">
             @if (Model.userStories.Any())
             {
@@ -76,14 +78,14 @@
                         <div class="col-md-4 mb-3">
                             <div class="story-card card h-100">
                                 <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">
-                                    <img src="@story.Cover" class="card-img-top story-cover" alt="Cover" />
+                                    <img src="@story.Cover" class="card-img-top story-cover" alt="@Localizer["Cover"]" />
                                 </a>
                                 <div class="card-body">
                                     <h5 class="card-title">
                                         <a href="@Url.Action("View", "Story", new { id = story.StoryID })" target="_blank">@story.Title</a>
                                     </h5>
-                                    <p>Số chương: @story.TotalChapters</p>
-                                    <p>Cập nhật: @story.LastUpdated?.ToString("dd/MM/yyyy")</p>
+                                    <p>@string.Format(Localizer["Chapters Count"].Value, story.TotalChapters)</p>
+                                    <p>@string.Format(Localizer["Updated"].Value, story.LastUpdated?.ToString("dd/MM/yyyy"))</p>
                                     <span class="badge bg-secondary">@story.Status</span>
                                 </div>
                             </div>
@@ -93,24 +95,24 @@
             }
             else
             {
-                <p class="text-muted">Chưa có truyện nào.</p>
+                <p class="text-muted">@Localizer["No Stories"]</p>
             }
         </div>
     </section>
     <!-- Section 3: User Comments -->
     <section class="user-comments-section card mb-4">
-        <div class="card-header"><h4>Bình luận</h4></div>
+        <div class="card-header"><h4>@Localizer["Comments"]</h4></div>
         <div class="card-body">
             @if (Model.UserComments.Any())
             {
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Nội dung</th>
-                            <th>Truyện/Chương</th>
-                            <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
-                            <th>Hành động</th>
+                            <th>@Localizer["Content"]</th>
+                            <th>@Localizer["Story/Chapter"]</th>
+                            <th>@Localizer["Created At"]</th>
+                            <th>@Localizer["Status"]</th>
+                            <th>@Localizer["Actions"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -118,9 +120,9 @@
                         {
                             <tr>
                                 <td>@c.Content</td>
-                                <td>@(c.StoryID != null ? $"Truyện #{c.StoryID}" : (c.ChapterID != null ? $"Chương #{c.ChapterID}" : ""))</td>
+                                <td>@(c.StoryID != null ? $"Story #{c.StoryID}" : (c.ChapterID != null ? $"Chapter #{c.ChapterID}" : ""))</td>
                                 <td>@c.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@(c.IsDeleted ? "Đã xóa" : "Hoạt động")</td>
+                                <td>@(c.IsDeleted ? @Localizer["Processed"] : @Localizer["Unprocessed"])</td>
                                 <td>
                                     <a href="@(c.ChapterID != null 
                                         ? Url.Action("ReadChapter", "Chapter", new { id = c.ChapterID }) + "#comment-" + c.CommentID 
@@ -128,7 +130,7 @@
                                             ? Url.Action("View", "Story", new { id = c.StoryID }) + "#comment-" + c.CommentID 
                                             : "#")" 
                                         class="btn btn-outline-primary btn-sm" target="_blank">
-                                        Đến vị trí bình luận
+                                        @Localizer["Go to Comment"]
                                     </a>
                                 </td>
                             </tr>
@@ -138,15 +140,15 @@
             }
             else
             {
-                <p class="text-muted">Chưa có bình luận nào.</p>
+                <p class="text-muted">@Localizer["No Comments"]</p>
             }
         </div>
     </section>
     <!-- Section 4: Reports Created -->
     <section class="reports-created-section card mb-4">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Report đã tạo</h4>
-            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="Quản lý báo cáo">
+            <h4 class="mb-0">@Localizer["Reports Created"]</h4>
+            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="@Localizer["Reports Created"]">
                 <i class="bi bi-gear-fill" style="font-size:1.3rem;"></i>
             </a>
         </div>
@@ -156,11 +158,11 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Loại</th>
-                            <th>Đối tượng</th>
-                            <th>Lý do</th>
-                            <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["Target"]</th>
+                            <th>@Localizer["Reason"]</th>
+                            <th>@Localizer["Created At"]</th>
+                            <th>@Localizer["Status"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,10 +170,10 @@
                         {
                             <tr>
                                 <td>@r.ReportType</td>
-                                <td>@(r.StoryID != null ? $"Truyện #{r.StoryID}" : r.ChapterID != null ? $"Chương #{r.ChapterID}" : r.CommentID != null ? $"Bình luận #{r.CommentID}" : r.ReportedUserID != null ? $"User #{r.ReportedUserID}" : "Khác")</td>
+                                <td>@(r.StoryID != null ? $"Story #{r.StoryID}" : r.ChapterID != null ? $"Chapter #{r.ChapterID}" : r.CommentID != null ? $"Comment #{r.CommentID}" : r.ReportedUserID != null ? $"User #{r.ReportedUserID}" : @Localizer["Other"])</td>
                                 <td>@r.Reason</td>
                                 <td>@r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@(r.Status ? "Đã xử lý" : "Chưa xử lý")</td>
+                                <td>@(r.Status ? @Localizer["Processed"] : @Localizer["Unprocessed"])</td>
                             </tr>
                         }
                     </tbody>
@@ -179,15 +181,15 @@
             }
             else
             {
-                <p class="text-muted">Chưa có report nào.</p>
+                <p class="text-muted">@Localizer["No Comments"]</p>
             }
         </div>
     </section>
     <!-- Section 5: Reports Received -->
     <section class="reports-received-section card mb-4">
         <div class="card-header d-flex align-items-center justify-content-between">
-            <h4 class="mb-0">Report bị nhận</h4>
-            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="Quản lý báo cáo">
+            <h4 class="mb-0">@Localizer["Reports Received"]</h4>
+            <a href="@Url.Action("Index", "Report")" class="text-secondary ms-2" title="@Localizer["Reports Received"]">
                 <i class="bi bi-gear-fill" style="font-size:1.3rem;"></i>
             </a>
         </div>
@@ -197,11 +199,11 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Loại</th>
-                            <th>Đối tượng</th>
-                            <th>Lý do</th>
-                            <th>Ngày tạo</th>
-                            <th>Trạng thái</th>
+                            <th>@Localizer["Type"]</th>
+                            <th>@Localizer["Target"]</th>
+                            <th>@Localizer["Reason"]</th>
+                            <th>@Localizer["Created At"]</th>
+                            <th>@Localizer["Status"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -209,10 +211,10 @@
                         {
                             <tr>
                                 <td>@r.ReportType</td>
-                                <td>@(r.StoryID != null ? $"Truyện #{r.StoryID}" : r.ChapterID != null ? $"Chương #{r.ChapterID}" : r.CommentID != null ? $"Bình luận #{r.CommentID}" : r.ReportedUserID != null ? $"User #{r.ReportedUserID}" : "Khác")</td>
+                                <td>@(r.StoryID != null ? $"Story #{r.StoryID}" : r.ChapterID != null ? $"Chapter #{r.ChapterID}" : r.CommentID != null ? $"Comment #{r.CommentID}" : r.ReportedUserID != null ? $"User #{r.ReportedUserID}" : @Localizer["Other"])</td>
                                 <td>@r.Reason</td>
                                 <td>@r.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>@(r.Status ? "Đã xử lý" : "Chưa xử lý")</td>
+                                <td>@(r.Status ? @Localizer["Processed"] : @Localizer["Unprocessed"])</td>
                             </tr>
                         }
                     </tbody>
@@ -220,7 +222,7 @@
             }
             else
             {
-                <p class="text-muted">Chưa có report nào.</p>
+                <p class="text-muted">@Localizer["No Comments"]</p>
             }
         </div>
     </section>

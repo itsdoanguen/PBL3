@@ -1,8 +1,10 @@
 ﻿@using PBL3.ViewModels.Account
 @model RegisterViewModel
 
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer Localizer
+
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = Localizer["RegisterTitle"];
 }
 @section Styles {
     <link href="~/css/introduction.css" rel="stylesheet" />
@@ -11,7 +13,7 @@
 }
 <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="card shadow-lg p-4" style="width: 400px;">
-        <h2 class="text-center mb-4">Register</h2>
+        <h2 class="text-center mb-4">@Localizer["RegisterTitle"]</h2>
 
         @if (!string.IsNullOrEmpty(ViewBag.Message))
         {
@@ -38,12 +40,12 @@
                     <small id="passwordStrengthText" class="text-muted"></small>
                 </div>
                 <ul class="mt-2 mb-0 ps-3 small text-muted" id="passwordRequirements">
-                    <li>Mật khẩu dài 6-18 ký tự</li>
-                    <li>Chứa ít nhất 1 chữ hoa (A-Z)</li>
-                    <li>Chứa ít nhất 1 chữ thường (a-z)</li>
-                    <li>Chứa ít nhất 1 số (0-9)</li>
-                    <li>Chứa ít nhất 1 ký tự đặc biệt</li>
-                    <li>Không chứa khoảng trắng</li>
+                    <li>@Localizer["PasswordLength"]</li>
+                    <li>@Localizer["PasswordUppercase"]</li>
+                    <li>@Localizer["PasswordLowercase"]</li>
+                    <li>@Localizer["PasswordNumber"]</li>
+                    <li>@Localizer["PasswordSpecial"]</li>
+                    <li>@Localizer["PasswordNoSpace"]</li>
                 </ul>
             </div>
 
@@ -53,11 +55,11 @@
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Register</button>
+            <button type="submit" class="btn btn-primary w-100">@Localizer["RegisterButton"]</button>
         </form>
 
         <div class="text-center mt-3">
-            <small>Already have an account? <a asp-controller="Authentication" asp-action="Login">Login here</a></small>
+            <small>@Localizer["HaveAccount"] <a asp-controller="Authentication" asp-action="Login">@Localizer["LoginHere"]</a></small>
         </div>
     </div>
 </div>
@@ -78,9 +80,9 @@
             if (/[^A-Za-z0-9]/.test(password)) score++;
             let percent = Math.min((score / 6) * 100, 100);
             let color = '#ff4d4f';
-            let label = 'Yếu';
-            if (score >= 5) { color = '#52c41a'; label = 'Mạnh'; }
-            else if (score >= 3) { color = '#faad14'; label = 'Trung bình'; }
+            let label = '@Localizer["PasswordWeak"]';
+            if (score >= 5) { color = '#52c41a'; label = '@Localizer["PasswordStrong"]'; }
+            else if (score >= 3) { color = '#faad14'; label = '@Localizer["PasswordMedium"]'; }
             fill.style.width = percent + '%';
             fill.style.background = color;
             text.textContent = password ? `Độ mạnh mật khẩu: ${label}` : '';
